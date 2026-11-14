@@ -1,0 +1,3506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ApnaMart24 B2B - Central Admin & Logistics Hub</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.0.3"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              200: '#fed7aa',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c',
+              800: '#9a3412',
+              900: '#7c2d12',
+              950: '#431407',
+            },
+            admin: {
+              dark: '#0f172a',
+              card: '#1e293b',
+              border: '#334155'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .fade-in { animation: fadeIn 0.2s ease-in-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+
+  <!-- ============================================== -->
+  <!-- SECURE ADMIN LOGIN GATE OVERLAY -->
+  <!-- ============================================== -->
+  <div id="admin-login-gate" class="fixed inset-0 z-50 bg-slate-950 flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+      <!-- Brand Header -->
+      <div class="text-center space-y-2">
+        <div class="inline-flex items-center justify-center">
+          <svg class="h-12 w-auto" viewBox="0 0 720 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g>
+              <text x="350" y="70" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="52" fill="#ffffff" letter-spacing="-1">apnamart</text>
+              <rect x="585" y="38" width="68" height="38" rx="8" fill="url(#loginGrad24)" />
+              <text x="595" y="67" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="30" fill="#ffffff">24</text>
+              <path d="M 470 82 L 655 82" stroke="#ea580c" stroke-width="4.5" stroke-linecap="round"/>
+              <circle cx="495" cy="82" r="4.5" fill="#dc2626"/>
+              <circle cx="530" cy="82" r="4.5" fill="#dc2626"/>
+            </g>
+            <g>
+              <circle cx="185" cy="165" r="110" fill="#ffffff"/>
+              <text x="130" y="222" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="165" fill="#0f172a">B</text>
+              <text x="255" y="222" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="170" fill="#ffffff" letter-spacing="-3">2</text>
+              <text x="385" y="222" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="170" fill="#ffffff" letter-spacing="-3">B</text>
+            </g>
+            <defs>
+              <linearGradient id="loginGrad24" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#ea580c"/>
+                <stop offset="100%" stop-color="#f59e0b"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-[10px] font-black uppercase tracking-widest">
+          <i class="ph-bold ph-shield-lock"></i> Restricted Admin Access
+        </div>
+        <h2 class="text-lg font-black text-white">Central Admin & Logistics Login</h2>
+        <p class="text-xs text-slate-400">Enter authorized Admin Login ID & Password to unlock Ops Console</p>
+      </div>
+
+      <!-- Error Alert Box -->
+      <div id="admin-login-error" class="hidden p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold flex items-center gap-2">
+        <i class="ph-bold ph-warning-circle text-base shrink-0"></i>
+        <span id="admin-login-error-text">Invalid Login ID or Password!</span>
+      </div>
+
+      <!-- Login Form -->
+      <form id="admin-login-form" onsubmit="handleAdminLogin(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="text-slate-300 font-bold block mb-1.5">Admin Login ID *</label>
+          <div class="relative">
+            <i class="ph-bold ph-user-circle text-slate-400 text-base absolute left-3 top-1/2 -translate-y-1/2"></i>
+            <input type="text" id="admin-login-id-input" required autocomplete="off" placeholder="Enter Admin Login ID" class="w-full bg-slate-800 text-white font-mono font-bold pl-9 pr-3 py-2.5 rounded-xl border border-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="text-slate-300 font-bold block mb-1.5">Admin Password *</label>
+          <div class="relative">
+            <i class="ph-bold ph-lock-key text-slate-400 text-base absolute left-3 top-1/2 -translate-y-1/2"></i>
+            <input type="password" id="admin-login-pass-input" required placeholder="Enter Admin Password" class="w-full bg-slate-800 text-white font-mono font-bold pl-9 pr-10 py-2.5 rounded-xl border border-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <button type="button" onclick="toggleAdminGatePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white" title="Show/Hide Password">
+              <i id="admin-gate-eye" class="ph-bold ph-eye text-base"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black text-xs uppercase tracking-wider transition shadow-lg shadow-brand-900/40 flex items-center justify-center gap-2">
+          <i class="ph-bold ph-sign-in text-base"></i>
+          <span>Unlock Admin Panel</span>
+        </button>
+      </form>
+
+      <div class="text-center text-[10px] text-slate-500 border-t border-slate-800 pt-3">
+        Protected Session • Password can only be changed after authenticated login
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP LOGISTICS & DEPOT HEADER -->
+  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 px-4 lg:px-6 py-2.5 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3 lg:gap-6">
+      <!-- Mobile Sidebar Toggle -->
+      <button onclick="toggleMobileSidebar()" class="lg:hidden p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition" aria-label="Toggle Menu">
+        <i class="ph-bold ph-list text-lg"></i>
+      </button>
+
+      <!-- Official ApnaMart24 B2B SVG Brandmark -->
+      <div onclick="switchTab('dashboard')" class="flex items-center cursor-pointer select-none">
+        <svg class="h-10 w-auto" viewBox="0 0 720 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g id="brand-header">
+            <text x="350" y="70" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="52" fill="#ffffff" letter-spacing="-1">apnamart</text>
+            <rect x="585" y="38" width="68" height="38" rx="8" fill="url(#grad24)" />
+            <text x="595" y="67" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="30" fill="#ffffff">24</text>
+            <path d="M 470 82 L 655 82" stroke="#ea580c" stroke-width="4.5" stroke-linecap="round"/>
+            <circle cx="495" cy="82" r="4.5" fill="#dc2626"/>
+            <circle cx="530" cy="82" r="4.5" fill="#dc2626"/>
+          </g>
+          <g id="b2b-mark">
+            <circle cx="185" cy="165" r="110" fill="#ffffff"/>
+            <text x="130" y="222" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="165" fill="#0f172a">B</text>
+            <text x="255" y="222" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="170" fill="#ffffff" letter-spacing="-3">2</text>
+            <text x="385" y="222" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="170" fill="#ffffff" letter-spacing="-3">B</text>
+          </g>
+          <defs>
+            <linearGradient id="grad24" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#ea580c"/>
+              <stop offset="100%" stop-color="#f59e0b"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="ml-3 hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-widest uppercase bg-brand-500/10 text-brand-400 border border-brand-500/20">
+          Ops Console
+        </span>
+      </div>
+
+      <!-- Warehouse / Depot Selector -->
+      <div class="relative hidden md:block">
+        <label class="text-[9px] uppercase font-bold text-slate-400 absolute left-3 top-1 pointer-events-none">Fulfillment Depot</label>
+        <select id="hub-selector" onchange="switchDepot(this.value)" class="bg-slate-800 text-xs font-bold text-slate-200 pl-3 pr-8 pt-4 pb-1 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-brand-500 cursor-pointer">
+          <option value="EGRA-01">Egra Central Hub (Bay A & B) • East Midnapore</option>
+          <option value="CONTAI-02">Contai Coastal Depot (Bay C) • West Bengal</option>
+          <option value="MIDNAPORE-03">Midnapore City Master Warehouse</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Right Controls: Quick Search, Early Morning Dispatch Timer & Admin Profile -->
+    <div class="flex items-center gap-3">
+      <!-- Live 5:00 AM Dispatch Countdown Pill -->
+      <div class="hidden lg:flex items-center gap-2 bg-slate-800/80 border border-slate-700/80 px-3 py-1.5 rounded-xl">
+        <div class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></div>
+        <div class="text-[11px] leading-tight">
+          <span class="text-slate-400 text-[9px] block font-bold">NEXT DISPATCH WAVE</span>
+          <span class="font-extrabold text-amber-300">05:00 AM Slot (7 Mini-Trucks)</span>
+        </div>
+      </div>
+      <!-- Admin Profile Avatar & Security Controls -->
+      <div class="flex items-center gap-2 pl-2 border-l border-slate-800">
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center font-black text-xs text-white shadow-sm">
+          AM
+        </div>
+        <div class="hidden xl:block text-left text-xs leading-none">
+          <span class="font-bold text-white block" id="header-admin-id-label">amit7074b2b</span>
+          <span class="text-[10px] text-emerald-400 font-semibold">Super Admin • Verified</span>
+        </div>
+        <button onclick="logoutAdminPanel()" class="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition" title="Lock / Logout Admin Panel">
+          <i class="ph-bold ph-sign-out text-sm"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER (SIDEBAR + DYNAMIC CONTENT) -->
+  <div class="flex-1 flex overflow-hidden relative">
+
+    <!-- Mobile Backdrop -->
+    <div id="sidebar-backdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-slate-950/80 z-30 lg:hidden hidden"></div>
+
+    <!-- LEFT OPERATIONS SIDEBAR -->
+    <aside id="ops-sidebar" class="fixed lg:static inset-y-0 left-0 z-30 w-64 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out pt-16 lg:pt-0">
+      <div class="p-3.5 space-y-1.5 overflow-y-auto no-scrollbar">
+        <div class="px-3 py-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
+          Hub Control & Logistics
+        </div>
+
+        <!-- Nav Item: Executive Dashboard -->
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition bg-brand-600 text-white shadow-sm">
+          <div class="flex items-center gap-3">
+            <i class="ph-bold ph-squares-four text-lg"></i>
+            <span>Dashboard & Metrics</span>
+          </div>
+          <span class="px-1.5 py-0.5 rounded-md text-[9px] bg-white/15 text-white font-extrabold">Live</span>
+        </button>
+
+        <!-- Nav Item: Wholesale Orders -->
+        <button onclick="switchTab('orders')" id="nav-orders" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition text-slate-300 hover:bg-slate-800 hover:text-white">
+          <div class="flex items-center gap-3">
+            <i class="ph-bold ph-receipt text-lg text-amber-400"></i>
+            <span>Wholesale Orders</span>
+          </div>
+          <span class="px-1.5 py-0.5 rounded-md text-[10px] bg-brand-500/20 text-brand-400 font-extrabold" id="badge-orders-count">4</span>
+        </button>
+
+        <!-- Nav Item: Live Delivery Fleet & Tracking -->
+        <button onclick="switchTab('fleet')" id="nav-fleet" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition text-slate-300 hover:bg-slate-800 hover:text-white">
+          <div class="flex items-center gap-3">
+            <i class="ph-bold ph-navigation-arrow text-lg text-emerald-400"></i>
+            <span>Live Fleet & Delivery</span>
+          </div>
+          <span class="px-1.5 py-0.5 rounded-md text-[10px] bg-emerald-500/20 text-emerald-400 font-extrabold flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> Live
+          </span>
+        </button>
+
+        <!-- Nav Item: Marketing & Field Sales Agents -->
+        <button onclick="switchTab('marketing')" id="nav-marketing" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition text-slate-300 hover:bg-slate-800 hover:text-white">
+          <div class="flex items-center gap-3">
+            <i class="ph-bold ph-megaphone-simple text-lg text-rose-400"></i>
+            <span>Marketing & Sales Force</span>
+          </div>
+          <span class="px-1.5 py-0.5 rounded-md text-[10px] bg-rose-500/20 text-rose-400 font-extrabold" id="badge-marketing-count">4 Active</span>
+        </button>
+
+        <div class="px-3 pt-3 pb-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
+          Catalog & Credit Risk
+        </div>
+
+        <!-- Nav Item: Inventory & Slab Pricing -->
+        <button onclick="switchTab('inventory')" id="nav-inventory" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition text-slate-300 hover:bg-slate-800 hover:text-white">
+          <div class="flex items-center gap-3">
+            <i class="ph-bold ph-package text-lg text-emerald-400"></i>
+            <span>Inventory & Slab Prices</span>
+          </div>
+        </button>
+
+        <!-- Nav Item: Kirana Khata & Credit -->
+        <button onclick="switchTab('khata')" id="nav-khata" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition text-slate-300 hover:bg-slate-800 hover:text-white">
+          <div class="flex items-center gap-3">
+            <i class="ph-bold ph-wallet text-lg text-sky-400"></i>
+            <span>Kirana Khata & Risk</span>
+          </div>
+          <span class="px-1.5 py-0.5 rounded-md text-[10px] bg-red-500/20 text-red-400 font-extrabold">2 Due</span>
+        </button>
+
+        <!-- Nav Item: Retailer KYC & Verification -->
+        <button onclick="switchTab('kyc')" id="nav-kyc" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition text-slate-300 hover:bg-slate-800 hover:text-white">
+          <div class="flex items-center gap-3">
+            <i class="ph-bold ph-shield-check text-lg text-purple-400"></i>
+            <span>KYC & Verification</span>
+          </div>
+          <span class="px-1.5 py-0.5 rounded-md text-[10px] bg-amber-500/20 text-amber-400 font-extrabold" id="badge-kyc-count">3 New</span>
+        </button>
+
+        <div class="px-3 pt-3 pb-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
+          Admin Security
+        </div>
+
+        <!-- Sidebar Item: Change Admin Password -->
+        <button onclick="openChangeAdminPasswordModal()" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20">
+          <div class="flex items-center gap-3">
+            <i class="ph-bold ph-key text-lg text-amber-400"></i>
+            <span>Change Password</span>
+          </div>
+          <span class="text-[9px] font-mono text-slate-400">amit7074b2b</span>
+        </button>
+
+        <!-- Sidebar Item: Lock / Logout Panel -->
+        <button onclick="logoutAdminPanel()" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold transition text-red-400 hover:bg-red-500/10">
+          <i class="ph-bold ph-lock-key text-lg"></i>
+          <span>Lock Admin Panel</span>
+        </button>
+      </div>
+
+      <!-- Fleet Dispatch Snapshot in Sidebar -->
+      <div class="mt-auto p-4 border-t border-slate-800 bg-slate-900/50 space-y-2">
+        <div class="flex items-center justify-between text-[11px] font-bold text-slate-300">
+          <span class="flex items-center gap-1.5">
+            <i class="ph-bold ph-van text-brand-500"></i> Active Fleet (Tata Ace)
+          </span>
+          <span class="text-emerald-400" id="sidebar-fleet-stat">2 On Route</span>
+        </div>
+        <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+          <div class="bg-brand-500 h-full w-[75%] rounded-full"></div>
+        </div>
+        <div class="text-[10px] text-slate-400 flex justify-between">
+          <span>Egra-Digha Route 1</span>
+          <span class="text-slate-300 font-semibold">Departs 04:45 AM</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN SCROLLABLE CONTENT AREA -->
+    <main class="flex-1 overflow-y-auto p-4 lg:p-6 space-y-6 bg-slate-950">
+
+      <!-- ============================================== -->
+      <!-- TAB 1: EXECUTIVE DASHBOARD & FULFILLMENT METRICS -->
+      <!-- ============================================== -->
+      <section id="tab-dashboard" class="space-y-6 fade-in">
+        
+        <!-- Welcome & Fast Metrics Ribbon -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div>
+            <h1 class="text-xl lg:text-2xl font-black text-white tracking-tight flex flex-wrap items-center gap-2">
+              <span id="depot-heading-title">Egra Central Depot • Operations Control</span>
+              <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-md font-bold">GSTIN Verified Hub</span>
+            </h1>
+            <p class="text-xs text-slate-400 mt-0.5">Live monitoring of B2B wholesale transactions, truck route packing, and Kirana Khata collections.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="triggerInvoiceExport()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
+              <i class="ph-bold ph-file-arrow-down text-base text-brand-500"></i>
+              <span>Download E-Way Bills (ZIP)</span>
+            </button>
+            <button onclick="openCreateOrderModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 transition shadow-lg shadow-brand-900/30">
+              <i class="ph-bold ph-plus-circle text-base"></i>
+              <span>New Bulk Dispatch</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Key KPI Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- KPI 1 -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 relative overflow-hidden">
+            <div class="flex items-center justify-between text-xs text-slate-400 font-bold mb-2">
+              <span>TODAY'S WHOLESALE GMV</span>
+              <span class="w-8 h-8 rounded-xl bg-brand-500/10 text-brand-400 flex items-center justify-center">
+                <i class="ph-bold ph-currency-inr text-lg"></i>
+              </span>
+            </div>
+            <div class="text-2xl font-black text-white" id="kpi-gmv">₹4,82,450</div>
+            <div class="flex items-center gap-1.5 text-[11px] text-emerald-400 font-bold mt-2">
+              <i class="ph-bold ph-trend-up"></i>
+              <span>+18.4% vs yesterday (Pre-Diwali surge)</span>
+            </div>
+          </div>
+
+          <!-- KPI 2 -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 relative overflow-hidden">
+            <div class="flex items-center justify-between text-xs text-slate-400 font-bold mb-2">
+              <span>DISPATCHED TONNAGE</span>
+              <span class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
+                <i class="ph-bold ph-barbell text-lg"></i>
+              </span>
+            </div>
+            <div class="text-2xl font-black text-white">28.4 MT</div>
+            <div class="flex items-center gap-1.5 text-[11px] text-slate-400 font-semibold mt-2">
+              <span>920 sacks Miniket • 310 Oil tins</span>
+            </div>
+          </div>
+
+          <!-- KPI 3 -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 relative overflow-hidden">
+            <div class="flex items-center justify-between text-xs text-slate-400 font-bold mb-2">
+              <span>ACTIVE KIRANA STORES</span>
+              <span class="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
+                <i class="ph-bold ph-storefront text-lg"></i>
+              </span>
+            </div>
+            <div class="text-2xl font-black text-white">142 Shops</div>
+            <div class="flex items-center gap-1.5 text-[11px] text-purple-400 font-semibold mt-2">
+              <span>Egra (68), Contai (54), Ramnagar (20)</span>
+            </div>
+          </div>
+
+          <!-- KPI 4 -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 relative overflow-hidden">
+            <div class="flex items-center justify-between text-xs text-slate-400 font-bold mb-2">
+              <span>KHATA CREDIT OUTSTANDING</span>
+              <span class="w-8 h-8 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center">
+                <i class="ph-bold ph-credit-card text-lg"></i>
+              </span>
+            </div>
+            <div class="text-2xl font-black text-white">₹16,42,800</div>
+            <div class="flex items-center gap-1.5 text-[11px] text-emerald-400 font-bold mt-2">
+              <i class="ph-bold ph-check-circle"></i>
+              <span>88.2% on-time repayment cycle</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Low Stock Urgent Alert Banner -->
+        <div class="bg-gradient-to-r from-red-950/60 to-slate-900 border border-red-800/50 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-red-600/20 text-red-400 border border-red-500/30 flex items-center justify-center text-xl shrink-0">
+              <i class="ph-fill ph-warning-octagon"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-black text-white uppercase tracking-wide">Warehouse Critical Stock Alert</h4>
+              <p class="text-xs text-slate-300">Miniket Super Fine Rice (25kg Sacks) has dropped to <span class="text-red-400 font-bold">18 sacks</span> (Safety buffer: 50 sacks). Mill replenishment arrives at 02:00 PM.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="switchTab('inventory')" class="bg-red-700 hover:bg-red-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">
+              Adjust Slab / Restock
+            </button>
+          </div>
+        </div>
+
+        <!-- Two Column Logistics & Live Route Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- Column 1 & 2: Active Dispatch Route Batches -->
+          <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-black text-white flex items-center gap-2">
+                  <i class="ph-bold ph-path text-brand-500 text-base"></i>
+                  <span>Morning 5:00 AM Dispatch Schedule</span>
+                </h3>
+                <p class="text-[11px] text-slate-400">Auto-routed by delivery cluster for maximum truck payload efficiency</p>
+              </div>
+              <span class="text-[10px] font-black uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">3 Active Routes</span>
+            </div>
+
+            <!-- Route 1 -->
+            <div class="bg-slate-800/60 border border-slate-700/60 rounded-xl p-3.5 space-y-2.5">
+              <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div class="font-bold text-white flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  <span>Route #WB-EGRA-01 (Egra Town -> Kasba Mandi -> Negua)</span>
+                </div>
+                <span class="text-[11px] font-bold text-amber-300">Tata Ace Gold (WB 34 AD 8219)</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+                <div>
+                  <span class="text-slate-400 text-[9px] block">Driver Partner</span>
+                  <span class="font-bold text-slate-200">Bikas Maity (9832049182)</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 text-[9px] block">Total Sacks/Tins</span>
+                  <span class="font-bold text-slate-200">142 Units (2.85 MT)</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 text-[9px] block">Drop Count</span>
+                  <span class="font-bold text-emerald-400">6 Kiranas • 5:00 AM - 7:00 AM</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between pt-1">
+                <div class="text-[10px] text-slate-400 flex items-center gap-1">
+                  <i class="ph-bold ph-barcode text-brand-400"></i> All 6 invoices e-way billed & stamped
+                </div>
+                <button onclick="showToast('Driver Bikas Maity notified via WhatsApp with route map')" class="text-xs font-bold text-brand-400 hover:text-brand-300">
+                  Resend Manifest
+                </button>
+              </div>
+            </div>
+
+            <!-- Route 2 -->
+            <div class="bg-slate-800/60 border border-slate-700/60 rounded-xl p-3.5 space-y-2.5">
+              <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div class="font-bold text-white flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                  <span>Route #WB-CONTAI-02 (Contai Central -> Digha Bypass -> Junput)</span>
+                </div>
+                <span class="text-[11px] font-bold text-amber-300">Mahindra Bolero Maxi (WB 29 BF 1102)</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+                <div>
+                  <span class="text-slate-400 text-[9px] block">Driver Partner</span>
+                  <span class="font-bold text-slate-200">Tapan Giri (9734190821)</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 text-[9px] block">Total Sacks/Tins</span>
+                  <span class="font-bold text-slate-200">188 Units (3.40 MT)</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 text-[9px] block">Drop Count</span>
+                  <span class="font-bold text-amber-400">9 Kiranas • Loading Bay C</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Column 3: Warehouse Live Bay Occupancy -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+            <h3 class="text-sm font-black text-white flex items-center gap-2">
+              <i class="ph-bold ph-warehouse text-emerald-400 text-base"></i>
+              <span>Depot Bay Capacity (Egra Hub)</span>
+            </h3>
+            <p class="text-[11px] text-slate-400">Real-time floor space occupancy for heavy grain sacks and pallet stacks.</p>
+
+            <div class="space-y-3 pt-2">
+              <div>
+                <div class="flex justify-between text-xs font-bold text-slate-300 mb-1">
+                  <span>Bay A (Staples: Rice & Atta Sacks)</span>
+                  <span class="text-brand-400 font-black">84% Full</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div class="bg-brand-500 h-full w-[84%] rounded-full"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-bold text-slate-300 mb-1">
+                  <span>Bay B (Edible Oil Tins & Jars)</span>
+                  <span class="text-emerald-400 font-black">62% Full</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div class="bg-emerald-500 h-full w-[62%] rounded-full"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-bold text-slate-300 mb-1">
+                  <span>Bay C (FMCG Soaps & Spices Pallets)</span>
+                  <span class="text-purple-400 font-black">45% Full</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div class="bg-purple-500 h-full w-[45%] rounded-full"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Action Box -->
+            <div class="mt-4 p-3 rounded-xl bg-slate-800/80 border border-slate-700/80 text-[11px] space-y-2">
+              <div class="font-bold text-slate-200 flex items-center gap-1.5">
+                <i class="ph-bold ph-clock-counter-clockwise text-brand-400"></i>
+                <span>Direct Mill Procurement Due</span>
+              </div>
+              <p class="text-slate-400 text-[10px]">Turdal & Miniket Rice 10-Wheeler trailer arrival scheduled today at 11:30 PM.</p>
+              <button onclick="showToast('Inbound dock reservation confirmed for 11:30 PM')" class="w-full py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs transition">
+                Reserve Inbound Bay
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ============================================== -->
+      <!-- TAB 2: WHOLESALE ORDER & DISPATCH MANAGEMENT -->
+      <!-- ============================================== -->
+      <section id="tab-orders" class="space-y-4 hidden">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-black text-white">Wholesale Dispatch Queue</h2>
+            <p class="text-xs text-slate-400">Approve bulk Kirana orders, allocate trucks, and preview GST e-invoices.</p>
+          </div>
+          <!-- Filter Controls -->
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="order-status-filter" onchange="filterOrdersTable(this.value)" class="bg-slate-900 text-xs font-bold text-slate-200 px-3 py-2 rounded-xl border border-slate-700 focus:outline-none">
+              <option value="ALL">All Statuses</option>
+              <option value="NEW">New Awaiting Approval</option>
+              <option value="PACKING">Picking in Bay</option>
+              <option value="DISPATCHED">Out for Morning Delivery</option>
+            </select>
+            <input type="text" placeholder="Search Shop / GSTIN..." oninput="searchOrdersTable(this.value)" class="bg-slate-900 text-xs px-3 py-2 rounded-xl border border-slate-700 text-slate-200 focus:outline-none focus:ring-1 focus:ring-brand-500 w-48">
+            <button onclick="openCreateOrderModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-2 rounded-xl text-xs font-black flex items-center gap-1 transition">
+              <i class="ph-bold ph-plus"></i> New Order
+            </button>
+          </div>
+        </div>
+
+        <!-- Orders Table Card -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-800/80 text-[10px] uppercase font-black tracking-wider text-slate-400 border-b border-slate-700">
+                <tr>
+                  <th class="py-3 px-4">Invoice / Shop</th>
+                  <th class="py-3 px-4">Ordered Products (Image & Name)</th>
+                  <th class="py-3 px-4">Weight & Packs</th>
+                  <th class="py-3 px-4">Order Value & Mode</th>
+                  <th class="py-3 px-4">Delivery Route</th>
+                  <th class="py-3 px-4">Status</th>
+                  <th class="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800" id="orders-tbody">
+                <!-- Injected via Javascript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- TAB: LIVE FLEET TRACKING & DELIVERY MAN -->
+      <!-- ============================================== -->
+      <section id="tab-fleet" class="space-y-6 hidden">
+        <!-- Header & Action Ribbon -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-black text-white flex flex-wrap items-center gap-2">
+              <i class="ph-bold ph-truck text-brand-500"></i>
+              <span>Live Delivery Fleet & Route Tracking</span>
+              <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">
+                GPS Active
+              </span>
+            </h2>
+            <p class="text-xs text-slate-400">Track morning 5:00 AM mini-truck dispatches, monitor drops, speed, and onboard new delivery partners.</p>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <button onclick="refreshFleetLocations()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
+              <i class="ph-bold ph-arrows-clockwise text-emerald-400" id="refresh-fleet-icon"></i>
+              <span>Refresh Telematics</span>
+            </button>
+            <button onclick="openAddDriverModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 transition shadow-lg shadow-brand-900/30">
+              <i class="ph-bold ph-user-plus text-base"></i>
+              <span>Add Delivery Partner</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Fleet Metric Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 lg:gap-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5">
+            <span class="text-[10px] font-bold text-slate-400 uppercase block">Active Delivery Drivers</span>
+            <div class="text-xl font-black text-white mt-1" id="stat-total-drivers">4 Drivers</div>
+            <span class="text-[10px] text-emerald-400 font-semibold flex items-center gap-1 mt-1">
+              <i class="ph-bold ph-check-circle"></i> 3 On Delivery • 1 Available
+            </span>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5">
+            <span class="text-[10px] font-bold text-slate-400 uppercase block">Wholesale Drops Today</span>
+            <div class="text-xl font-black text-white mt-1">18 / 24 Done</div>
+            <span class="text-[10px] text-amber-300 font-semibold flex items-center gap-1 mt-1">
+              <i class="ph-bold ph-clock"></i> 6 remaining before 07:30 AM
+            </span>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5">
+            <span class="text-[10px] font-bold text-slate-400 uppercase block">Total Freight In Transit</span>
+            <div class="text-xl font-black text-white mt-1">6.25 MT</div>
+            <span class="text-[10px] text-slate-400 font-semibold block mt-1">Rice, Mustard Oil, Dal</span>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5">
+            <span class="text-[10px] font-bold text-slate-400 uppercase block">Fleet On-Time SLA</span>
+            <div class="text-xl font-black text-emerald-400 mt-1">98.4%</div>
+            <span class="text-[10px] text-slate-400 font-semibold block mt-1">Avg 14 min unloading/store</span>
+          </div>
+        </div>
+
+        <!-- Live Route Tracking & Driver Monitor Split View -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          <!-- Left 2 Cols: Interactive Map & Route Live Status -->
+          <div class="lg:col-span-2 space-y-4">
+            
+            <!-- Map Simulation Screen -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 overflow-hidden relative">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <h3 class="text-xs font-black text-white uppercase tracking-wider">Live GPS Radar • Egra & Contai Corridor</h3>
+                </div>
+                <div class="flex items-center gap-2 text-[11px]">
+                  <span class="bg-slate-800 border border-slate-700 text-slate-300 px-2 py-0.5 rounded-lg text-[10px] font-mono">
+                    <span id="map-active-vehicle">WB 34 AD 8219 (Tata Ace)</span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Interactive Simulated Vector Map -->
+              <div class="relative w-full h-72 sm:h-80 bg-gradient-to-b from-slate-950 to-slate-900 rounded-xl border border-slate-800 p-4 overflow-hidden">
+                <!-- Grid Overlay Background -->
+                <svg class="absolute inset-0 w-full h-full opacity-20 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+                      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#475569" stroke-width="0.8"/>
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" fill="url(#grid)" />
+                </svg>
+
+                <!-- Major Highways / Road Vector Lines -->
+                <svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- NH116B / Egra - Contai Corridor -->
+                  <path d="M 40 50 Q 150 140 280 120 T 460 210 T 680 190" fill="none" stroke="#334155" stroke-width="6" stroke-linecap="round"/>
+                  <!-- Active Route Highlight -->
+                  <path d="M 40 50 Q 150 140 280 120 T 460 210" fill="none" stroke="#ea580c" stroke-width="4" stroke-dasharray="8 4" stroke-linecap="round" class="animate-pulse"/>
+                  <!-- Secondary Branch to Ramnagar -->
+                  <path d="M 280 120 Q 320 220 380 270" fill="none" stroke="#1e293b" stroke-width="4" stroke-dasharray="4 4"/>
+                </svg>
+
+                <!-- Depot Pin (Egra Central Hub) -->
+                <div class="absolute left-8 top-10 flex items-center gap-2 z-10">
+                  <div class="w-8 h-8 rounded-xl bg-brand-600 text-white flex items-center justify-center font-black text-xs shadow-lg ring-4 ring-brand-500/20">
+                    <i class="ph-bold ph-warehouse"></i>
+                  </div>
+                  <div class="bg-slate-900/90 border border-slate-700 px-2 py-1 rounded-lg text-[10px] leading-tight">
+                    <span class="font-extrabold text-white block">Egra Depot</span>
+                    <span class="text-slate-400">Hub 01 • Loading Bay</span>
+                  </div>
+                </div>
+
+                <!-- Live Vehicle 1 Marker (Tata Ace) -->
+                <div id="truck-marker-1" class="absolute left-[44%] top-[38%] transition-all duration-1000 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center cursor-pointer" onclick="selectTrackedVehicle('WB-34-AD-8219')">
+                  <div class="bg-emerald-600 text-white font-black text-[9px] px-2 py-0.5 rounded-full shadow-lg flex items-center gap-1 mb-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> 42 km/h
+                  </div>
+                  <div class="w-9 h-9 rounded-2xl bg-slate-900 border-2 border-emerald-400 text-emerald-400 flex items-center justify-center text-lg shadow-2xl hover:scale-110 transition">
+                    <i class="ph-bold ph-truck"></i>
+                  </div>
+                  <span class="text-[9px] font-bold text-slate-200 mt-0.5 bg-slate-950/80 px-1.5 rounded">Bikas M.</span>
+                </div>
+
+                <!-- Live Vehicle 2 Marker (Bolero Maxi) -->
+                <div id="truck-marker-2" class="absolute left-[70%] top-[65%] -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center cursor-pointer" onclick="selectTrackedVehicle('WB-29-BF-1102')">
+                  <div class="bg-amber-600 text-white font-black text-[9px] px-2 py-0.5 rounded-full shadow-lg flex items-center gap-1 mb-1">
+                    At Kirana Drop
+                  </div>
+                  <div class="w-9 h-9 rounded-2xl bg-slate-900 border-2 border-amber-400 text-amber-400 flex items-center justify-center text-lg shadow-2xl hover:scale-110 transition">
+                    <i class="ph-bold ph-van"></i>
+                  </div>
+                  <span class="text-[9px] font-bold text-slate-200 mt-0.5 bg-slate-950/80 px-1.5 rounded">Tapan G.</span>
+                </div>
+
+                <!-- Destination Kirana Store Pin -->
+                <div class="absolute right-12 bottom-12 flex items-center gap-2 z-10">
+                  <div class="w-8 h-8 rounded-xl bg-purple-600 text-white flex items-center justify-center font-black text-xs shadow-lg">
+                    <i class="ph-bold ph-storefront"></i>
+                  </div>
+                  <div class="bg-slate-900/90 border border-slate-700 px-2 py-1 rounded-lg text-[10px] leading-tight">
+                    <span class="font-extrabold text-white block">Maa Sarada Kirana</span>
+                    <span class="text-emerald-400 font-semibold">Next Stop (1.8 km)</span>
+                  </div>
+                </div>
+
+                <!-- Map Action Controls Overlay -->
+                <div class="absolute bottom-3 left-3 bg-slate-900/90 border border-slate-800 rounded-xl p-2 text-[10px] flex items-center gap-3">
+                  <div class="flex items-center gap-1.5 text-slate-300">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Moving (2)
+                  </div>
+                  <div class="flex items-center gap-1.5 text-slate-300">
+                    <span class="w-2 h-2 rounded-full bg-amber-400"></span> Unloading (1)
+                  </div>
+                  <div class="flex items-center gap-1.5 text-slate-300">
+                    <span class="w-2 h-2 rounded-full bg-slate-500"></span> At Hub (1)
+                  </div>
+                </div>
+              </div>
+
+              <!-- Selected Active Delivery Timeline -->
+              <div class="mt-4 p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 space-y-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-700/60 pb-2.5">
+                  <div>
+                    <span class="text-[10px] font-bold text-brand-400 uppercase tracking-wide">Live Trip Timeline</span>
+                    <h4 class="text-xs font-black text-white" id="timeline-route-title">Route #WB-EGRA-01 • Egra Town & Kasba Mandi</h4>
+                  </div>
+                  <div class="flex items-center gap-2 text-xs">
+                    <span class="text-slate-400 text-[11px]">ETA Next Drop:</span>
+                    <span class="font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20" id="timeline-eta">
+                      06:18 AM (8 Mins)
+                    </span>
+                  </div>
+                </div>
+
+                <!-- 4-Step Route Progression -->
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 text-[11px]">
+                  <!-- Step 1 -->
+                  <div class="p-2.5 rounded-lg bg-slate-900 border border-emerald-500/40">
+                    <div class="flex items-center justify-between text-emerald-400 font-bold mb-1">
+                      <span>1. Egra Hub</span>
+                      <i class="ph-bold ph-check-circle"></i>
+                    </div>
+                    <span class="text-[10px] text-slate-400 block">Departed 05:05 AM</span>
+                    <span class="text-[9px] text-slate-500">142 sacks loaded</span>
+                  </div>
+
+                  <!-- Step 2 -->
+                  <div class="p-2.5 rounded-lg bg-slate-900 border border-emerald-500/40">
+                    <div class="flex items-center justify-between text-emerald-400 font-bold mb-1">
+                      <span>2. Ganesh Variety</span>
+                      <i class="ph-bold ph-check-circle"></i>
+                    </div>
+                    <span class="text-[10px] text-slate-400 block">Delivered 05:42 AM</span>
+                    <span class="text-[9px] text-emerald-400 font-bold">11 Cartons Done</span>
+                  </div>
+
+                  <!-- Step 3 (In Progress) -->
+                  <div class="p-2.5 rounded-lg bg-slate-900 border-2 border-brand-500 shadow-md shadow-brand-900/30">
+                    <div class="flex items-center justify-between text-brand-400 font-bold mb-1">
+                      <span>3. Maa Sarada</span>
+                      <span class="w-2 h-2 rounded-full bg-brand-500 animate-ping"></span>
+                    </div>
+                    <span class="text-[10px] text-white font-extrabold block">En Route (1.8 km)</span>
+                    <span class="text-[9px] text-amber-300 font-bold">14 Sacks Miniket/Oil</span>
+                  </div>
+
+                  <!-- Step 4 -->
+                  <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 opacity-60">
+                    <div class="flex items-center justify-between text-slate-400 font-bold mb-1">
+                      <span>4. Tara Bhandar</span>
+                      <i class="ph-bold ph-circle"></i>
+                    </div>
+                    <span class="text-[10px] text-slate-400 block">Est: 06:50 AM</span>
+                    <span class="text-[9px] text-slate-500">28 Sacks Pending</span>
+                  </div>
+                </div>
+
+                <!-- Driver Contact & Action Strip -->
+                <div class="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-lg bg-slate-700 text-white flex items-center justify-center font-bold text-xs">
+                      BM
+                    </div>
+                    <div>
+                      <span class="font-extrabold text-white text-[11px] block" id="current-driver-name">Bikas Maity</span>
+                      <span class="text-[10px] text-slate-400" id="current-driver-meta">+91 98320 49182 • Tata Ace Gold</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <a href="tel:+919832049182" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-[11px] font-bold flex items-center gap-1">
+                      <i class="ph-bold ph-phone-call text-emerald-400"></i> Call Driver
+                    </a>
+                    <button onclick="sendDriverWhatsAppManifest('Bikas Maity', 'WB-34-AD-8219')" class="px-2.5 py-1 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 text-[11px] font-bold flex items-center gap-1">
+                      <i class="ph-bold ph-whatsapp-logo"></i> WhatsApp Route
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Right 1 Col: Fleet Partners & Driver Roster -->
+          <div class="space-y-4">
+            
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-sm font-black text-white flex items-center gap-1.5">
+                    <i class="ph-bold ph-users-three text-brand-500"></i>
+                    <span>Depot Drivers Roster</span>
+                  </h3>
+                  <p class="text-[10px] text-slate-400">Egra & Contai Logistics Hubs</p>
+                </div>
+                <button onclick="openAddDriverModal()" class="text-brand-400 hover:text-brand-300 text-xs font-bold flex items-center gap-0.5">
+                  <i class="ph-bold ph-plus"></i> Add
+                </button>
+              </div>
+
+              <!-- Driver List Container -->
+              <div class="space-y-2.5 max-h-[540px] overflow-y-auto no-scrollbar" id="fleet-drivers-list">
+                <!-- Dynamically populated via JS -->
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- TAB: MARKETING & FIELD SALES AGENTS MANAGEMENT -->
+      <!-- ======================================================== -->
+      <section id="tab-marketing" class="space-y-6 hidden">
+        <!-- Header & Action Ribbon -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-black text-white flex flex-wrap items-center gap-2">
+              <i class="ph-bold ph-megaphone-simple text-rose-500"></i>
+              <span>Marketing & Field Sales Executives</span>
+              <span class="text-[10px] bg-rose-500/20 text-rose-400 border border-rose-500/30 px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">
+                Field Force Active
+              </span>
+            </h2>
+            <p class="text-xs text-slate-400">Manage field marketing officers, track Kirana onboarding targets, beat visits, and onboard new sales executives.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2.5">
+            <button onclick="broadcastSalesCampaign()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
+              <i class="ph-bold ph-paper-plane-tilt text-rose-400"></i>
+              <span>Broadcast Scheme to Agents</span>
+            </button>
+            <button onclick="openAddMarketingModal()" class="bg-rose-600 hover:bg-rose-700 text-white px-3.5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 transition shadow-lg shadow-rose-900/30">
+              <i class="ph-bold ph-user-plus text-base"></i>
+              <span>Add Marketing Man</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Marketing Metrics Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 lg:gap-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5">
+            <span class="text-[10px] font-bold text-slate-400 uppercase block">Active Marketing Agents</span>
+            <div class="text-xl font-black text-white mt-1" id="stat-total-marketing">4 Executives</div>
+            <span class="text-[10px] text-emerald-400 font-semibold flex items-center gap-1 mt-1">
+              <i class="ph-bold ph-check-circle"></i> 4 Active on Mandi Beats
+            </span>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5">
+            <span class="text-[10px] font-bold text-slate-400 uppercase block">Kirana Stores Onboarded (Nov)</span>
+            <div class="text-xl font-black text-rose-400 mt-1" id="stat-marketing-onboarded">68 Stores</div>
+            <span class="text-[10px] text-slate-400 font-semibold block mt-1">
+              Monthly Goal: 90 (75.5% achieved)
+            </span>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5">
+            <span class="text-[10px] font-bold text-slate-400 uppercase block">Field GMV Generated</span>
+            <div class="text-xl font-black text-white mt-1">₹31,45,000</div>
+            <span class="text-[10px] text-emerald-400 font-semibold flex items-center gap-1 mt-1">
+              <i class="ph-bold ph-trend-up"></i> +24.8% vs last month
+            </span>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5">
+            <span class="text-[10px] font-bold text-slate-400 uppercase block">Incentive Commission Pool</span>
+            <div class="text-xl font-black text-amber-300 mt-1">₹62,900</div>
+            <span class="text-[10px] text-slate-400 font-semibold block mt-1">Avg 2.0% scheme commission</span>
+          </div>
+        </div>
+
+        <!-- Marketing Grid: Agent Cards -->
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-black text-white flex items-center gap-2">
+              <i class="ph-bold ph-users-four text-rose-400 text-base"></i>
+              <span>Active Field Marketing Representatives & Beats</span>
+            </h3>
+            <span class="text-xs text-slate-400">Live Territory Check-ins</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4" id="marketing-agents-list">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+
+        <!-- Live Field Agent Booked Orders Table -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+          <div class="p-4 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="text-sm font-black text-white flex items-center gap-2">
+                <i class="ph-bold ph-shopping-bag-open text-rose-400 text-base"></i>
+                <span>Live Orders Booked by Marketing Executives</span>
+                <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded font-bold" id="badge-agent-orders-count">5 Orders Today</span>
+              </h3>
+              <p class="text-[11px] text-slate-400 mt-0.5">Real-time wholesale orders placed from the field sales app — verify & push to depot dispatch.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <select id="agent-order-filter" onchange="filterAgentOrders(this.value)" class="bg-slate-800 text-xs font-bold text-slate-200 px-3 py-2 rounded-xl border border-slate-700 focus:outline-none">
+                <option value="ALL">All Marketing Agents</option>
+              </select>
+              <button onclick="openAgentOrderModal()" class="bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
+                <i class="ph-bold ph-plus-circle"></i> Log Field Order
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-800/80 text-[10px] uppercase font-black tracking-wider text-slate-400 border-b border-slate-700">
+                <tr>
+                  <th class="py-3 px-4">Order ID & Time</th>
+                  <th class="py-3 px-4">Booked By (Agent)</th>
+                  <th class="py-3 px-4">Kirana Store & Beat</th>
+                  <th class="py-3 px-4">Items Ordered</th>
+                  <th class="py-3 px-4">Order Value & Comm.</th>
+                  <th class="py-3 px-4">Dispatch Status</th>
+                  <th class="py-3 px-4 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800" id="marketing-orders-tbody">
+                <!-- Dynamically populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================== -->
+      <!-- TAB 3: INVENTORY & SLAB PRICING MANAGER -->
+      <!-- ============================================== -->
+      <section id="tab-inventory" class="space-y-4 hidden">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-black text-white">Depot Inventory & Dynamic Slabs</h2>
+            <p class="text-xs text-slate-400">Control wholesale price slabs, safety buffer stock, and bay storage locations.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="openAddSkuModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 transition">
+              <i class="ph-bold ph-plus-circle text-base"></i>
+              <span>Add New Bulk SKU</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Inventory Table Card -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-800/80 text-[10px] uppercase font-black tracking-wider text-slate-400 border-b border-slate-700">
+                <tr>
+                  <th class="py-3 px-4">Product Image</th>
+                  <th class="py-3 px-4">Item & SKU</th>
+                  <th class="py-3 px-4">Warehouse Bay</th>
+                  <th class="py-3 px-4">Available Stock</th>
+                  <th class="py-3 px-4">Tier 1 (2-5)</th>
+                  <th class="py-3 px-4">Tier 2 (6-15)</th>
+                  <th class="py-3 px-4">Tier 3 (16+)</th>
+                  <th class="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800" id="inventory-tbody">
+                <!-- Dynamically populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- TAB 4: KIRANA KHATA & CREDIT RISK -->
+      <!-- ============================================== -->
+      <section id="tab-khata" class="space-y-4 hidden">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-black text-white">Kirana Credit Ledger (Khata)</h2>
+            <p class="text-xs text-slate-400">Monitor merchant credit limits, 14-day payment cycles, and overdue collection risks.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="showToast('Initiating automated WhatsApp balance reminder cycle...')" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
+              <i class="ph-bold ph-whatsapp-logo text-base"></i>
+              <span>Remind All Overdue (2)</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-800/80 text-[10px] uppercase font-black tracking-wider text-slate-400 border-b border-slate-700">
+                <tr>
+                  <th class="py-3 px-4">Kirana Partner</th>
+                  <th class="py-3 px-4">Credit Limit</th>
+                  <th class="py-3 px-4">Current Outstanding</th>
+                  <th class="py-3 px-4">Payment Cycle</th>
+                  <th class="py-3 px-4">Health Status</th>
+                  <th class="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800" id="khata-tbody">
+                <!-- Dynamically populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- TAB 5: RETAILER KYC & ONBOARDING -->
+      <!-- ============================================== -->
+      <section id="tab-kyc" class="space-y-4 hidden">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-black text-white">Retailer KYC & Verification</h2>
+            <p class="text-xs text-slate-400">Review GSTIN, FSSAI certificates, and approve Kirana wholesale accounts.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="kyc-cards-container">
+          <!-- Dynamically populated via JS -->
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL: ADD DELIVERY PARTNER / DRIVER -->
+  <div id="add-driver-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-xl p-5 space-y-4 shadow-2xl overflow-y-auto max-h-[90vh]">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-brand-500/10 text-brand-400 border border-brand-500/20 flex items-center justify-center text-lg">
+            <i class="ph-bold ph-user-plus"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-black text-white">Onboard Delivery Partner / Driver</h3>
+            <p class="text-[10px] text-slate-400">Register new driver with vehicle assignment and license verification</p>
+          </div>
+        </div>
+        <button onclick="closeModal('add-driver-modal')" class="text-slate-400 hover:text-white">
+          <i class="ph-bold ph-x text-base"></i>
+        </button>
+      </div>
+
+      <!-- Driver Onboarding Form -->
+      <form id="add-driver-form" onsubmit="handleCreateDriver(event)" class="space-y-3.5 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Driver Full Name *</label>
+            <input type="text" id="driver-name" required placeholder="e.g. Subrata Adhikary" class="w-full bg-slate-800 text-white font-medium px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Mobile Number (WhatsApp) *</label>
+            <input type="tel" id="driver-phone" required placeholder="e.g. 9832044112" class="w-full bg-slate-800 text-white font-medium px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-brand-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Commercial Vehicle Type *</label>
+            <select id="driver-vehicle-type" class="w-full bg-slate-800 text-slate-200 font-semibold px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-brand-500">
+              <option value="Tata Ace Gold (1.5 MT)">Tata Ace Gold (1.5 MT)</option>
+              <option value="Mahindra Bolero Maxi (2.5 MT)">Mahindra Bolero Maxi (2.5 MT)</option>
+              <option value="Ashok Leyland Bada Dost (3.0 MT)">Ashok Leyland Bada Dost (3.0 MT)</option>
+              <option value="Piaggio Ape Extra LDX (800 kg)">Piaggio Ape Extra LDX (800 kg)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Vehicle Registration Plate *</label>
+            <input type="text" id="driver-plate" required placeholder="e.g. WB 34 BE 7712" class="w-full bg-slate-800 text-white font-mono uppercase font-bold px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-brand-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Assigned Home Depot *</label>
+            <select id="driver-hub" class="w-full bg-slate-800 text-slate-200 font-semibold px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-brand-500">
+              <option value="Egra Central Hub">Egra Central Hub (East Midnapore)</option>
+              <option value="Contai Coastal Depot">Contai Coastal Depot</option>
+              <option value="Midnapore Master Warehouse">Midnapore Master Warehouse</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Driving License Number *</label>
+            <input type="text" id="driver-dl" required placeholder="e.g. WB34 20190018291" class="w-full bg-slate-800 text-white font-mono uppercase font-semibold px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-brand-500">
+          </div>
+        </div>
+
+        <!-- Driver Mobile App Login ID & Password Credentials -->
+        <div class="p-3 bg-slate-950/70 rounded-xl border border-brand-500/30 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <label class="text-[11px] font-black uppercase text-brand-400 tracking-wider flex items-center gap-1.5">
+              <i class="ph-bold ph-key text-sm"></i>
+              <span>Driver Mobile App Login Credentials *</span>
+            </label>
+            <button type="button" onclick="generateDriverCredentials()" class="text-[10px] font-bold text-amber-300 hover:text-amber-200 flex items-center gap-1 bg-slate-800 px-2 py-0.5 rounded-lg border border-slate-700">
+              <i class="ph-bold ph-arrows-clockwise"></i> Auto-Generate
+            </button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="text-slate-300 font-bold block mb-1">Driver Login ID *</label>
+              <input type="text" id="driver-login-id" required placeholder="e.g. AM24-DRV-402" class="w-full bg-slate-800 text-emerald-300 font-mono font-bold px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-brand-500">
+            </div>
+            <div>
+              <label class="text-slate-300 font-bold block mb-1">App Password *</label>
+              <div class="relative">
+                <input type="password" id="driver-password" required placeholder="Min 6 chars" class="w-full bg-slate-800 text-white font-mono font-bold pl-3 pr-9 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-brand-500">
+                <button type="button" onclick="toggleDriverPasswordVisibility()" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white" title="Show/Hide Password">
+                  <i id="driver-pass-eye" class="ph-bold ph-eye text-sm"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+          <button type="button" onclick="closeModal('add-driver-modal')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-black hover:bg-brand-700 shadow-md">
+            Save & Activate Driver GPS
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD MARKETING MAN / SALES AGENT -->
+  <div id="add-marketing-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-xl p-5 space-y-4 shadow-2xl overflow-y-auto max-h-[90vh]">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center justify-center text-lg">
+            <i class="ph-bold ph-user-plus"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-black text-white">Onboard Marketing Executive / Field Sales Agent</h3>
+            <p class="text-[10px] text-slate-400">Register field representative, assign beat market area & onboarding commission</p>
+          </div>
+        </div>
+        <button onclick="closeModal('add-marketing-modal')" class="text-slate-400 hover:text-white">
+          <i class="ph-bold ph-x text-base"></i>
+        </button>
+      </div>
+
+      <!-- Marketing Agent Onboarding Form -->
+      <form id="add-marketing-form" onsubmit="handleCreateMarketingAgent(event)" class="space-y-3.5 text-xs">
+        
+        <!-- Row 1: Full Name & WhatsApp Mobile -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Marketing Representative Name *</label>
+            <input type="text" id="mkt-name" required placeholder="e.g. Anirban Chakraborty" class="w-full bg-slate-800 text-white font-medium px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-rose-500">
+          </div>
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Mobile Number (WhatsApp Active) *</label>
+            <input type="tel" id="mkt-phone" required placeholder="e.g. 9832145890" class="w-full bg-slate-800 text-white font-medium px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-rose-500">
+          </div>
+        </div>
+
+        <!-- Row 2: Designation & Base Depot Hub -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Designation / Role *</label>
+            <select id="mkt-role" class="w-full bg-slate-800 text-slate-200 font-semibold px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-rose-500">
+              <option value="Area Sales Officer (B2B)">Area Sales Officer (B2B Kirana Acquisition)</option>
+              <option value="Senior Field Marketing Executive">Senior Field Marketing Executive</option>
+              <option value="Key Accounts Executive (Hotels & Caterers)">Key Accounts Executive (Hotels & Caterers)</option>
+              <option value="Junior Market Promotor">Junior Market Promotor</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Assigned Base Hub *</label>
+            <select id="mkt-hub" class="w-full bg-slate-800 text-slate-200 font-semibold px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-rose-500">
+              <option value="Egra Central Hub">Egra Central Hub (East Midnapore)</option>
+              <option value="Contai Coastal Depot">Contai Coastal Depot</option>
+              <option value="Midnapore Master Warehouse">Midnapore Master Warehouse</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Row 3: Assigned Territory Beat & Daily Travel Mode -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Primary Market Beat Area *</label>
+            <input type="text" id="mkt-beat" required placeholder="e.g. Egra Town & Kasba Mandi" class="w-full bg-slate-800 text-white font-medium px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-rose-500">
+          </div>
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Field Transport Mode *</label>
+            <select id="mkt-transport" class="w-full bg-slate-800 text-slate-200 font-semibold px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-rose-500">
+              <option value="Two-Wheeler (Bike / Scooter)">Two-Wheeler (Bike / Scooter)</option>
+              <option value="Electric Scooter">Electric Scooter</option>
+              <option value="Public Transit / Mandi Shuttle">Public Transit / Mandi Shuttle</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Row 4: Monthly Kirana Target & Commission Slab -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Monthly New Kirana Target (Shops) *</label>
+            <input type="number" id="mkt-target" required min="5" max="100" value="25" class="w-full bg-slate-800 text-white font-bold px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-rose-500">
+          </div>
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Sales Commission / Scheme Incentive (%) *</label>
+            <input type="number" id="mkt-commission" required min="0.5" max="10" step="0.1" value="2.0" class="w-full bg-slate-800 text-white font-bold px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-rose-500">
+          </div>
+        </div>
+
+        <!-- Row 5: Field App Login ID & Password Credentials -->
+        <div class="p-3 bg-slate-950/70 rounded-xl border border-rose-500/30 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <label class="text-[11px] font-black uppercase text-rose-400 tracking-wider flex items-center gap-1.5">
+              <i class="ph-bold ph-key text-sm"></i>
+              <span>Agent Mobile App Login Credentials *</span>
+            </label>
+            <button type="button" onclick="generateMarketingCredentials()" class="text-[10px] font-bold text-amber-300 hover:text-amber-200 flex items-center gap-1 bg-slate-800 px-2 py-0.5 rounded-lg border border-slate-700">
+              <i class="ph-bold ph-arrows-clockwise"></i> Auto-Generate
+            </button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="text-slate-300 font-bold block mb-1">Agent Login ID *</label>
+              <input type="text" id="mkt-login-id" required placeholder="e.g. AM24-MKT-805" class="w-full bg-slate-800 text-emerald-300 font-mono font-bold px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-rose-500">
+            </div>
+            <div>
+              <label class="text-slate-300 font-bold block mb-1">App Password *</label>
+              <div class="relative">
+                <input type="password" id="mkt-password" required placeholder="Min 6 chars" class="w-full bg-slate-800 text-white font-mono font-bold pl-3 pr-9 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-rose-500">
+                <button type="button" onclick="toggleMktPasswordVisibility()" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white" title="Show/Hide Password">
+                  <i id="mkt-pass-eye" class="ph-bold ph-eye text-sm"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Document Verification Badge -->
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/60 space-y-2">
+          <label class="text-[11px] font-black uppercase text-slate-300 tracking-wider flex items-center justify-between">
+            <span>Executive KYC & Identity Proof</span>
+            <span class="text-[10px] text-emerald-400 font-semibold">Instant Mobile Login</span>
+          </label>
+          <div class="grid grid-cols-2 gap-2 text-[10px]">
+            <div onclick="showToast('Aadhaar / Voter ID document attached')" class="border border-dashed border-slate-600 rounded-lg p-2 text-center text-slate-400 hover:border-rose-500 cursor-pointer">
+              <i class="ph-bold ph-identification-card text-sm text-rose-400"></i>
+              <span class="block font-bold text-slate-200 mt-0.5">Aadhaar / Voter ID</span>
+              <span>Upload PDF/JPG</span>
+            </div>
+            <div onclick="showToast('Passport photo uploaded for Digital ID')" class="border border-dashed border-slate-600 rounded-lg p-2 text-center text-slate-400 hover:border-rose-500 cursor-pointer">
+              <i class="ph-bold ph-camera text-sm text-rose-400"></i>
+              <span class="block font-bold text-slate-200 mt-0.5">Passport Photo</span>
+              <span>For Digital ID Card</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Buttons -->
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+          <button type="button" onclick="closeModal('add-marketing-modal')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-rose-600 text-white font-black hover:bg-rose-700 shadow-md">
+            Save & Send Agent App Credentials
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: LOG FIELD AGENT BOOKED ORDER -->
+  <div id="agent-order-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-5 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-black text-white flex items-center gap-2">
+          <i class="ph-bold ph-shopping-bag-open text-rose-400 text-lg"></i>
+          <span>Record Field Marketing Agent Order</span>
+        </h3>
+        <button onclick="closeModal('agent-order-modal')" class="text-slate-400 hover:text-white">
+          <i class="ph-bold ph-x text-base"></i>
+        </button>
+      </div>
+
+      <form id="agent-order-form" onsubmit="handleCreateAgentOrder(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Select Marketing Executive *</label>
+            <select id="ag-ord-agent" class="w-full bg-slate-800 text-slate-200 font-bold px-3 py-2 rounded-xl border border-slate-700">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Kirana Shop Name *</label>
+            <input type="text" id="ag-ord-shop" required placeholder="e.g. Shibani Bhandar" class="w-full bg-slate-800 text-white font-medium px-3 py-2 rounded-xl border border-slate-700">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Market Beat / Area *</label>
+            <input type="text" id="ag-ord-beat" required placeholder="e.g. Kasba Mandi, Egra" class="w-full bg-slate-800 text-white font-medium px-3 py-2 rounded-xl border border-slate-700">
+          </div>
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Payment Mode *</label>
+            <select id="ag-ord-pay" class="w-full bg-slate-800 text-slate-200 font-bold px-3 py-2 rounded-xl border border-slate-700">
+              <option value="Khata (14-Day)">Khata (14-Day)</option>
+              <option value="Instant UPI">Instant UPI</option>
+              <option value="Cash on Delivery">Cash on Delivery</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-slate-300 font-bold block mb-1">Booked Wholesale Items *</label>
+          <input type="text" id="ag-ord-items" required placeholder="e.g. 15x Miniket Rice 25kg, 6x Mustard Oil 15L" class="w-full bg-slate-800 text-white font-medium px-3 py-2 rounded-xl border border-slate-700">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Total Packs / Sacks *</label>
+            <input type="number" id="ag-ord-units" required min="1" value="21" class="w-full bg-slate-800 text-white font-bold px-3 py-2 rounded-xl border border-slate-700">
+          </div>
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Total Order Value (₹) *</label>
+            <input type="number" id="ag-ord-val" required min="500" value="33600" class="w-full bg-slate-800 text-white font-bold px-3 py-2 rounded-xl border border-slate-700">
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+          <button type="button" onclick="closeModal('agent-order-modal')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-rose-600 text-white font-black hover:bg-rose-700">Save Field Order</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: NEW BULK DISPATCH ORDER -->
+  <div id="create-order-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-5 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-black text-white flex items-center gap-2">
+          <i class="ph-bold ph-receipt text-brand-500 text-lg"></i>
+          <span>Book Manual Wholesale Bulk Order</span>
+        </h3>
+        <button onclick="closeModal('create-order-modal')" class="text-slate-400 hover:text-white">
+          <i class="ph-bold ph-x text-base"></i>
+        </button>
+      </div>
+
+      <form id="create-order-form" onsubmit="handleCreateBulkOrder(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Kirana Shop Name *</label>
+            <input type="text" id="new-ord-shop" required placeholder="e.g. Loknath Enterprise" class="w-full bg-slate-800 text-white font-medium px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">GSTIN / Trade ID *</label>
+            <input type="text" id="new-ord-gstin" required placeholder="19AABCL8821K1Z5" class="w-full bg-slate-800 text-white font-mono uppercase px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-brand-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="text-slate-300 font-bold block mb-1">Wholesale Items Summary *</label>
+          <input type="text" id="new-ord-items" required placeholder="e.g. 12x Miniket Rice 25kg, 5x Mustard Oil 15L" class="w-full bg-slate-800 text-white font-medium px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-brand-500">
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Total Packs *</label>
+            <input type="number" id="new-ord-units" required min="1" value="15" class="w-full bg-slate-800 text-white font-bold px-3 py-2 rounded-xl border border-slate-700">
+          </div>
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Invoice Value (₹) *</label>
+            <input type="number" id="new-ord-val" required min="500" value="26500" class="w-full bg-slate-800 text-white font-bold px-3 py-2 rounded-xl border border-slate-700">
+          </div>
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Payment Mode *</label>
+            <select id="new-ord-pay" class="w-full bg-slate-800 text-slate-200 font-bold px-2.5 py-2 rounded-xl border border-slate-700">
+              <option value="Khata (14-Day)">Khata (14-Day)</option>
+              <option value="Instant UPI">Instant UPI</option>
+              <option value="Bank NEFT">Bank NEFT</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-slate-300 font-bold block mb-1">Delivery Cluster Route *</label>
+          <select id="new-ord-route" class="w-full bg-slate-800 text-slate-200 font-bold px-3 py-2 rounded-xl border border-slate-700">
+            <option value="Egra Town Route 1">Egra Town Route 1 (05:00 AM Wave)</option>
+            <option value="Contai Coastal Route 2">Contai Coastal Route 2 (05:00 AM Wave)</option>
+            <option value="Digha Route 3">Digha Route 3 (05:00 AM Wave)</option>
+          </select>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+          <button type="button" onclick="closeModal('create-order-modal')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-black hover:bg-brand-700">Generate E-Invoice & Queue</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD NEW BULK SKU -->
+  <div id="add-sku-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-5 space-y-4 shadow-2xl overflow-y-auto max-h-[90vh]">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-black text-white flex items-center gap-2">
+          <i class="ph-bold ph-package text-emerald-400 text-lg"></i>
+          <span>Add New Wholesale SKU to Depot</span>
+        </h3>
+        <button onclick="closeModal('add-sku-modal')" class="text-slate-400 hover:text-white">
+          <i class="ph-bold ph-x text-base"></i>
+        </button>
+      </div>
+
+      <form id="add-sku-form" onsubmit="handleCreateNewSku(event)" class="space-y-3 text-xs">
+        <!-- Product Image Upload & Live Preview -->
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/70 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <label class="text-[11px] font-black uppercase text-slate-300 tracking-wider">Product Pack Image</label>
+            <span class="text-[10px] text-emerald-400 font-semibold">JPG / PNG / URL</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-16 h-16 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center overflow-hidden shrink-0">
+              <img id="new-sku-img-preview" src="https://placehold.co/120x120/1e293b/f97316?text=SKU" alt="Preview" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-1 space-y-2">
+              <div class="flex flex-wrap items-center gap-2">
+                <label for="new-sku-img-file" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-bold text-[11px] cursor-pointer inline-flex items-center gap-1.5 transition">
+                  <i class="ph-bold ph-upload-simple"></i> Upload / Camera
+                </label>
+                <input type="file" id="new-sku-img-file" accept="image/*" capture="environment" onchange="previewSkuFileUpload(event, 'new')" class="hidden">
+                <button type="button" onclick="resetSkuImagePreview('new')" class="px-2 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[10px] font-bold">
+                  Reset
+                </button>
+              </div>
+              <input type="url" id="new-sku-img-url" oninput="previewSkuImageUrl(this.value, 'new')" placeholder="Or paste image URL (https://...)" class="w-full bg-slate-900 text-slate-200 text-[11px] px-2.5 py-1.5 rounded-lg border border-slate-700 focus:outline-none focus:ring-1 focus:ring-brand-500">
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Product Name & Pack Size *</label>
+            <input type="text" id="new-sku-name" required placeholder="e.g. Fortune Soyabean Oil (15L Jar)" class="w-full bg-slate-800 text-white font-medium px-3 py-2 rounded-xl border border-slate-700">
+          </div>
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Category *</label>
+            <select id="new-sku-cat" class="w-full bg-slate-800 text-slate-200 font-bold px-3 py-2 rounded-xl border border-slate-700">
+              <option value="Staples">Staples</option>
+              <option value="Edible Oils">Edible Oils</option>
+              <option value="Pulses">Pulses</option>
+              <option value="FMCG Packaged">FMCG Packaged</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Warehouse Bay Location *</label>
+            <input type="text" id="new-sku-bay" required placeholder="e.g. Bay B-09" class="w-full bg-slate-800 text-white font-mono font-bold px-3 py-2 rounded-xl border border-slate-700">
+          </div>
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Opening Stock Units *</label>
+            <input type="number" id="new-sku-stock" required min="1" value="120" class="w-full bg-slate-800 text-white font-bold px-3 py-2 rounded-xl border border-slate-700">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Tier 1 (2-5) ₹ *</label>
+            <input type="number" id="new-sku-t1" required value="1850" class="w-full bg-slate-800 text-white font-black px-3 py-2 rounded-xl border border-slate-700">
+          </div>
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Tier 2 (6-15) ₹ *</label>
+            <input type="number" id="new-sku-t2" required value="1790" class="w-full bg-slate-800 text-white font-black px-3 py-2 rounded-xl border border-slate-700">
+          </div>
+          <div>
+            <label class="text-slate-300 font-bold block mb-1">Tier 3 (16+) ₹ *</label>
+            <input type="number" id="new-sku-t3" required value="1730" class="w-full bg-slate-800 text-white font-black px-3 py-2 rounded-xl border border-slate-700">
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+          <button type="button" onclick="closeModal('add-sku-modal')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 text-white font-black hover:bg-emerald-700">Publish SKU to B2B App</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ASSIGN DRIVER & VEHICLE -->
+  <div id="assign-driver-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-black text-white flex items-center gap-2">
+          <i class="ph-bold ph-steering-wheel text-brand-500 text-lg"></i>
+          <span>Assign Vehicle & Driver</span>
+        </h3>
+        <button onclick="closeModal('assign-driver-modal')" class="text-slate-400 hover:text-white">
+          <i class="ph-bold ph-x text-base"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="text-slate-400 font-bold block mb-1">Selected Order Invoice</label>
+          <input type="text" id="assign-order-id" readonly class="w-full bg-slate-800 text-slate-300 font-mono font-bold px-3 py-2 rounded-xl border border-slate-700">
+        </div>
+
+        <div>
+          <label class="text-slate-400 font-bold block mb-1">Select Delivery Vehicle (Depot Fleet)</label>
+          <select id="assign-vehicle-select" class="w-full bg-slate-800 text-slate-200 font-bold px-3 py-2.5 rounded-xl border border-slate-700">
+            <option value="Tata Ace (WB 34 AD 8219)">Tata Ace (WB 34 AD 8219) • Driver: Bikas Maity</option>
+            <option value="Mahindra Bolero Pickup (WB 29 BF 1102)">Mahindra Bolero (WB 29 BF 1102) • Driver: Tapan Giri</option>
+            <option value="Ashok Leyland Dost (WB 32 CX 9044)">Ashok Leyland Dost (WB 32 CX 9044) • Driver: Sujit Jana</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-slate-400 font-bold block mb-1">Morning Dispatch Wave</label>
+          <select class="w-full bg-slate-800 text-slate-200 font-bold px-3 py-2.5 rounded-xl border border-slate-700">
+            <option>Early Wave: 05:00 AM - 07:30 AM (Pre-opening)</option>
+            <option>Midday Wave: 01:30 PM - 03:30 PM</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+        <button onclick="closeModal('assign-driver-modal')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700">Cancel</button>
+        <button onclick="confirmDriverAssignment()" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-black hover:bg-brand-700">Confirm & Print Manifest</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: EDIT SLAB PRICING -->
+  <div id="slab-edit-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-5 space-y-4 shadow-2xl overflow-y-auto max-h-[90vh]">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-black text-white flex items-center gap-2">
+          <i class="ph-bold ph-tag text-emerald-400 text-lg"></i>
+          <span>Modify Dynamic Slab Pricing & Image</span>
+        </h3>
+        <button onclick="closeModal('slab-edit-modal')" class="text-slate-400 hover:text-white">
+          <i class="ph-bold ph-x text-base"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <!-- Change / Upload Product Image Section -->
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/70 space-y-2">
+          <label class="text-[11px] font-black uppercase text-slate-300 tracking-wider block">Change / Upload Product Image</label>
+          <div class="flex items-center gap-3">
+            <div class="w-16 h-16 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center overflow-hidden shrink-0">
+              <img id="edit-sku-img-preview" src="https://placehold.co/120x120/1e293b/f97316?text=SKU" alt="SKU Preview" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-1 space-y-2">
+              <div class="flex flex-wrap items-center gap-2">
+                <label for="edit-sku-img-file" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] cursor-pointer inline-flex items-center gap-1.5 transition">
+                  <i class="ph-bold ph-camera"></i> Upload New Photo
+                </label>
+                <input type="file" id="edit-sku-img-file" accept="image/*" capture="environment" onchange="previewSkuFileUpload(event, 'edit')" class="hidden">
+              </div>
+              <input type="url" id="edit-sku-img-url" oninput="previewSkuImageUrl(this.value, 'edit')" placeholder="Or paste new image URL (https://...)" class="w-full bg-slate-900 text-slate-200 text-[11px] px-2.5 py-1.5 rounded-lg border border-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-slate-400 font-bold block mb-1">Product SKU</label>
+          <input type="text" id="slab-sku-name" readonly class="w-full bg-slate-800 text-slate-200 font-bold px-3 py-2 rounded-xl border border-slate-700">
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="text-slate-400 font-bold block mb-1">Tier 1 Price (MOQ)</label>
+            <input type="number" id="slab-tier-1" class="w-full bg-slate-800 text-white font-black px-3 py-2 rounded-xl border border-slate-700">
+            <span class="text-[9px] text-slate-400 mt-0.5 block">2 - 5 Packs</span>
+          </div>
+          <div>
+            <label class="text-slate-400 font-bold block mb-1">Tier 2 Price (Volume)</label>
+            <input type="number" id="slab-tier-2" class="w-full bg-slate-800 text-white font-black px-3 py-2 rounded-xl border border-slate-700">
+            <span class="text-[9px] text-slate-400 mt-0.5 block">6 - 15 Packs</span>
+          </div>
+          <div>
+            <label class="text-slate-400 font-bold block mb-1">Tier 3 Price (Master)</label>
+            <input type="number" id="slab-tier-3" class="w-full bg-slate-800 text-white font-black px-3 py-2 rounded-xl border border-slate-700">
+            <span class="text-[9px] text-slate-400 mt-0.5 block">16+ Packs</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-slate-400 font-bold block mb-1">Warehouse Physical Bay Allocation</label>
+            <input type="text" id="slab-bay-loc" class="w-full bg-slate-800 text-slate-200 font-semibold px-3 py-2 rounded-xl border border-slate-700" placeholder="e.g. Bay A-12">
+          </div>
+          <div>
+            <label class="text-slate-400 font-bold block mb-1">Available Stock Units (Packs)</label>
+            <input type="number" id="slab-stock-units" min="0" class="w-full bg-slate-800 text-emerald-300 font-black px-3 py-2 rounded-xl border border-slate-700" placeholder="e.g. 120">
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+        <button type="button" onclick="closeModal('slab-edit-modal')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700">Cancel</button>
+        <button type="button" onclick="saveSlabPricing()" class="px-4 py-2 rounded-xl bg-emerald-600 text-white font-black hover:bg-emerald-700">Save & Sync to App</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ORDER ORDERED PRODUCTS QUICK VIEW -->
+  <div id="order-items-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-5 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div>
+          <span class="text-[10px] font-mono font-bold text-brand-400 uppercase block" id="modal-ord-items-id">WB-INV-0000</span>
+          <h3 class="text-sm font-black text-white" id="modal-ord-items-shop">Ordered Wholesale Products</h3>
+        </div>
+        <button onclick="closeModal('order-items-modal')" class="text-slate-400 hover:text-white">
+          <i class="ph-bold ph-x text-base"></i>
+        </button>
+      </div>
+      <div class="space-y-2.5 max-h-80 overflow-y-auto no-scrollbar" id="modal-ord-items-list">
+        <!-- Populated dynamically -->
+      </div>
+      <div class="flex justify-end pt-2 border-t border-slate-800">
+        <button onclick="closeModal('order-items-modal')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-200 font-bold hover:bg-slate-700 text-xs">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CHANGE ADMIN PASSWORD (ONLY ACCESSIBLE AFTER LOGIN) -->
+  <div id="change-admin-pass-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center text-lg">
+            <i class="ph-bold ph-shield-check"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-black text-white">Change Admin Password</h3>
+            <p class="text-[10px] text-slate-400">Admin ID: <span class="font-mono font-bold text-brand-400">amit7074b2b</span> (Fixed)</p>
+          </div>
+        </div>
+        <button onclick="closeModal('change-admin-pass-modal')" class="text-slate-400 hover:text-white">
+          <i class="ph-bold ph-x text-base"></i>
+        </button>
+      </div>
+
+      <div id="change-pass-error" class="hidden p-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-[11px] font-bold"></div>
+
+      <form id="change-admin-pass-form" onsubmit="handleChangeAdminPassword(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="text-slate-300 font-bold block mb-1">Admin Login ID (Locked)</label>
+          <input type="text" value="amit7074b2b" readonly class="w-full bg-slate-950 text-slate-400 font-mono font-bold px-3 py-2 rounded-xl border border-slate-800 cursor-not-allowed">
+        </div>
+
+        <div>
+          <label class="text-slate-300 font-bold block mb-1">Current Password *</label>
+          <input type="password" id="current-admin-pass" required placeholder="Enter current password" class="w-full bg-slate-800 text-white font-mono px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-amber-400">
+        </div>
+
+        <div>
+          <label class="text-slate-300 font-bold block mb-1">New Password *</label>
+          <input type="password" id="new-admin-pass" required minlength="6" placeholder="Enter new password (min 6 chars)" class="w-full bg-slate-800 text-white font-mono px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-amber-400">
+        </div>
+
+        <div>
+          <label class="text-slate-300 font-bold block mb-1">Confirm New Password *</label>
+          <input type="password" id="confirm-admin-pass" required minlength="6" placeholder="Re-enter new password" class="w-full bg-slate-800 text-white font-mono px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:ring-1 focus:ring-amber-400">
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+          <button type="button" onclick="closeModal('change-admin-pass-modal')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black transition">Update Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="admin-toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 hidden text-xs font-bold">
+    <i class="ph-bold ph-check-circle text-emerald-400 text-lg"></i>
+    <span id="admin-toast-text">Action completed successfully</span>
+  </div>
+
+  <!-- JAVASCRIPT APPLICATION LOGIC -->
+  <script>
+    // ============================================
+    // PROTECTED ADMIN CREDENTIALS & AUTH STATE
+    // ============================================
+    const FIXED_ADMIN_LOGIN_ID = "amit7074b2b";
+    let currentAdminPassword = "@Amit7074";
+    let isAdminAuthenticated = false;
+
+    function toggleAdminGatePassword() {
+      const input = document.getElementById('admin-login-pass-input');
+      const eye = document.getElementById('admin-gate-eye');
+      if (!input || !eye) return;
+      if (input.type === 'password') {
+        input.type = 'text';
+        eye.className = 'ph-bold ph-eye-slash text-base text-brand-400';
+      } else {
+        input.type = 'password';
+        eye.className = 'ph-bold ph-eye text-base';
+      }
+    }
+
+    function handleAdminLogin(event) {
+      event.preventDefault();
+      const enteredId = document.getElementById('admin-login-id-input').value.trim();
+      const enteredPass = document.getElementById('admin-login-pass-input').value;
+      const errorBox = document.getElementById('admin-login-error');
+      const errorText = document.getElementById('admin-login-error-text');
+
+      if (enteredId === FIXED_ADMIN_LOGIN_ID && enteredPass === currentAdminPassword) {
+        isAdminAuthenticated = true;
+        errorBox.classList.add('hidden');
+        document.getElementById('admin-login-gate').classList.add('hidden');
+        document.getElementById('admin-login-form').reset();
+        showToast(`Welcome back, ${FIXED_ADMIN_LOGIN_ID}! Operations Console unlocked.`);
+      } else {
+        errorText.innerText = "Access Denied! Invalid Admin Login ID or Password.";
+        errorBox.classList.remove('hidden');
+      }
+    }
+
+    function logoutAdminPanel() {
+      isAdminAuthenticated = false;
+      closeModal('change-admin-pass-modal');
+      document.getElementById('admin-login-gate').classList.remove('hidden');
+      document.getElementById('admin-login-id-input').focus();
+    }
+
+    function openChangeAdminPasswordModal() {
+      if (!isAdminAuthenticated) {
+        showToast("Please login first to change your password.");
+        return;
+      }
+      const err = document.getElementById('change-pass-error');
+      if (err) err.classList.add('hidden');
+      document.getElementById('change-admin-pass-form').reset();
+      document.getElementById('change-admin-pass-modal').classList.remove('hidden');
+    }
+
+    function handleChangeAdminPassword(event) {
+      event.preventDefault();
+      if (!isAdminAuthenticated) return;
+
+      const curPass = document.getElementById('current-admin-pass').value;
+      const newPass = document.getElementById('new-admin-pass').value;
+      const confPass = document.getElementById('confirm-admin-pass').value;
+      const errBox = document.getElementById('change-pass-error');
+
+      if (curPass !== currentAdminPassword) {
+        errBox.innerText = "Current password is incorrect!";
+        errBox.classList.remove('hidden');
+        return;
+      }
+      if (newPass !== confPass) {
+        errBox.innerText = "New password and confirm password do not match!";
+        errBox.classList.remove('hidden');
+        return;
+      }
+
+      currentAdminPassword = newPass;
+      errBox.classList.add('hidden');
+      closeModal('change-admin-pass-modal');
+      document.getElementById('change-admin-pass-form').reset();
+      showToast("Admin password updated successfully! Use your new password on next login.");
+    }
+
+    // Fleet Drivers State Data
+    const fleetDrivers = [
+      {
+        id: "DRV-EGRA-01",
+        loginId: "AM24-BIKAS01",
+        password: "Drv@9182",
+        name: "Bikas Maity",
+        phone: "+91 9832049182",
+        vehicle: "Tata Ace Gold",
+        plate: "WB 34 AD 8219",
+        capacity: "1.5 MT",
+        hub: "Egra Central Hub",
+        status: "ON_ROUTE",
+        currentRoute: "Route #WB-EGRA-01 (Egra - Kasba)",
+        dropsDone: 2,
+        totalDrops: 6,
+        loadTonnage: "1.42 MT (95%)",
+        battery: "88%",
+        speed: "42 km/h",
+        activeOrder: "WB-INV-4921",
+        rating: 4.9
+      },
+      {
+        id: "DRV-CONTAI-02",
+        loginId: "AM24-TAPAN02",
+        password: "Drv@0821",
+        name: "Tapan Giri",
+        phone: "+91 9734190821",
+        vehicle: "Mahindra Bolero Maxi",
+        plate: "WB 29 BF 1102",
+        capacity: "2.5 MT",
+        hub: "Contai Coastal Depot",
+        status: "AT_STOP",
+        currentRoute: "Route #WB-CONTAI-02 (Contai Bypass)",
+        dropsDone: 5,
+        totalDrops: 9,
+        loadTonnage: "2.10 MT (84%)",
+        battery: "92%",
+        speed: "0 km/h (Unloading)",
+        activeOrder: "WB-INV-4922",
+        rating: 4.8
+      },
+      {
+        id: "DRV-DIGHA-03",
+        loginId: "AM24-SUJIT03",
+        password: "Drv@9910",
+        name: "Sujit Jana",
+        phone: "+91 9434829910",
+        vehicle: "Ashok Leyland Bada Dost",
+        plate: "WB 32 CX 9044",
+        capacity: "3.0 MT",
+        hub: "Egra Central Hub",
+        status: "ON_ROUTE",
+        currentRoute: "Route #WB-DIGHA-03 (Ramnagar - Digha)",
+        dropsDone: 1,
+        totalDrops: 5,
+        loadTonnage: "2.73 MT (91%)",
+        battery: "76%",
+        speed: "48 km/h",
+        activeOrder: "WB-INV-4924",
+        rating: 4.9
+      },
+      {
+        id: "DRV-EGRA-04",
+        loginId: "AM24-PRABIR04",
+        password: "Drv@7765",
+        name: "Prabir Barman",
+        phone: "+91 9832117765",
+        vehicle: "Piaggio Ape Extra LDX",
+        plate: "WB 34 H 5510",
+        capacity: "800 kg",
+        hub: "Egra Central Hub",
+        status: "IDLE",
+        currentRoute: "Available at Hub Bay A",
+        dropsDone: 0,
+        totalDrops: 0,
+        loadTonnage: "0 MT (Empty)",
+        battery: "100%",
+        speed: "0 km/h",
+        activeOrder: "None",
+        rating: 4.7
+      }
+    ];
+
+    // Marketing & Field Sales Executives Data
+    const marketingAgents = [
+      {
+        id: "MKT-EGRA-01",
+        loginId: "AM24-ANIRBAN01",
+        password: "Apna@8901",
+        name: "Anirban Chakraborty",
+        phone: "+91 9832145890",
+        role: "Area Sales Officer (B2B)",
+        hub: "Egra Central Hub",
+        beat: "Egra Town & Kasba Mandi",
+        transport: "Two-Wheeler (WB 34 V 4192)",
+        monthlyTarget: 25,
+        achieved: 21,
+        gmvBooked: "₹9,80,000",
+        commissionRate: "2.0%",
+        commissionEarned: "₹19,600",
+        status: "ON_BEAT",
+        lastCheckIn: "10 mins ago at Kasba Rice Market",
+        joinedDate: "15 Jan 2026",
+        rating: 4.9
+      },
+      {
+        id: "MKT-CONTAI-02",
+        loginId: "AM24-DEBASISH02",
+        password: "Apna@2901",
+        name: "Debasish Samanta",
+        phone: "+91 9434182901",
+        role: "Senior Field Marketing Executive",
+        hub: "Contai Coastal Depot",
+        beat: "Contai Supermarket & Bypass",
+        transport: "Two-Wheeler (WB 29 L 8812)",
+        monthlyTarget: 25,
+        achieved: 23,
+        gmvBooked: "₹11,40,000",
+        commissionRate: "2.0%",
+        commissionEarned: "₹22,800",
+        status: "ON_BEAT",
+        lastCheckIn: "25 mins ago at Coastal Wholesale Point",
+        joinedDate: "02 Feb 2026",
+        rating: 4.8
+      },
+      {
+        id: "MKT-DIGHA-03",
+        loginId: "AM24-PRIYA03",
+        password: "Apna@0122",
+        name: "Priyabrata Manna",
+        phone: "+91 9832900122",
+        role: "Key Accounts Executive (Hotels)",
+        hub: "Egra Central Hub",
+        beat: "New Digha & Old Digha Beach Hotels",
+        transport: "Electric Scooter",
+        monthlyTarget: 20,
+        achieved: 14,
+        gmvBooked: "₹7,25,000",
+        commissionRate: "2.0%",
+        commissionEarned: "₹14,500",
+        status: "MEETING",
+        lastCheckIn: "At Sea Hawk Restaurant & Hotel Hub",
+        joinedDate: "10 Mar 2026",
+        rating: 4.7
+      },
+      {
+        id: "MKT-EGRA-04",
+        loginId: "AM24-SOUMYA04",
+        password: "Apna@7702",
+        name: "Soumya Ranjan Pal",
+        phone: "+91 9123847702",
+        role: "Junior Market Promotor",
+        hub: "Egra Central Hub",
+        beat: "Negua Bazar & Ramnagar Link",
+        transport: "Two-Wheeler (WB 34 P 1029)",
+        monthlyTarget: 20,
+        achieved: 10,
+        gmvBooked: "₹3,00,000",
+        commissionRate: "2.0%",
+        commissionEarned: "₹6,000",
+        status: "IN_DEPOT",
+        lastCheckIn: "Restocking marketing brochures at Egra Hub",
+        joinedDate: "01 May 2026",
+        rating: 4.6
+      }
+    ];
+
+    // Live Orders Booked by Marketing & Field Sales Executives
+    const marketingBookedOrders = [
+      {
+        orderId: "FLD-ORD-8812",
+        time: "Today, 10:42 AM",
+        agentId: "MKT-EGRA-01",
+        agentName: "Anirban Chakraborty",
+        shopName: "Maa Sarada Traders",
+        beat: "Egra Central Market",
+        itemsSummary: "10x Miniket Rice 25kg, 4x Engine Mustard Oil 15L",
+        totalUnits: 14,
+        orderValue: 22400,
+        commission: 448,
+        paymentMode: "Khata (14-Day)",
+        pushedToDispatch: true
+      },
+      {
+        orderId: "FLD-ORD-8815",
+        time: "Today, 11:15 AM",
+        agentId: "MKT-CONTAI-02",
+        agentName: "Debasish Samanta",
+        shopName: "Coastal Super Kirana",
+        beat: "Contai Supermarket & Bypass",
+        itemsSummary: "18x Aashirvaad Atta 10kg, 6x Mustard Oil 15L",
+        totalUnits: 24,
+        orderValue: 18720,
+        commission: 374,
+        paymentMode: "Instant UPI",
+        pushedToDispatch: false
+      },
+      {
+        orderId: "FLD-ORD-8819",
+        time: "Today, 12:05 PM",
+        agentId: "MKT-DIGHA-03",
+        agentName: "Priyabrata Manna",
+        shopName: "Sea Hawk Hotel & Kitchen Supply",
+        beat: "New Digha Sea Beach",
+        itemsSummary: "25x Miniket Rice 25kg, 10x Mustard Oil 15L",
+        totalUnits: 35,
+        orderValue: 54500,
+        commission: 1090,
+        paymentMode: "Bank NEFT",
+        pushedToDispatch: true
+      },
+      {
+        orderId: "FLD-ORD-8823",
+        time: "Today, 01:20 PM",
+        agentId: "MKT-EGRA-01",
+        agentName: "Anirban Chakraborty",
+        shopName: "Kasba Modern Grocery",
+        beat: "Kasba Mandi, Egra",
+        itemsSummary: "6x Desi Toor Dal 30kg, 4x Dettol Soap Master Carton",
+        totalUnits: 10,
+        orderValue: 35500,
+        commission: 710,
+        paymentMode: "Khata (14-Day)",
+        pushedToDispatch: false
+      },
+      {
+        orderId: "FLD-ORD-8827",
+        time: "Today, 02:10 PM",
+        agentId: "MKT-EGRA-04",
+        agentName: "Soumya Ranjan Pal",
+        shopName: "Negua Laxmi Bhandar",
+        beat: "Negua Bazar",
+        itemsSummary: "8x Miniket Rice 25kg, 10x Aashirvaad Atta 10kg",
+        totalUnits: 18,
+        orderValue: 15640,
+        commission: 313,
+        paymentMode: "Cash on Delivery",
+        pushedToDispatch: false
+      }
+    ];
+
+    const wholesaleOrders = [
+      {
+        id: "WB-INV-4921",
+        shopName: "Maa Sarada Traders",
+        owner: "Ramesh Giri",
+        gstin: "19AAACH7409R1ZV",
+        location: "Egra Central Market",
+        itemsSummary: "10x Miniket Rice 25kg, 4x Engine Mustard Oil 15L",
+        totalUnits: 14,
+        totalWeight: "310 kg",
+        orderValue: 22400,
+        paymentMode: "Khata (14-Day)",
+        route: "Egra Town Route 1",
+        status: "NEW",
+        slot: "05:00 AM - 07:30 AM",
+        assignedDriver: "Unassigned"
+      },
+      {
+        id: "WB-INV-4922",
+        shopName: "Bishnu Stores Kirana",
+        owner: "Bishnupada Manna",
+        gstin: "19BGRPM8901L1Z4",
+        location: "Contai Coastal Bypass",
+        itemsSummary: "20x Aashirvaad Atta, 2x Toor Dal Jute Sack",
+        totalUnits: 22,
+        totalWeight: "260 kg",
+        orderValue: 15800,
+        paymentMode: "Instant UPI",
+        route: "Contai Coastal Route 2",
+        status: "PACKING",
+        slot: "05:00 AM - 07:30 AM",
+        assignedDriver: "Tapan Giri (Bolero WB 29 BF 1102)"
+      },
+      {
+        id: "WB-INV-4923",
+        shopName: "Ganesh Variety Store",
+        owner: "Santosh Das",
+        gstin: "19AABCG3312K1Z9",
+        location: "Negua Bazar",
+        itemsSummary: "8x Dettol Soap Master Cartons, 3x Jeera 10kg",
+        totalUnits: 11,
+        totalWeight: "135 kg",
+        orderValue: 30100,
+        paymentMode: "Khata (30-Day)",
+        route: "Egra-Negua Route 1",
+        status: "DISPATCHED",
+        slot: "05:00 AM - 07:30 AM",
+        assignedDriver: "Bikas Maity (Tata Ace WB 34 AD 8219)"
+      },
+      {
+        id: "WB-INV-4924",
+        shopName: "Digha Super Kirana & Hotel Supply",
+        owner: "Pranab Jana",
+        gstin: "19AATPK1289P1Z8",
+        location: "New Digha Sea Beach",
+        itemsSummary: "25x Miniket Rice 25kg, 10x Mustard Oil 15L",
+        totalUnits: 35,
+        totalWeight: "775 kg",
+        orderValue: 54500,
+        paymentMode: "Bank NEFT",
+        route: "Digha Route 3",
+        status: "NEW",
+        slot: "05:00 AM - 07:30 AM",
+        assignedDriver: "Unassigned"
+      }
+    ];
+
+    const inventoryCatalog = [
+      {
+        id: "SKU-RICE-01",
+        name: "Miniket Super Fine Rice (25kg)",
+        category: "Staples",
+        bay: "Bay A-12",
+        stockUnits: 18,
+        moq: 2,
+        t1: 1480,
+        t2: 1420,
+        t3: 1360,
+        image: "https://placehold.co/120x120/78350f/fef3c7?text=Miniket+25kg"
+      },
+      {
+        id: "SKU-OIL-02",
+        name: "Engine Mustard Oil (15L Tin)",
+        category: "Edible Oils",
+        bay: "Bay B-04",
+        stockUnits: 145,
+        moq: 1,
+        t1: 2050,
+        t2: 1980,
+        t3: 1910,
+        image: "https://placehold.co/120x120/ca8a04/fef9c3?text=Oil+15L"
+      },
+      {
+        id: "SKU-ATTA-03",
+        name: "Aashirvaad Shudh Chakki Atta (10kg)",
+        category: "Staples",
+        bay: "Bay A-08",
+        stockUnits: 320,
+        moq: 2,
+        t1: 395,
+        t2: 380,
+        t3: 365,
+        image: "https://placehold.co/120x120/9a3412/ffedd5?text=Atta+10kg"
+      },
+      {
+        id: "SKU-DAL-04",
+        name: "Desi Toor Dal Grade-A (30kg)",
+        category: "Pulses",
+        bay: "Bay A-15",
+        stockUnits: 48,
+        moq: 1,
+        t1: 4100,
+        t2: 3950,
+        t3: 3800,
+        image: "https://placehold.co/120x120/b45309/fef3c7?text=Toor+Dal"
+      },
+      {
+        id: "SKU-FMCG-05",
+        name: "Dettol Bathing Soap (72 Cartons)",
+        category: "FMCG Packaged",
+        bay: "Bay C-02",
+        stockUnits: 88,
+        moq: 1,
+        t1: 2950,
+        t2: 2820,
+        t3: 2710,
+        image: "https://placehold.co/120x120/065f46/d1fae5?text=Dettol+72"
+      }
+    ];
+// ... existing code ... -->
+    let currentEditingSku = null;
+    let currentAssignOrderId = null;
+    let pendingNewSkuImageData = "";
+    let pendingEditSkuImageData = "";
+
+    // Initialization
+    window.onload = function() {
+      renderOrdersTable(wholesaleOrders);
+      renderInventoryTable();
+      renderKhataTable();
+      renderKycCards();
+      renderFleetDrivers();
+      renderMarketingAgents();
+      populateAgentOrderDropdowns();
+      renderMarketingBookedOrders('ALL');
+    };
+
+    // Mobile Sidebar Drawer Toggle
+    function toggleMobileSidebar() {
+      const sidebar = document.getElementById('ops-sidebar');
+      const backdrop = document.getElementById('sidebar-backdrop');
+      if (!sidebar || !backdrop) return;
+
+      const isClosed = sidebar.classList.contains('-translate-x-full');
+      if (isClosed) {
+        sidebar.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      }
+    }
+
+    // Tab Navigation
+    function switchTab(tabId) {
+      const tabs = ['dashboard', 'orders', 'fleet', 'marketing', 'inventory', 'khata', 'kyc'];
+      tabs.forEach(t => {
+        const sec = document.getElementById(`tab-${t}`);
+        const nav = document.getElementById(`nav-${t}`);
+        if (sec && nav) {
+          if (t === tabId) {
+            sec.classList.remove('hidden');
+            sec.classList.add('fade-in');
+            nav.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition bg-brand-600 text-white shadow-sm";
+          } else {
+            sec.classList.add('hidden');
+            nav.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition text-slate-300 hover:bg-slate-800 hover:text-white";
+          }
+        }
+      });
+
+      // Auto-close sidebar on mobile screens after selecting a tab
+      const sidebar = document.getElementById('ops-sidebar');
+      const backdrop = document.getElementById('sidebar-backdrop');
+      if (window.innerWidth < 1024 && sidebar && !sidebar.classList.contains('-translate-x-full')) {
+        sidebar.classList.add('-translate-x-full');
+        if (backdrop) backdrop.classList.add('hidden');
+      }
+    }
+
+    // ============================================
+    // MARKETING & FIELD AGENT MANAGEMENT LOGIC
+    // ============================================
+    function renderMarketingAgents() {
+      const container = document.getElementById('marketing-agents-list');
+      if (!container) return;
+      container.innerHTML = '';
+
+      let totalOnboarded = 0;
+
+      marketingAgents.forEach(agent => {
+        totalOnboarded += agent.achieved;
+        const targetPct = Math.min(100, Math.round((agent.achieved / agent.monthlyTarget) * 100));
+
+        let statusTag = '';
+        if (agent.status === 'ON_BEAT') {
+          statusTag = '<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black px-2 py-0.5 rounded flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> On Field Beat</span>';
+        } else if (agent.status === 'MEETING') {
+          statusTag = '<span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[9px] font-black px-2 py-0.5 rounded">Meeting Kirana Owner</span>';
+        } else {
+          statusTag = '<span class="bg-slate-700/60 text-slate-300 border border-slate-600 text-[9px] font-black px-2 py-0.5 rounded">At Depot Bay</span>';
+        }
+
+        const initials = agent.name.split(' ').map(n => n[0]).join('').slice(0, 2);
+
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3.5 hover:border-slate-700 transition";
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-600 to-amber-500 text-white font-black text-sm flex items-center justify-center shadow-lg shadow-rose-900/20 shrink-0">
+                ${initials}
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="text-sm font-black text-white">${agent.name}</h4>
+                  <span class="text-[9px] bg-slate-800 text-amber-300 px-1.5 py-0.2 rounded font-bold border border-slate-700">★ ${agent.rating}</span>
+                </div>
+                <p class="text-[10px] text-slate-400 font-medium">${agent.role} • <span class="text-rose-400 font-mono font-bold">${agent.id}</span></p>
+              </div>
+            </div>
+            ${statusTag}
+          </div>
+
+          <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60 text-[11px] space-y-1.5">
+            <div class="flex justify-between text-slate-300">
+              <span class="text-slate-400">Assigned Beat:</span>
+              <span class="font-bold text-white text-right truncate max-w-[200px]">${agent.beat}</span>
+            </div>
+            <div class="flex justify-between text-slate-300">
+              <span class="text-slate-400">Base Depot:</span>
+              <span class="font-semibold text-slate-200">${agent.hub}</span>
+            </div>
+            <div class="flex justify-between text-slate-300">
+              <span class="text-slate-400">Last Live Check-In:</span>
+              <span class="font-semibold text-emerald-400">${agent.lastCheckIn}</span>
+            </div>
+          </div>
+
+          <div class="space-y-1">
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-[10px] font-bold text-slate-400 uppercase">Monthly Kirana Onboarding</span>
+              <span class="font-black text-white text-xs">${agent.achieved} <span class="text-slate-400 font-normal">/ ${agent.monthlyTarget} Shops (${targetPct}%)</span></span>
+            </div>
+            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+              <div class="h-full rounded-full ${targetPct >= 80 ? 'bg-emerald-500' : targetPct >= 50 ? 'bg-amber-400' : 'bg-rose-500'}" style="width: ${targetPct}%"></div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-[11px] bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
+            <div>
+              <span class="text-slate-400 text-[9px] block uppercase font-bold">Field GMV Booked</span>
+              <span class="font-extrabold text-white text-xs">${agent.gmvBooked}</span>
+            </div>
+            <div>
+              <span class="text-slate-400 text-[9px] block uppercase font-bold">Commission Earned</span>
+              <span class="font-black text-emerald-400 text-xs">${agent.commissionEarned} <span class="text-[9px] text-slate-500 font-normal">(${agent.commissionRate})</span></span>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between bg-slate-950/80 px-2.5 py-1.5 rounded-xl border border-slate-800 text-[10px]">
+            <div class="flex items-center gap-2 font-mono">
+              <span class="text-slate-400">ID: <strong class="text-emerald-300">${agent.loginId || agent.id}</strong></span>
+              <span class="text-slate-600">|</span>
+              <span class="text-slate-400">Pass: <strong class="text-amber-300">${agent.password || 'Apna@1234'}</strong></span>
+            </div>
+            <button onclick="copyAgentCredentials('${agent.name}', '${agent.loginId || agent.id}', '${agent.password || 'Apna@1234'}')" class="text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-2 py-0.5 rounded-md font-bold flex items-center gap-1 transition" title="Copy Login ID & Password">
+              <i class="ph-bold ph-copy"></i> Copy Login
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between pt-1 border-t border-slate-800 text-xs">
+            <span class="text-[10px] text-slate-400 font-mono">${agent.phone}</span>
+            <div class="flex items-center gap-1.5">
+              <button onclick="viewSpecificAgentOrders('${agent.id}')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 font-bold text-[11px] transition flex items-center gap-1" title="Filter orders taken by ${agent.name}">
+                <i class="ph-bold ph-list-checks"></i> View Orders
+              </button>
+              <a href="tel:${agent.phone}" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition" title="Call Agent">
+                <i class="ph-bold ph-phone-call text-xs"></i>
+              </a>
+              <button onclick="sendAgentWhatsAppTargets('${agent.name}', '${agent.beat}', '${agent.monthlyTarget - agent.achieved}')" class="px-2.5 py-1.5 rounded-lg bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 font-bold text-[11px] transition flex items-center gap-1">
+                <i class="ph-bold ph-whatsapp-logo"></i> Send Scheme
+              </button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      const totalMktEl = document.getElementById('stat-total-marketing');
+      if (totalMktEl) totalMktEl.innerText = `${marketingAgents.length} Executives`;
+
+      const onboardedStatEl = document.getElementById('stat-marketing-onboarded');
+      if (onboardedStatEl) onboardedStatEl.innerText = `${totalOnboarded} Stores`;
+
+      const badgeMarketingEl = document.getElementById('badge-marketing-count');
+      if (badgeMarketingEl) badgeMarketingEl.innerText = `${marketingAgents.length} Active`;
+    }
+
+    function populateAgentOrderDropdowns() {
+      const filterSelect = document.getElementById('agent-order-filter');
+      const modalSelect = document.getElementById('ag-ord-agent');
+      if (filterSelect) {
+        const currentVal = filterSelect.value || 'ALL';
+        filterSelect.innerHTML = '<option value="ALL">All Marketing Agents</option>' +
+          marketingAgents.map(a => `<option value="${a.id}">${a.name} (${a.id})</option>`).join('');
+        filterSelect.value = currentVal;
+      }
+      if (modalSelect) {
+        modalSelect.innerHTML = marketingAgents.map(a => `<option value="${a.id}">${a.name} • ${a.beat}</option>`).join('');
+      }
+    }
+
+    function renderMarketingBookedOrders(agentFilterId = 'ALL') {
+      const tbody = document.getElementById('marketing-orders-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const filtered = agentFilterId === 'ALL'
+        ? marketingBookedOrders
+        : marketingBookedOrders.filter(o => o.agentId === agentFilterId);
+
+      const badgeEl = document.getElementById('badge-agent-orders-count');
+      if (badgeEl) badgeEl.innerText = `${filtered.length} Orders`;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400 text-xs">No field orders logged for this marketing agent yet.</td></tr>`;
+        return;
+      }
+
+      filtered.forEach(ord => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-800/40 transition";
+        tr.innerHTML = `
+          <td class="py-3 px-4">
+            <span class="font-mono text-rose-400 font-extrabold text-[11px] block">${ord.orderId}</span>
+            <span class="text-[10px] text-slate-400">${ord.time}</span>
+          </td>
+          <td class="py-3 px-4">
+            <span class="font-bold text-white text-xs block">${ord.agentName}</span>
+            <span class="text-[10px] text-slate-400 font-mono">${ord.agentId}</span>
+          </td>
+          <td class="py-3 px-4">
+            <span class="font-bold text-slate-200 text-xs block">${ord.shopName}</span>
+            <span class="text-[10px] text-amber-300">${ord.beat}</span>
+          </td>
+          <td class="py-3 px-4">
+            <span class="text-xs text-slate-200 block max-w-xs truncate">${ord.itemsSummary}</span>
+            <span class="text-[10px] text-slate-400">${ord.totalUnits} Packs • ${ord.paymentMode}</span>
+          </td>
+          <td class="py-3 px-4">
+            <span class="font-black text-white text-xs block">₹${ord.orderValue.toLocaleString('en-IN')}</span>
+            <span class="text-[10px] text-emerald-400 font-bold">+₹${ord.commission.toLocaleString('en-IN')} Comm.</span>
+          </td>
+          <td class="py-3 px-4">
+            ${ord.pushedToDispatch
+              ? `<span class="bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-black">IN DISPATCH QUEUE</span>`
+              : `<span class="bg-amber-500/15 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded text-[10px] font-black">AWAITING APPROVAL</span>`
+            }
+          </td>
+          <td class="py-3 px-4 text-right whitespace-nowrap">
+            ${ord.pushedToDispatch
+              ? `<button onclick="switchTab('orders')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-[11px] transition">Track in Orders</button>`
+              : `<button onclick="pushAgentOrderToDispatch('${ord.orderId}')" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px] transition">Approve & Dispatch</button>`
+            }
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterAgentOrders(agentId) {
+      renderMarketingBookedOrders(agentId);
+    }
+
+    function viewSpecificAgentOrders(agentId) {
+      const filterSelect = document.getElementById('agent-order-filter');
+      if (filterSelect) filterSelect.value = agentId;
+      renderMarketingBookedOrders(agentId);
+      const tbody = document.getElementById('marketing-orders-tbody');
+      if (tbody) tbody.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function pushAgentOrderToDispatch(orderId) {
+      const ord = marketingBookedOrders.find(o => o.orderId === orderId);
+      if (!ord) return;
+      ord.pushedToDispatch = true;
+
+      wholesaleOrders.unshift({
+        id: ord.orderId.replace('FLD-ORD', 'WB-INV'),
+        shopName: ord.shopName,
+        owner: `Via ${ord.agentName}`,
+        gstin: "19FIELD7409R1ZV",
+        location: ord.beat,
+        itemsSummary: ord.itemsSummary,
+        totalUnits: ord.totalUnits,
+        totalWeight: `${ord.totalUnits * 22} kg`,
+        orderValue: ord.orderValue,
+        paymentMode: ord.paymentMode,
+        route: ord.beat,
+        status: "NEW",
+        slot: "05:00 AM - 07:30 AM",
+        assignedDriver: "Unassigned"
+      });
+
+      renderOrdersTable(wholesaleOrders);
+      const currentFilter = document.getElementById('agent-order-filter')?.value || 'ALL';
+      renderMarketingBookedOrders(currentFilter);
+      showToast(`Approved ${ord.orderId} (${ord.shopName}) & sent to Wholesale Dispatch Queue!`);
+    }
+
+    function openAgentOrderModal() {
+      populateAgentOrderDropdowns();
+      document.getElementById('agent-order-modal').classList.remove('hidden');
+    }
+
+    function handleCreateAgentOrder(event) {
+      event.preventDefault();
+      const agentId = document.getElementById('ag-ord-agent').value;
+      const agent = marketingAgents.find(a => a.id === agentId);
+      const shopName = document.getElementById('ag-ord-shop').value;
+      const beat = document.getElementById('ag-ord-beat').value;
+      const paymentMode = document.getElementById('ag-ord-pay').value;
+      const itemsSummary = document.getElementById('ag-ord-items').value;
+      const totalUnits = parseInt(document.getElementById('ag-ord-units').value) || 10;
+      const orderValue = parseFloat(document.getElementById('ag-ord-val').value) || 15000;
+      const commRate = agent ? parseFloat(agent.commissionRate) || 2.0 : 2.0;
+      const commission = Math.round((orderValue * commRate) / 100);
+
+      const newFieldOrder = {
+        orderId: `FLD-ORD-${Math.floor(8830 + Math.random() * 900)}`,
+        time: "Just now",
+        agentId: agent ? agent.id : agentId,
+        agentName: agent ? agent.name : "Field Executive",
+        shopName: shopName,
+        beat: beat,
+        itemsSummary: itemsSummary,
+        totalUnits: totalUnits,
+        orderValue: orderValue,
+        commission: commission,
+        paymentMode: paymentMode,
+        pushedToDispatch: false
+      };
+
+      marketingBookedOrders.unshift(newFieldOrder);
+      const currentFilter = document.getElementById('agent-order-filter')?.value || 'ALL';
+      renderMarketingBookedOrders(currentFilter);
+      closeModal('agent-order-modal');
+      document.getElementById('agent-order-form').reset();
+      showToast(`Recorded field order ${newFieldOrder.orderId} booked by ${newFieldOrder.agentName}!`);
+    }
+
+    function generateMarketingCredentials() {
+      const nameVal = (document.getElementById('mkt-name').value || '').trim();
+      const prefix = nameVal ? nameVal.split(' ')[0].replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 7) : 'AGENT';
+      const randNum = Math.floor(100 + Math.random() * 900);
+      const passPin = Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('mkt-login-id').value = `AM24-${prefix}${randNum}`;
+      document.getElementById('mkt-password').value = `Apna@${passPin}`;
+    }
+
+    function toggleMktPasswordVisibility() {
+      const input = document.getElementById('mkt-password');
+      const eye = document.getElementById('mkt-pass-eye');
+      if (!input || !eye) return;
+      if (input.type === 'password') {
+        input.type = 'text';
+        eye.className = 'ph-bold ph-eye-slash text-sm text-rose-400';
+      } else {
+        input.type = 'password';
+        eye.className = 'ph-bold ph-eye text-sm';
+      }
+    }
+
+    function copyAgentCredentials(name, loginId, password) {
+      const text = `ApnaMart24 Field Sales Login\nAgent: ${name}\nLogin ID: ${loginId}\nPassword: ${password}`;
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast(`Copied Login ID (${loginId}) & Password for ${name}!`);
+    }
+
+    function openAddMarketingModal() {
+      generateMarketingCredentials();
+      document.getElementById('add-marketing-modal').classList.remove('hidden');
+    }
+
+    function handleCreateMarketingAgent(event) {
+      event.preventDefault();
+      const name = document.getElementById('mkt-name').value;
+      const phone = document.getElementById('mkt-phone').value;
+      const role = document.getElementById('mkt-role').value;
+      const hub = document.getElementById('mkt-hub').value;
+      const beat = document.getElementById('mkt-beat').value;
+      const transport = document.getElementById('mkt-transport').value;
+      const target = parseInt(document.getElementById('mkt-target').value) || 25;
+      const commission = document.getElementById('mkt-commission').value;
+      const loginId = document.getElementById('mkt-login-id').value.trim();
+      const password = document.getElementById('mkt-password').value;
+
+      const newAgent = {
+        id: `MKT-WB-${Math.floor(100 + Math.random() * 900)}`,
+        loginId: loginId,
+        password: password,
+        name: name,
+        phone: phone.startsWith('+91') ? phone : `+91 ${phone}`,
+        role: role,
+        hub: hub,
+        beat: beat,
+        transport: transport,
+        monthlyTarget: target,
+        achieved: 0,
+        gmvBooked: "₹0",
+        commissionRate: `${commission}%`,
+        commissionEarned: "₹0",
+        status: "ON_BEAT",
+        lastCheckIn: "Just now • Login confirmed",
+        joinedDate: "Today",
+        rating: 5.0
+      };
+
+      marketingAgents.unshift(newAgent);
+      renderMarketingAgents();
+      populateAgentOrderDropdowns();
+      closeModal('add-marketing-modal');
+      document.getElementById('add-marketing-form').reset();
+      showToast(`Added ${name} | Login ID: ${loginId} & Password saved and sent via SMS!`);
+    }
+
+    function sendAgentWhatsAppTargets(name, beat, remaining) {
+      showToast(`Wholesale margin scheme & remaining Kirana target (${remaining} shops) pushed to ${name} (${beat}) on WhatsApp.`);
+    }
+
+    function broadcastSalesCampaign() {
+      showToast(`Broadcasted Diwali Kirana wholesale scheme (18% margin on Rice & Oils) to all ${marketingAgents.length} field marketing executives!`);
+    }
+
+    // ============================================
+    // FLEET TRACKING & DRIVER MANAGEMENT LOGIC
+    // ============================================
+    function renderFleetDrivers() {
+      const container = document.getElementById('fleet-drivers-list');
+      if (!container) return;
+      container.innerHTML = '';
+
+      fleetDrivers.forEach(driver => {
+        let statusTag = '';
+        if (driver.status === 'ON_ROUTE') {
+          statusTag = '<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black px-1.5 py-0.5 rounded flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> On Delivery</span>';
+        } else if (driver.status === 'AT_STOP') {
+          statusTag = '<span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[9px] font-black px-1.5 py-0.5 rounded">Unloading at Shop</span>';
+        } else {
+          statusTag = '<span class="bg-slate-700/60 text-slate-300 border border-slate-600 text-[9px] font-black px-1.5 py-0.5 rounded">Idle at Bay</span>';
+        }
+
+        const card = document.createElement('div');
+        card.className = "bg-slate-800/60 border border-slate-700/60 rounded-xl p-3 space-y-2.5 hover:border-slate-600 transition";
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="font-extrabold text-white text-xs">${driver.name}</span>
+                <span class="text-[9px] bg-slate-700 text-amber-300 px-1 py-0.2 rounded font-bold">★ ${driver.rating}</span>
+              </div>
+              <span class="text-[10px] text-slate-400 font-mono block">${driver.plate} • ${driver.vehicle}</span>
+            </div>
+            ${statusTag}
+          </div>
+
+          <div class="bg-slate-900/70 p-2 rounded-lg text-[10px] space-y-1 border border-slate-800">
+            <div class="flex justify-between text-slate-300">
+              <span class="text-slate-400">Current Route:</span>
+              <span class="font-bold truncate max-w-[170px] text-right">${driver.currentRoute}</span>
+            </div>
+            <div class="flex justify-between text-slate-300">
+              <span class="text-slate-400">Drops Completed:</span>
+              <span class="font-black ${driver.totalDrops > 0 ? 'text-emerald-400' : 'text-slate-400'}">${driver.dropsDone} / ${driver.totalDrops} Kirana Stores</span>
+            </div>
+            <div class="flex justify-between text-slate-300">
+              <span class="text-slate-400">Truck Load:</span>
+              <span class="font-bold text-slate-200">${driver.loadTonnage}</span>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between bg-slate-950/80 px-2 py-1 rounded-lg border border-slate-800 text-[9px]">
+            <div class="flex items-center gap-1.5 font-mono truncate">
+              <span class="text-slate-400">ID: <strong class="text-emerald-300">${driver.loginId || driver.id}</strong></span>
+              <span class="text-slate-600">|</span>
+              <span class="text-slate-400">Pass: <strong class="text-amber-300">${driver.password || 'Drv@1234'}</strong></span>
+            </div>
+            <button onclick="copyDriverCredentials('${driver.name}', '${driver.loginId || driver.id}', '${driver.password || 'Drv@1234'}')" class="text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-1.5 py-0.5 rounded font-bold flex items-center gap-1 shrink-0 transition" title="Copy Driver Login ID & Password">
+              <i class="ph-bold ph-copy"></i> Copy
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between text-[10px] pt-1">
+            <span class="text-slate-400 flex items-center gap-1">
+              <i class="ph-bold ph-battery-high text-emerald-400"></i> ${driver.battery} GPS
+            </span>
+            <div class="flex items-center gap-1.5">
+              <a href="tel:${driver.phone}" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition" title="Call Driver">
+                <i class="ph-bold ph-phone-call text-xs"></i>
+              </a>
+              <button onclick="sendDriverWhatsAppManifest('${driver.name}', '${driver.plate}')" class="px-2 py-1 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 font-bold transition flex items-center gap-1">
+                <i class="ph-bold ph-whatsapp-logo"></i> Manifest
+              </button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      const totalDriversEl = document.getElementById('stat-total-drivers');
+      if (totalDriversEl) totalDriversEl.innerText = `${fleetDrivers.length} Drivers`;
+
+      const sidebarStat = document.getElementById('sidebar-fleet-stat');
+      const onRouteCount = fleetDrivers.filter(d => d.status === 'ON_ROUTE').length;
+      if (sidebarStat) sidebarStat.innerText = `${onRouteCount} On Route`;
+    }
+
+    function generateDriverCredentials() {
+      const nameVal = (document.getElementById('driver-name').value || '').trim();
+      const prefix = nameVal ? nameVal.split(' ')[0].replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 7) : 'DRV';
+      const randNum = Math.floor(100 + Math.random() * 900);
+      const passPin = Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('driver-login-id').value = `AM24-${prefix}${randNum}`;
+      document.getElementById('driver-password').value = `Drv@${passPin}`;
+    }
+
+    function toggleDriverPasswordVisibility() {
+      const input = document.getElementById('driver-password');
+      const eye = document.getElementById('driver-pass-eye');
+      if (!input || !eye) return;
+      if (input.type === 'password') {
+        input.type = 'text';
+        eye.className = 'ph-bold ph-eye-slash text-sm text-brand-400';
+      } else {
+        input.type = 'password';
+        eye.className = 'ph-bold ph-eye text-sm';
+      }
+    }
+
+    function copyDriverCredentials(name, loginId, password) {
+      const text = `ApnaMart24 Delivery Partner Login\nDriver: ${name}\nLogin ID: ${loginId}\nPassword: ${password}`;
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast(`Copied Login ID (${loginId}) & Password for ${name}!`);
+    }
+
+    function openAddDriverModal() {
+      generateDriverCredentials();
+      document.getElementById('add-driver-modal').classList.remove('hidden');
+    }
+
+    function handleCreateDriver(event) {
+      event.preventDefault();
+      const name = document.getElementById('driver-name').value;
+      const phone = document.getElementById('driver-phone').value;
+      const vehicle = document.getElementById('driver-vehicle-type').value;
+      const plate = document.getElementById('driver-plate').value.toUpperCase();
+      const hub = document.getElementById('driver-hub').value;
+      const loginId = document.getElementById('driver-login-id').value.trim();
+      const password = document.getElementById('driver-password').value;
+
+      const newDriver = {
+        id: `DRV-WB-${Math.floor(100 + Math.random() * 900)}`,
+        loginId: loginId,
+        password: password,
+        name: name,
+        phone: phone.startsWith('+91') ? phone : `+91 ${phone}`,
+        vehicle: vehicle.split('(')[0].trim(),
+        plate: plate,
+        capacity: vehicle.includes('1.5') ? '1.5 MT' : vehicle.includes('2.5') ? '2.5 MT' : vehicle.includes('3.0') ? '3.0 MT' : '800 kg',
+        hub: hub,
+        status: "IDLE",
+        currentRoute: "Ready for allocation at Bay",
+        dropsDone: 0,
+        totalDrops: 0,
+        loadTonnage: "0 MT (Empty)",
+        battery: "100%",
+        speed: "0 km/h",
+        activeOrder: "None",
+        rating: 5.0
+      };
+
+      fleetDrivers.unshift(newDriver);
+      renderFleetDrivers();
+      closeModal('add-driver-modal');
+      document.getElementById('add-driver-form').reset();
+      showToast(`Added ${name} (${plate}) | Login ID: ${loginId} & Password sent via SMS!`);
+    }
+
+    function openAddDriverModal() {
+      document.getElementById('add-driver-modal').classList.remove('hidden');
+    }
+
+    function handleCreateDriver(event) {
+      event.preventDefault();
+      const name = document.getElementById('driver-name').value;
+      const phone = document.getElementById('driver-phone').value;
+      const vehicle = document.getElementById('driver-vehicle-type').value;
+      const plate = document.getElementById('driver-plate').value.toUpperCase();
+      const hub = document.getElementById('driver-hub').value;
+
+      const newDriver = {
+        id: `DRV-WB-${Math.floor(100 + Math.random() * 900)}`,
+        name: name,
+        phone: phone.startsWith('+91') ? phone : `+91 ${phone}`,
+        vehicle: vehicle.split('(')[0].trim(),
+        plate: plate,
+        capacity: vehicle.includes('1.5') ? '1.5 MT' : vehicle.includes('2.5') ? '2.5 MT' : vehicle.includes('3.0') ? '3.0 MT' : '800 kg',
+        hub: hub,
+        status: "IDLE",
+        currentRoute: "Ready for allocation at Bay",
+        dropsDone: 0,
+        totalDrops: 0,
+        loadTonnage: "0 MT (Empty)",
+        battery: "100%",
+        speed: "0 km/h",
+        activeOrder: "None",
+        rating: 5.0
+      };
+
+      fleetDrivers.unshift(newDriver);
+      renderFleetDrivers();
+      closeModal('add-driver-modal');
+      document.getElementById('add-driver-form').reset();
+      showToast(`Added ${name} (${plate}) to ApnaMart24 fleet! App login SMS sent.`);
+    }
+
+    function selectTrackedVehicle(plate) {
+      document.getElementById('map-active-vehicle').innerText = `${plate.replace(/-/g, ' ')}`;
+      const drv = fleetDrivers.find(d => d.plate.replace(/\s+/g, '-') === plate || d.plate === plate);
+      if (drv) {
+        document.getElementById('current-driver-name').innerText = drv.name;
+        const metaEl = document.getElementById('current-driver-meta');
+        if (metaEl) metaEl.innerText = `${drv.phone} • ${drv.vehicle}`;
+        document.getElementById('timeline-route-title').innerText = `${drv.currentRoute}`;
+        showToast(`Focusing live radar on ${drv.name} (${drv.plate})`);
+      }
+    }
+
+    function refreshFleetLocations() {
+      const icon = document.getElementById('refresh-fleet-icon');
+      if (icon) icon.classList.add('animate-spin');
+
+      const marker1 = document.getElementById('truck-marker-1');
+      if (marker1) {
+        marker1.style.left = `${44 + (Math.random() * 4 - 2)}%`;
+        marker1.style.top = `${38 + (Math.random() * 4 - 2)}%`;
+      }
+
+      setTimeout(() => {
+        if (icon) icon.classList.remove('animate-spin');
+        showToast(`GPS Telematics synchronized with ${fleetDrivers.length} active trackers`);
+      }, 700);
+    }
+
+    function sendDriverWhatsAppManifest(driverName, plate) {
+      showToast(`Wholesale dispatch manifest & Kirana pin drop route sent to ${driverName} (${plate}) via WhatsApp`);
+    }
+
+    // Orders Rendering & Interactions
+    function resolveOrderProductItems(order) {
+      if (Array.isArray(order.lineItems) && order.lineItems.length > 0) {
+        return order.lineItems.map(li => {
+          const catMatch = inventoryCatalog.find(c => c.id === li.skuId);
+          return {
+            name: li.name,
+            qty: li.qty,
+            bay: (catMatch && catMatch.bay) || li.bay || 'Bay A',
+            image: (catMatch && catMatch.image) || li.image || `https://placehold.co/120x120/1e293b/f97316?text=${encodeURIComponent(li.name.slice(0, 6))}`
+          };
+        });
+      }
+
+      const parts = (order.itemsSummary || '').split(',').map(p => p.trim()).filter(Boolean);
+      return parts.map(part => {
+        const match = part.match(/^(\d+)\s*[xX]\s*(.+)$/);
+        const qty = match ? parseInt(match[1], 10) : 1;
+        const rawName = match ? match[2].trim() : part;
+        const lower = rawName.toLowerCase();
+
+        const catItem = inventoryCatalog.find(c => {
+          const cLower = c.name.toLowerCase();
+          if (lower.includes('rice') || lower.includes('miniket')) return cLower.includes('rice') || cLower.includes('miniket');
+          if (lower.includes('oil') || lower.includes('mustard')) return cLower.includes('oil');
+          if (lower.includes('atta')) return cLower.includes('atta');
+          if (lower.includes('dal') || lower.includes('toor')) return cLower.includes('dal');
+          if (lower.includes('soap') || lower.includes('dettol')) return cLower.includes('dettol') || cLower.includes('soap');
+          return cLower.includes(lower.split(' ')[0]);
+        });
+
+        const fallback = `https://placehold.co/120x120/1e293b/f97316?text=${encodeURIComponent(rawName.slice(0, 7))}`;
+        return {
+          name: catItem ? catItem.name : rawName,
+          qty: qty,
+          bay: catItem ? catItem.bay : 'Depot Bay',
+          image: (catItem && catItem.image) ? catItem.image : fallback
+        };
+      });
+    }
+
+    function openOrderItemsModal(orderId) {
+      const order = wholesaleOrders.find(o => o.id === orderId);
+      if (!order) return;
+      const items = resolveOrderProductItems(order);
+
+      document.getElementById('modal-ord-items-id').innerText = `${order.id} • ${order.route}`;
+      document.getElementById('modal-ord-items-shop').innerText = `${order.shopName} (${order.totalUnits} Total Packs)`;
+
+      const listEl = document.getElementById('modal-ord-items-list');
+      listEl.innerHTML = items.map(item => `
+        <div class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-800/70 border border-slate-700/70">
+          <img src="${item.image}" alt="${item.name}" class="w-12 h-12 rounded-xl object-cover border border-slate-700 bg-slate-900 shrink-0">
+          <div class="flex-1 min-w-0">
+            <span class="font-extrabold text-white text-xs block truncate">${item.name}</span>
+            <span class="text-[10px] text-amber-300 font-mono font-bold">${item.bay}</span>
+          </div>
+          <span class="px-2.5 py-1 rounded-lg bg-brand-500/20 text-brand-300 border border-brand-500/30 font-black text-xs shrink-0">
+            ${item.qty} Packs
+          </span>
+        </div>
+      `).join('');
+
+      document.getElementById('order-items-modal').classList.remove('hidden');
+    }
+
+    function renderOrdersTable(list) {
+      const tbody = document.getElementById('orders-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      list.forEach(order => {
+        let statusBadge = "";
+        if (order.status === 'NEW') {
+          statusBadge = `<span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded text-[10px] font-black">NEW / PENDING</span>`;
+        } else if (order.status === 'PACKING') {
+          statusBadge = `<span class="bg-sky-500/10 text-sky-400 border border-sky-500/20 px-2 py-0.5 rounded text-[10px] font-black">PICKING IN BAY</span>`;
+        } else if (order.status === 'DISPATCHED') {
+          statusBadge = `<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded text-[10px] font-black">TRUCK DISPATCHED</span>`;
+        }
+
+        const resolvedItems = resolveOrderProductItems(order);
+        const itemsHtml = resolvedItems.map(item => `
+          <div class="flex items-center gap-2 bg-slate-800/70 border border-slate-700/70 rounded-xl px-2 py-1.5">
+            <img src="${item.image}" alt="${item.name}" class="w-9 h-9 rounded-lg object-cover border border-slate-700 bg-slate-900 shrink-0">
+            <div class="min-w-0 flex-1">
+              <span class="text-[11px] font-extrabold text-white block truncate max-w-[190px]" title="${item.name}">${item.name}</span>
+              <span class="text-[10px] font-bold text-amber-300">${item.qty} Packs <span class="text-slate-400 font-normal">• ${item.bay}</span></span>
+            </div>
+          </div>
+        `).join('');
+
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-800/40 transition align-top";
+        tr.innerHTML = `
+          <td class="py-3 px-4">
+            <span class="font-mono text-brand-400 font-extrabold text-[11px] block">${order.id}</span>
+            <span class="font-bold text-white text-xs">${order.shopName}</span>
+            <span class="text-[10px] text-slate-400 block">${order.gstin}</span>
+            <span class="text-[10px] text-slate-500 block mt-0.5">${order.location}</span>
+          </td>
+          <td class="py-3 px-4">
+            <div onclick="openOrderItemsModal('${order.id}')" title="Click to inspect all ordered items" class="space-y-1.5 cursor-pointer max-w-[260px]">
+              ${itemsHtml}
+            </div>
+          </td>
+          <td class="py-3 px-4">
+            <span class="font-extrabold text-white text-xs">${order.totalUnits} Packs</span>
+            <span class="text-[10px] text-slate-400 block">${order.totalWeight}</span>
+          </td>
+          <td class="py-3 px-4">
+            <span class="font-black text-white text-xs">₹${order.orderValue.toLocaleString('en-IN')}</span>
+            <span class="text-[10px] font-bold text-brand-400 block">${order.paymentMode}</span>
+          </td>
+          <td class="py-3 px-4">
+            <span class="text-slate-300 font-bold block">${order.route}</span>
+            <span class="text-[10px] text-emerald-400 font-semibold">${order.slot}</span>
+          </td>
+          <td class="py-3 px-4">
+            ${statusBadge}
+            <span class="text-[10px] text-slate-400 block mt-0.5">${order.assignedDriver}</span>
+          </td>
+          <td class="py-3 px-4 text-right space-x-1.5 whitespace-nowrap">
+            ${order.status === 'NEW' ? `
+              <button onclick="openAssignModal('${order.id}')" class="px-2.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-black text-[11px] transition">
+                Assign Vehicle
+              </button>
+            ` : `
+              <button onclick="generateTaxInvoicePreview('${order.id}')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-[11px] transition">
+                <i class="ph-bold ph-printer"></i> E-Way Bill
+              </button>
+            `}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const badgeOrders = document.getElementById('badge-orders-count');
+      if (badgeOrders) badgeOrders.innerText = wholesaleOrders.length;
+    }
+
+    function filterOrdersTable(val) {
+      if (val === 'ALL') renderOrdersTable(wholesaleOrders);
+      else renderOrdersTable(wholesaleOrders.filter(o => o.status === val));
+    }
+
+    function searchOrdersTable(query) {
+      const q = query.toLowerCase();
+      const filtered = wholesaleOrders.filter(o => 
+        o.shopName.toLowerCase().includes(q) || 
+        o.gstin.toLowerCase().includes(q) || 
+        o.id.toLowerCase().includes(q)
+      );
+      renderOrdersTable(filtered);
+    }
+
+    function openAssignModal(orderId) {
+      currentAssignOrderId = orderId;
+      document.getElementById('assign-order-id').value = orderId;
+      document.getElementById('assign-driver-modal').classList.remove('hidden');
+    }
+
+    function confirmDriverAssignment() {
+      const selectedVehicle = document.getElementById('assign-vehicle-select').value;
+      const order = wholesaleOrders.find(o => o.id === currentAssignOrderId);
+      if (order) {
+        order.status = 'PACKING';
+        order.assignedDriver = selectedVehicle;
+        renderOrdersTable(wholesaleOrders);
+        showToast(`Assigned ${selectedVehicle} for invoice ${currentAssignOrderId}`);
+      }
+      closeModal('assign-driver-modal');
+    }
+
+    function generateTaxInvoicePreview(orderId) {
+      showToast(`Generating GST Tax Invoice & E-Way Bill for ${orderId}...`);
+    }
+
+    // Inventory & Slab Management
+    function renderInventoryTable() {
+      const tbody = document.getElementById('inventory-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      inventoryCatalog.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-800/40 transition";
+        const isCritical = item.stockUnits < 30;
+        const fallbackImg = `https://placehold.co/120x120/1e293b/f97316?text=${encodeURIComponent(item.name.slice(0, 6))}`;
+        const imgSrc = item.image || fallbackImg;
+
+        tr.innerHTML = `
+          <td class="py-2.5 px-4">
+            <div onclick="openSlabModal('${item.id}')" title="Click to change product image" class="relative group w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 overflow-hidden cursor-pointer shrink-0">
+              <img src="${imgSrc}" onerror="this.onerror=null;this.src='${fallbackImg}';" alt="${item.name}" class="w-full h-full object-cover">
+              <div class="absolute inset-0 bg-slate-950/65 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs">
+                <i class="ph-bold ph-camera"></i>
+              </div>
+            </div>
+          </td>
+          <td class="py-3 px-4">
+            <span class="font-extrabold text-white text-xs block">${item.name}</span>
+            <span class="text-[10px] text-slate-400">${item.id} • ${item.category}</span>
+          </td>
+          <td class="py-3 px-4">
+            <span class="bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-[10px] font-mono font-bold text-amber-300">
+              ${item.bay}
+            </span>
+          </td>
+          <td class="py-3 px-4">
+            <div class="flex items-center gap-1.5">
+              <span class="font-black text-xs ${isCritical ? 'text-red-400' : 'text-emerald-400'}">
+                ${item.stockUnits} Packs
+              </span>
+              ${isCritical ? '<span class="text-[9px] bg-red-500/20 text-red-400 px-1 py-0.2 rounded font-black">CRITICAL</span>' : ''}
+            </div>
+            <span class="text-[10px] text-slate-500">MOQ: ${item.moq}</span>
+          </td>
+          <td class="py-3 px-4">
+            <span class="font-black text-slate-200">₹${item.t1}</span>
+            <span class="text-[9px] text-slate-400 block">2-5 Packs</span>
+          </td>
+          <td class="py-3 px-4">
+            <span class="font-black text-emerald-400">₹${item.t2}</span>
+            <span class="text-[9px] text-slate-400 block">6-15 Packs</span>
+          </td>
+          <td class="py-3 px-4">
+            <span class="font-black text-brand-400">₹${item.t3}</span>
+            <span class="text-[9px] text-slate-400 block">16+ Packs</span>
+          </td>
+          <td class="py-3 px-4 text-right">
+            <button onclick="openSlabModal('${item.id}')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-[11px] font-bold transition">
+              <i class="ph-bold ph-pencil-simple"></i> Edit Slab / Img
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function previewSkuFileUpload(event, mode) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        if (mode === 'new') {
+          pendingNewSkuImageData = dataUrl;
+          document.getElementById('new-sku-img-preview').src = dataUrl;
+          document.getElementById('new-sku-img-url').value = '';
+        } else {
+          pendingEditSkuImageData = dataUrl;
+          document.getElementById('edit-sku-img-preview').src = dataUrl;
+          document.getElementById('edit-sku-img-url').value = '';
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function previewSkuImageUrl(url, mode) {
+      const trimmed = url.trim();
+      const fallback = "https://placehold.co/120x120/1e293b/f97316?text=SKU";
+      if (mode === 'new') {
+        pendingNewSkuImageData = trimmed;
+        document.getElementById('new-sku-img-preview').src = trimmed || fallback;
+      } else {
+        pendingEditSkuImageData = trimmed;
+        document.getElementById('edit-sku-img-preview').src = trimmed || (currentEditingSku && currentEditingSku.image) || fallback;
+      }
+    }
+
+    function resetSkuImagePreview(mode) {
+      const fallback = "https://placehold.co/120x120/1e293b/f97316?text=SKU";
+      if (mode === 'new') {
+        pendingNewSkuImageData = "";
+        document.getElementById('new-sku-img-file').value = '';
+        document.getElementById('new-sku-img-url').value = '';
+        document.getElementById('new-sku-img-preview').src = fallback;
+      }
+    }
+
+    function openSlabModal(skuId) {
+      const sku = inventoryCatalog.find(i => i.id === skuId);
+      if (!sku) return;
+      currentEditingSku = sku;
+      pendingEditSkuImageData = sku.image || "";
+
+      document.getElementById('slab-sku-name').value = `${sku.name} (${sku.id})`;
+      document.getElementById('slab-tier-1').value = sku.t1;
+      document.getElementById('slab-tier-2').value = sku.t2;
+      document.getElementById('slab-tier-3').value = sku.t3;
+      document.getElementById('slab-bay-loc').value = sku.bay;
+      document.getElementById('slab-stock-units').value = sku.stockUnits;
+
+      const fallback = `https://placehold.co/120x120/1e293b/f97316?text=${encodeURIComponent(sku.name.slice(0, 6))}`;
+      document.getElementById('edit-sku-img-preview').src = sku.image || fallback;
+      document.getElementById('edit-sku-img-file').value = '';
+      document.getElementById('edit-sku-img-url').value = (sku.image && !sku.image.startsWith('data:')) ? sku.image : '';
+
+      document.getElementById('slab-edit-modal').classList.remove('hidden');
+    }
+
+    function saveSlabPricing() {
+      if (!currentEditingSku) return;
+      currentEditingSku.t1 = parseFloat(document.getElementById('slab-tier-1').value) || currentEditingSku.t1;
+      currentEditingSku.t2 = parseFloat(document.getElementById('slab-tier-2').value) || currentEditingSku.t2;
+      currentEditingSku.t3 = parseFloat(document.getElementById('slab-tier-3').value) || currentEditingSku.t3;
+      currentEditingSku.bay = document.getElementById('slab-bay-loc').value;
+      const updatedStock = parseInt(document.getElementById('slab-stock-units').value, 10);
+      if (!isNaN(updatedStock)) {
+        currentEditingSku.stockUnits = updatedStock;
+      }
+
+      if (pendingEditSkuImageData) {
+        currentEditingSku.image = pendingEditSkuImageData;
+      }
+
+      renderInventoryTable();
+      renderOrdersTable(wholesaleOrders);
+      closeModal('slab-edit-modal');
+      showToast(`Updated image & pricing slabs for ${currentEditingSku.name}`);
+    }
+
+    // Khata & Credit Risk Management
+    const retailerKhataList = [
+      {
+        name: "Maa Sarada Traders",
+        owner: "Ramesh Giri",
+        location: "Egra Central Market",
+        phone: "+91 9832049182",
+        limit: 50000,
+        outstanding: 18400,
+        cycle: "14 Days",
+        isOverdue: false,
+        daysOverdue: 0
+      },
+      {
+        name: "Tara Maa Bhandar",
+        owner: "Subhash Barik",
+        location: "Contai Super Market",
+        phone: "+91 9732109844",
+        limit: 75000,
+        outstanding: 72800,
+        cycle: "14 Days",
+        isOverdue: true,
+        daysOverdue: 8
+      },
+      {
+        name: "Shree Krishna Grocery",
+        owner: "Aloke Patra",
+        location: "Ramnagar Main Road",
+        phone: "+91 9434827110",
+        limit: 30000,
+        outstanding: 4200,
+        cycle: "7 Days",
+        isOverdue: false,
+        daysOverdue: 0
+      },
+      {
+        name: "Bishnu Stores Kirana",
+        owner: "Bishnupada Manna",
+        location: "Contai Coastal",
+        phone: "+91 9832108873",
+        limit: 40000,
+        outstanding: 38900,
+        cycle: "15 Days",
+        isOverdue: true,
+        daysOverdue: 16
+      }
+    ];
+
+    function renderKhataTable() {
+      const tbody = document.getElementById('khata-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      retailerKhataList.forEach(k => {
+        const utilPct = Math.round((k.outstanding / k.limit) * 100);
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-800/40 transition";
+
+        tr.innerHTML = `
+          <td class="py-3 px-4">
+            <span class="font-extrabold text-white text-xs block">${k.name}</span>
+            <span class="text-[10px] text-slate-400">${k.owner} • ${k.location}</span>
+          </td>
+          <td class="py-3 px-4">
+            <span class="font-black text-slate-200 text-xs">₹${k.limit.toLocaleString('en-IN')}</span>
+          </td>
+          <td class="py-3 px-4">
+            <div class="flex items-center gap-2">
+              <span class="font-black text-xs ${k.isOverdue ? 'text-red-400' : 'text-slate-200'}">₹${k.outstanding.toLocaleString('en-IN')}</span>
+              <span class="text-[10px] text-slate-400">(${utilPct}%)</span>
+            </div>
+            <div class="w-24 bg-slate-800 h-1 rounded-full overflow-hidden mt-1">
+              <div class="h-full rounded-full ${utilPct > 80 ? 'bg-red-500' : 'bg-emerald-500'}" style="width: ${utilPct}%"></div>
+            </div>
+          </td>
+          <td class="py-3 px-4">
+            <span class="bg-slate-800 text-slate-300 px-2 py-0.5 rounded text-[10px] font-bold border border-slate-700">${k.cycle}</span>
+          </td>
+          <td class="py-3 px-4">
+            ${k.isOverdue ? `
+              <span class="bg-red-500/20 text-red-400 border border-red-500/30 px-2 py-0.5 rounded text-[10px] font-black block w-max">
+                ${k.daysOverdue} Days Overdue
+              </span>
+            ` : `
+              <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-black block w-max">
+                Clean Record
+              </span>
+            `}
+          </td>
+          <td class="py-3 px-4 text-right space-x-1 whitespace-nowrap">
+            <button onclick="sendWhatsAppPaymentReminder('${k.name}', '${k.outstanding}')" class="px-2.5 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 font-bold text-[11px] transition">
+              <i class="ph-bold ph-whatsapp-logo"></i> Remind
+            </button>
+            <button onclick="adjustCreditLimit('${k.name}')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-[11px] transition">
+              Adjust Limit
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function sendWhatsAppPaymentReminder(shop, amount) {
+      showToast(`WhatsApp payment reminder sent to ${shop} for ₹${amount}`);
+    }
+
+    function adjustCreditLimit(shop) {
+      showToast(`Credit limit editor opened for ${shop}`);
+    }
+
+    // KYC Applications
+    const kycApplications = [
+      {
+        id: "KYC-WB-901",
+        shopName: "Joy Guru Grocery & Wholesale",
+        owner: "Debashis Panda",
+        phone: "+91 9832981100",
+        address: "Belda Road, Egra Municipality Ward 4",
+        gstin: "19AADCD9012F1Z1",
+        fssai: "12822019000142",
+        appliedDate: "Yesterday, 04:30 PM",
+        docs: ["GST Certificate (Active)", "FSSAI Food License", "Storefront Photo"]
+      },
+      {
+        id: "KYC-WB-902",
+        shopName: "New Annapurna Bhandar",
+        owner: "Kamalendu Bhowmik",
+        phone: "+91 9434190288",
+        address: "Hospital More, Contai Town",
+        gstin: "19BHKPB4412L1Z8",
+        fssai: "12821014000319",
+        appliedDate: "Today, 08:15 AM",
+        docs: ["Udyam MSME Certificate", "Shop Trade License"]
+      },
+      {
+        id: "KYC-WB-903",
+        shopName: "Maa Manasa Enterprise",
+        owner: "Sukumar Sen",
+        phone: "+91 9123894411",
+        address: "Digha Old Bus Stand",
+        gstin: "Applied (Pending)",
+        fssai: "12823011000882",
+        appliedDate: "Today, 09:40 AM",
+        docs: ["Aadhaar of Proprietor", "Trade License"]
+      }
+    ];
+
+    function renderKycCards() {
+      const container = document.getElementById('kyc-cards-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      kycApplications.forEach((app, idx) => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 relative shadow-md";
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div>
+              <span class="text-[9px] font-bold text-amber-400 uppercase tracking-wider block">${app.id}</span>
+              <h4 class="text-sm font-black text-white">${app.shopName}</h4>
+              <p class="text-[11px] text-slate-400">${app.owner} • ${app.phone}</p>
+            </div>
+            <span class="bg-purple-500/20 text-purple-400 border border-purple-500/30 text-[9px] font-black px-1.5 py-0.5 rounded">NEW KYC</span>
+          </div>
+
+          <div class="bg-slate-800/60 p-2.5 rounded-xl border border-slate-700/60 text-[11px] space-y-1">
+            <div class="text-slate-300"><strong>Address:</strong> ${app.address}</div>
+            <div class="text-slate-300 font-mono text-[10px]"><strong>GSTIN:</strong> ${app.gstin}</div>
+            <div class="text-slate-300 font-mono text-[10px]"><strong>FSSAI:</strong> ${app.fssai}</div>
+          </div>
+
+          <div>
+            <span class="text-[10px] font-black uppercase text-slate-400 block mb-1">Attached Verification Proofs</span>
+            <div class="flex flex-wrap gap-1">
+              ${app.docs.map(d => `<span class="bg-slate-800 border border-slate-700 text-slate-300 text-[10px] font-semibold px-2 py-0.5 rounded-md"><i class="ph-bold ph-file-text"></i> ${d}</span>`).join('')}
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 pt-2 border-t border-slate-800">
+            <button onclick="approveKyc('${app.id}', ${idx})" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-1.5 rounded-xl text-xs font-black transition flex items-center justify-center gap-1">
+              <i class="ph-bold ph-check"></i> Approve & Open Khata
+            </button>
+            <button onclick="rejectKyc('${app.id}', ${idx})" class="px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 py-1.5 rounded-xl text-xs font-bold transition">
+              Reject
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      const badgeKyc = document.getElementById('badge-kyc-count');
+      if (badgeKyc) badgeKyc.innerText = `${kycApplications.length} New`;
+    }
+
+    function approveKyc(kycId, idx) {
+      kycApplications.splice(idx, 1);
+      renderKycCards();
+      showToast(`Approved ${kycId}! Created standard ₹30,000 credit line.`);
+    }
+
+    function rejectKyc(kycId, idx) {
+      kycApplications.splice(idx, 1);
+      renderKycCards();
+      showToast(`Rejected ${kycId} due to document discrepancy.`);
+    }
+
+    // Modal & Depot Helpers
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+    }
+
+    function switchDepot(depot) {
+      const heading = document.getElementById('depot-heading-title');
+      if (heading) {
+        if (depot === 'CONTAI-02') heading.innerText = 'Contai Coastal Depot • Operations Control';
+        else if (depot === 'MIDNAPORE-03') heading.innerText = 'Midnapore Master Warehouse • Operations Control';
+        else heading.innerText = 'Egra Central Depot • Operations Control';
+      }
+      showToast(`Switched operations console view to ${depot}`);
+    }
+
+    function triggerInvoiceExport() {
+      showToast("Downloading consolidated E-Way bills zip for tomorrow's dispatch...");
+    }
+
+    function openCreateOrderModal() {
+      document.getElementById('create-order-modal').classList.remove('hidden');
+    }
+
+    function handleCreateBulkOrder(event) {
+      event.preventDefault();
+      const shop = document.getElementById('new-ord-shop').value;
+      const gstin = document.getElementById('new-ord-gstin').value.toUpperCase();
+      const items = document.getElementById('new-ord-items').value;
+      const units = parseInt(document.getElementById('new-ord-units').value) || 10;
+      const val = parseFloat(document.getElementById('new-ord-val').value) || 15000;
+      const pay = document.getElementById('new-ord-pay').value;
+      const route = document.getElementById('new-ord-route').value;
+
+      const newId = `WB-INV-${Math.floor(4925 + Math.random() * 900)}`;
+      wholesaleOrders.unshift({
+        id: newId,
+        shopName: shop,
+        owner: "Verified Partner",
+        gstin: gstin,
+        location: route.split(' ')[0] + " Cluster",
+        itemsSummary: items,
+        totalUnits: units,
+        totalWeight: `${units * 22} kg`,
+        orderValue: val,
+        paymentMode: pay,
+        route: route,
+        status: "NEW",
+        slot: "05:00 AM - 07:30 AM",
+        assignedDriver: "Unassigned"
+      });
+
+      renderOrdersTable(wholesaleOrders);
+      closeModal('create-order-modal');
+      document.getElementById('create-order-form').reset();
+      showToast(`Created wholesale order ${newId} for ${shop}`);
+    }
+
+    function openAddSkuModal() {
+      resetSkuImagePreview('new');
+      document.getElementById('add-sku-modal').classList.remove('hidden');
+    }
+
+    function handleCreateNewSku(event) {
+      event.preventDefault();
+      const name = document.getElementById('new-sku-name').value;
+      const cat = document.getElementById('new-sku-cat').value;
+      const bay = document.getElementById('new-sku-bay').value;
+      const stock = parseInt(document.getElementById('new-sku-stock').value) || 50;
+      const t1 = parseFloat(document.getElementById('new-sku-t1').value) || 1000;
+      const t2 = parseFloat(document.getElementById('new-sku-t2').value) || 950;
+      const t3 = parseFloat(document.getElementById('new-sku-t3').value) || 900;
+      const defaultThumb = `https://placehold.co/120x120/1e293b/f97316?text=${encodeURIComponent(name.slice(0, 8))}`;
+
+      inventoryCatalog.unshift({
+        id: `SKU-WB-${Math.floor(10 + Math.random() * 89)}`,
+        name: name,
+        category: cat,
+        bay: bay,
+        stockUnits: stock,
+        moq: 1,
+        t1: t1,
+        t2: t2,
+        t3: t3,
+        image: pendingNewSkuImageData || defaultThumb
+      });
+
+      renderInventoryTable();
+      closeModal('add-sku-modal');
+      document.getElementById('add-sku-form').reset();
+      resetSkuImagePreview('new');
+      showToast(`Published ${name} with product image to ApnaMart24 B2B catalog!`);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('admin-toast');
+      document.getElementById('admin-toast-text').innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3200);
+    }
+  </script>
+</body>
+</html>
