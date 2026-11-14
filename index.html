@@ -200,6 +200,12 @@
 
     <!-- Right Controls: Quick Search, Early Morning Dispatch Timer & Admin Profile -->
     <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Live Sync Refresh Button -->
+      <button onclick="manualAdminRefresh()" title="Sync & Refresh Live Data" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-black transition active:scale-95">
+        <i id="admin-global-refresh-icon" class="ph-bold ph-arrows-clockwise text-emerald-600 text-sm"></i>
+        <span class="hidden md:inline">Refresh</span>
+      </button>
+
       <!-- Connected Apps Switcher Dropdown -->
       <div class="relative">
         <button onclick="toggleAppSwitcherMenu()" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-black transition">
@@ -413,21 +419,8 @@
         <!-- Welcome & Fast Metrics Ribbon -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <div>
-            <h1 class="text-xl lg:text-2xl font-black text-slate-900 tracking-tight flex flex-wrap items-center gap-2">
-              <span id="depot-heading-title">Egra Central Depot • Operations Control</span>
-              <span class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-md font-bold">GSTIN Verified Hub</span>
-            </h1>
-            <p class="text-xs text-slate-500 mt-0.5">Live monitoring of B2B wholesale transactions, truck route packing, and Kirana Khata collections.</p>
-          </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <button onclick="triggerInvoiceExport()" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-xs">
-              <i class="ph-bold ph-file-arrow-down text-base text-brand-600"></i>
-              <span>Download E-Way Bills (ZIP)</span>
-            </button>
-            <button onclick="openCreateOrderModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 transition shadow-md shadow-brand-600/20">
-              <i class="ph-bold ph-plus-circle text-base"></i>
-              <span>New Bulk Dispatch</span>
-            </button>
+            <label class="text-slate-700 font-bold block mb-1">Driving License Number <span class="text-slate-400 font-normal">(Optional)</span></label>
+            <input type="text" id="driver-dl" placeholder="e.g. WB34 20190018291" class="w-full bg-slate-50 text-slate-900 font-mono uppercase font-semibold px-3 py-2 rounded-xl border border-slate-300 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500">
           </div>
         </div>
 
@@ -441,10 +434,10 @@
                 <i class="ph-bold ph-currency-inr text-lg"></i>
               </span>
             </div>
-            <div class="text-2xl font-black text-slate-900" id="kpi-gmv">₹4,82,450</div>
-            <div class="flex items-center gap-1.5 text-[11px] text-emerald-600 font-bold mt-2">
-              <i class="ph-bold ph-trend-up"></i>
-              <span>+18.4% vs yesterday (Pre-Diwali surge)</span>
+            <div class="text-2xl font-black text-slate-900" id="kpi-gmv">₹0</div>
+            <div class="flex items-center gap-1.5 text-[11px] text-slate-500 font-bold mt-2" id="kpi-gmv-sub">
+              <i class="ph-bold ph-minus"></i>
+              <span>0% vs yesterday (0 orders today)</span>
             </div>
           </div>
 
@@ -456,9 +449,9 @@
                 <i class="ph-bold ph-barbell text-lg"></i>
               </span>
             </div>
-            <div class="text-2xl font-black text-slate-900">28.4 MT</div>
-            <div class="flex items-center gap-1.5 text-[11px] text-slate-500 font-semibold mt-2">
-              <span>920 sacks Miniket • 310 Oil tins</span>
+            <div class="text-2xl font-black text-slate-900" id="kpi-tonnage">0.0 MT</div>
+            <div class="flex items-center gap-1.5 text-[11px] text-slate-500 font-semibold mt-2" id="kpi-tonnage-sub">
+              <span>0 sacks Miniket • 0 Oil tins</span>
             </div>
           </div>
 
@@ -470,9 +463,9 @@
                 <i class="ph-bold ph-storefront text-lg"></i>
               </span>
             </div>
-            <div class="text-2xl font-black text-slate-900">142 Shops</div>
-            <div class="flex items-center gap-1.5 text-[11px] text-purple-700 font-semibold mt-2">
-              <span>Egra (68), Contai (54), Ramnagar (20)</span>
+            <div class="text-2xl font-black text-slate-900" id="kpi-shops">0 Shops</div>
+            <div class="flex items-center gap-1.5 text-[11px] text-slate-500 font-semibold mt-2" id="kpi-shops-sub">
+              <span>Egra (0), Contai (0), Ramnagar (0)</span>
             </div>
           </div>
 
@@ -484,10 +477,10 @@
                 <i class="ph-bold ph-credit-card text-lg"></i>
               </span>
             </div>
-            <div class="text-2xl font-black text-slate-900">₹16,42,800</div>
-            <div class="flex items-center gap-1.5 text-[11px] text-emerald-600 font-bold mt-2">
+            <div class="text-2xl font-black text-slate-900" id="kpi-khata">₹0</div>
+            <div class="flex items-center gap-1.5 text-[11px] text-slate-500 font-bold mt-2" id="kpi-khata-sub">
               <i class="ph-bold ph-check-circle"></i>
-              <span>88.2% on-time repayment cycle</span>
+              <span>0% on-time repayment cycle</span>
             </div>
           </div>
         </div>
@@ -724,28 +717,28 @@
             <span class="text-[10px] font-bold text-slate-500 uppercase block">Active Delivery Drivers</span>
             <div class="text-xl font-black text-slate-900 mt-1" id="stat-total-drivers">4 Drivers</div>
             <span class="text-[10px] text-emerald-600 font-semibold flex items-center gap-1 mt-1">
-              <i class="ph-bold ph-check-circle"></i> 3 On Delivery • 1 Available
+              <i class="ph-bold ph-check-circle"></i> Ready at Hub Bay
             </span>
           </div>
 
           <div class="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-xs">
             <span class="text-[10px] font-bold text-slate-500 uppercase block">Wholesale Drops Today</span>
-            <div class="text-xl font-black text-slate-900 mt-1">18 / 24 Done</div>
-            <span class="text-[10px] text-amber-700 font-semibold flex items-center gap-1 mt-1">
-              <i class="ph-bold ph-clock"></i> 6 remaining before 07:30 AM
+            <div class="text-xl font-black text-slate-900 mt-1" id="stat-fleet-drops">0 / 0 Done</div>
+            <span class="text-[10px] text-slate-500 font-semibold flex items-center gap-1 mt-1">
+              <i class="ph-bold ph-clock"></i> 0 remaining before 07:30 AM
             </span>
           </div>
 
           <div class="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-xs">
             <span class="text-[10px] font-bold text-slate-500 uppercase block">Total Freight In Transit</span>
-            <div class="text-xl font-black text-slate-900 mt-1">6.25 MT</div>
+            <div class="text-xl font-black text-slate-900 mt-1" id="stat-fleet-tonnage">0.00 MT</div>
             <span class="text-[10px] text-slate-500 font-semibold block mt-1">Rice, Mustard Oil, Dal</span>
           </div>
 
           <div class="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-xs">
             <span class="text-[10px] font-bold text-slate-500 uppercase block">Fleet On-Time SLA</span>
-            <div class="text-xl font-black text-emerald-600 mt-1">98.4%</div>
-            <span class="text-[10px] text-slate-500 font-semibold block mt-1">Avg 14 min unloading/store</span>
+            <div class="text-xl font-black text-slate-900 mt-1" id="stat-fleet-sla">0%</div>
+            <span class="text-[10px] text-slate-500 font-semibold block mt-1">0 min unloading/store</span>
           </div>
         </div>
 
@@ -999,23 +992,23 @@
 
           <div class="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-xs">
             <span class="text-[10px] font-bold text-slate-500 uppercase block">Kirana Stores Onboarded (Nov)</span>
-            <div class="text-xl font-black text-rose-600 mt-1" id="stat-marketing-onboarded">68 Stores</div>
-            <span class="text-[10px] text-slate-500 font-semibold block mt-1">
-              Monthly Goal: 90 (75.5% achieved)
+            <div class="text-xl font-black text-rose-600 mt-1" id="stat-marketing-onboarded">0 Stores</div>
+            <span class="text-[10px] text-slate-500 font-semibold block mt-1" id="stat-marketing-goal-sub">
+              Monthly Goal: 90 (0% achieved)
             </span>
           </div>
 
           <div class="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-xs">
             <span class="text-[10px] font-bold text-slate-500 uppercase block">Field GMV Generated</span>
-            <div class="text-xl font-black text-slate-900 mt-1">₹31,45,000</div>
-            <span class="text-[10px] text-emerald-600 font-semibold flex items-center gap-1 mt-1">
-              <i class="ph-bold ph-trend-up"></i> +24.8% vs last month
+            <div class="text-xl font-black text-slate-900 mt-1" id="stat-marketing-gmv">₹0</div>
+            <span class="text-[10px] text-slate-500 font-semibold flex items-center gap-1 mt-1">
+              <i class="ph-bold ph-minus"></i> 0% vs last month
             </span>
           </div>
 
           <div class="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-xs">
             <span class="text-[10px] font-bold text-slate-500 uppercase block">Incentive Commission Pool</span>
-            <div class="text-xl font-black text-amber-700 mt-1">₹62,900</div>
+            <div class="text-xl font-black text-amber-700 mt-1" id="stat-marketing-comm">₹0</div>
             <span class="text-[10px] text-slate-500 font-semibold block mt-1">Avg 2.0% scheme commission</span>
           </div>
         </div>
@@ -1341,6 +1334,40 @@
         <button type="button" onclick="confirmRemoveMarketingAgent()" class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-xs shadow-md flex items-center gap-1.5 transition">
           <i class="ph-bold ph-trash"></i>
           <span>Remove Executive</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CONFIRM REMOVE DEPOT INVENTORY PRODUCT SKU -->
+  <div id="remove-sku-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-red-50 text-red-600 border border-red-200 flex items-center justify-center text-lg">
+            <i class="ph-bold ph-trash"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-black text-slate-900">Remove Product SKU</h3>
+            <p class="text-[10px] text-slate-500">Delete product from Depot Inventory & connected apps</p>
+          </div>
+        </div>
+        <button onclick="closeModal('remove-sku-modal')" class="text-slate-400 hover:text-slate-700">
+          <i class="ph-bold ph-x text-base"></i>
+        </button>
+      </div>
+
+      <div class="bg-red-50/70 border border-red-200 rounded-xl p-3 text-xs space-y-1">
+        <p class="text-slate-700">Are you sure you want to remove this product from Depot Inventory & Dynamic Slabs?</p>
+        <div class="font-black text-slate-900 pt-1" id="remove-sku-summary">Product Name • SKU</div>
+        <div class="text-[10px] font-mono text-red-700 font-bold" id="remove-sku-meta">Bay • Stock</div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-200">
+        <button type="button" onclick="closeModal('remove-sku-modal')" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200 text-xs">Cancel</button>
+        <button type="button" onclick="confirmRemoveSku()" class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-xs shadow-md flex items-center gap-1.5 transition">
+          <i class="ph-bold ph-trash"></i>
+          <span>Remove Product</span>
         </button>
       </div>
     </div>
@@ -1903,29 +1930,23 @@
   <!-- ================================================================== -->
   <!-- CONNECTED APPS HUB OVERLAY (AGENT APP / DRIVER APP / KIRANA STORE) -->
   <!-- ================================================================== -->
-  <div id="connected-app-overlay" onclick="if(event.target === this || event.target.id === 'connected-app-viewport') closeConnectedAppOverlay()" class="fixed inset-0 z-50 bg-slate-200 flex flex-col hidden overflow-hidden">
-    <!-- Smartphone Viewport Container -->
-    <div id="connected-app-viewport" class="flex-1 overflow-y-auto p-0 sm:p-4 flex items-center justify-center">
+  <div id="connected-app-overlay" onclick="if(event.target === this || event.target.id === 'connected-app-viewport') closeConnectedAppOverlay()" class="fixed inset-0 z-50 bg-white sm:bg-slate-100 flex flex-col hidden overflow-hidden">
+    <!-- App Viewport Container -->
+    <div id="connected-app-viewport" class="flex-1 w-full h-full overflow-hidden p-0 sm:p-4 flex items-stretch sm:items-center justify-center">
 
       <!-- ============================================================== -->
-      <!-- 1. MARKETING MAN / FIELD SALES EXECUTIVE SMARTPHONE APP        -->
+      <!-- 1. MARKETING MAN / FIELD SALES EXECUTIVE APP                   -->
       <!-- ============================================================== -->
-      <div id="subapp-agent" class="hidden w-full max-w-[412px] h-[850px] bg-white text-slate-900 rounded-[44px] shadow-2xl ring-8 ring-slate-800 border border-slate-700 overflow-hidden flex flex-col relative">
-        <!-- Phone Status Bar -->
-        <div class="bg-slate-900 text-white px-6 pt-2 pb-1.5 flex items-center justify-between shrink-0 select-none z-50">
-          <span class="text-[11px] font-black">11:15 AM</span>
-          <div class="w-24 h-3.5 bg-black rounded-full flex items-center justify-center gap-2 border border-slate-800">
-            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-          </div>
-          <div class="flex items-center gap-1.5 text-xs">
-            <span class="text-[9px] font-black bg-slate-800 px-1 rounded text-rose-400">ASO</span>
-            <i class="ph-bold ph-battery-full text-emerald-400"></i>
-          </div>
-        </div>
+      <div id="subapp-agent" class="hidden w-full h-[100dvh] sm:h-[92dvh] sm:max-w-[460px] bg-white text-slate-900 rounded-none sm:rounded-2xl border-0 sm:border sm:border-slate-200 shadow-none sm:shadow-xl overflow-hidden flex flex-col relative">
 
         <!-- LOGIN SCREEN OVERLAY (DEFAULT ENTRY) -->
-        <div id="agent-app-login-box" class="absolute inset-0 top-7 z-40 bg-white flex flex-col justify-between p-6 overflow-y-auto">
-          <div class="pt-4 space-y-5">
+        <div id="agent-app-login-box" class="absolute inset-0 top-0 z-40 bg-white flex flex-col justify-between p-5 sm:p-6 overflow-y-auto">
+          <div class="space-y-5">
+            <div class="flex justify-end">
+              <button type="button" onclick="closeConnectedAppOverlay()" title="Back to Admin Panel" class="text-[10px] font-bold text-slate-400 hover:text-slate-700 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-slate-100 transition">
+                <i class="ph-bold ph-squares-four"></i> Admin
+              </button>
+            </div>
             <!-- Brand Logo & Badge -->
             <div class="flex flex-col items-center text-center space-y-2">
               <svg class="h-16 w-auto" viewBox="0 0 720 290" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2040,7 +2061,7 @@
                 </g>
               </svg>
               <div class="flex items-center gap-1.5">
-                <span class="bg-rose-50 text-rose-600 border border-rose-200 text-[9px] font-black px-2 py-0.5 rounded-lg">MARKETING APP</span>
+                <button type="button" onclick="closeConnectedAppOverlay()" title="Back to Admin Panel" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-[9px] font-black px-2 py-0.5 rounded-lg transition">MARKETING APP</button>
                 <button onclick="logoutFieldAgentApp()" title="Logout" class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 flex items-center justify-center transition">
                   <i class="ph-bold ph-sign-out text-xs"></i>
                 </button>
@@ -2118,6 +2139,20 @@
               </button>
             </div>
 
+            <!-- My Added Kirana Stores Section (Always visible so agent can view & remove added Kiranas) -->
+            <div id="sub-ag-kiranas-section" class="space-y-2">
+              <div class="flex items-center justify-between px-1">
+                <span class="text-[10px] font-black uppercase tracking-wider text-rose-700 flex items-center gap-1">
+                  <i class="ph-fill ph-storefront"></i> My Added Kirana Stores
+                </span>
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded-full font-black" id="sub-ag-kiranas-count">0 Stores</span>
+                  <button type="button" onclick="openSubAgentModal('sub-ag-onboard-modal')" class="text-[10px] font-black text-rose-600 hover:underline">+ Add</button>
+                </div>
+              </div>
+              <div id="sub-ag-kiranas-list" class="space-y-2"></div>
+            </div>
+
             <!-- Onboarded Delivery Partners Strip (Visible once drivers are added) -->
             <div id="sub-ag-drivers-section" class="space-y-2 hidden">
               <div class="flex items-center justify-between px-1">
@@ -2139,21 +2174,25 @@
           </main>
 
           <!-- Bottom Marketing Navigation -->
-          <nav class="bg-white border-t border-slate-200 px-3 py-2 flex items-center justify-around shrink-0 z-30 text-[10px] shadow-md">
-            <button class="flex flex-col items-center gap-0.5 text-rose-600 font-bold">
+          <nav class="bg-white border-t border-slate-200 px-2 py-2 flex items-center justify-around shrink-0 z-30 text-[10px] shadow-md">
+            <button type="button" onclick="scrollToSubAgentSection('sub-ag-beat-list')" class="flex flex-col items-center gap-0.5 text-rose-600 font-bold">
               <i class="ph-fill ph-map-pin-line text-lg"></i><span>My Beat</span>
             </button>
-            <button onclick="openSubAssistedCatalogModal()" class="flex flex-col items-center gap-0.5 text-amber-600 font-bold">
+            <button type="button" onclick="scrollToSubAgentSection('sub-ag-kiranas-section')" class="flex flex-col items-center gap-0.5 text-slate-700 font-bold relative">
+              <div class="relative">
+                <i class="ph-bold ph-storefront text-lg text-rose-600"></i>
+                <span id="sub-nav-kiranas-badge" class="absolute -top-1 -right-2.5 bg-rose-600 text-white text-[8px] font-black min-w-[15px] h-[15px] px-1 rounded-full flex items-center justify-center">0</span>
+              </div>
+              <span>My Kiranas</span>
+            </button>
+            <button type="button" onclick="openSubAssistedCatalogModal()" class="flex flex-col items-center gap-0.5 text-amber-600 font-bold">
               <i class="ph-bold ph-shopping-cart-simple text-lg"></i><span>Take Order</span>
             </button>
-            <button onclick="openSubAgentModal('sub-ag-onboard-modal')" class="flex flex-col items-center gap-0.5 text-slate-500 font-semibold">
+            <button type="button" onclick="openSubAgentModal('sub-ag-onboard-modal')" class="flex flex-col items-center gap-0.5 text-slate-600 font-bold">
               <i class="ph-bold ph-user-plus text-lg"></i><span>Add Kirana</span>
             </button>
-            <button onclick="openSubAgentModal('sub-ag-driver-modal')" class="flex flex-col items-center gap-0.5 text-emerald-700 font-bold">
+            <button type="button" onclick="openSubAgentModal('sub-ag-driver-modal')" class="flex flex-col items-center gap-0.5 text-emerald-700 font-bold">
               <i class="ph-bold ph-truck text-lg"></i><span>Add Driver</span>
-            </button>
-            <button onclick="showToast('Incentive Payout: Credited on 5th of every month')" class="flex flex-col items-center gap-0.5 text-slate-500 font-semibold">
-              <i class="ph-bold ph-trophy text-lg"></i><span>Incentives</span>
             </button>
           </nav>
 
@@ -2208,8 +2247,8 @@
                   </div>
                 </div>
                 <div>
-                  <label class="text-[10px] font-bold text-slate-600 block mb-0.5">Commercial Driving License (DL) No *</label>
-                  <input type="text" id="sub-drv-inp-dl" required placeholder="WB34 20210048291" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-900 uppercase font-mono focus:outline-none focus:border-emerald-600">
+                  <label class="text-[10px] font-bold text-slate-600 block mb-0.5">Commercial Driving License (DL) No <span class="text-slate-400 font-normal">(Optional)</span></label>
+                  <input type="text" id="sub-drv-inp-dl" placeholder="WB34 20210048291" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-900 uppercase font-mono focus:outline-none focus:border-emerald-600">
                 </div>
 
                 <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl flex justify-between items-center text-[10px]">
@@ -2260,8 +2299,37 @@
             </div>
           </div>
 
+          <!-- MODAL: CONFIRM REMOVE ONBOARDED KIRANA STORE -->
+          <div id="sub-ag-remove-kirana-modal" class="absolute inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-3.5 hidden">
+            <div class="bg-white border border-slate-200 rounded-3xl w-full p-4 space-y-3 shadow-2xl text-xs text-slate-900">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-xl bg-red-50 text-red-600 border border-red-200 flex items-center justify-center text-sm">
+                    <i class="ph-bold ph-trash"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-black text-slate-900 text-xs">Remove Kirana Store</h3>
+                    <p class="text-[9px] text-slate-500">Delete from your added list & Admin KYC queue</p>
+                  </div>
+                </div>
+                <button type="button" onclick="closeSubAgentModal('sub-ag-remove-kirana-modal')" class="text-slate-400 hover:text-slate-700"><i class="ph-bold ph-x text-sm"></i></button>
+              </div>
+              <div class="bg-red-50/80 border border-red-200 rounded-2xl p-2.5 space-y-1">
+                <p class="text-[11px] text-slate-700">Are you sure you want to remove this Kirana store?</p>
+                <div class="font-black text-slate-900 text-xs" id="sub-ag-remove-kirana-name">Shop Name</div>
+                <div class="text-[10px] font-mono text-red-700 font-bold" id="sub-ag-remove-kirana-meta">Owner • Phone</div>
+              </div>
+              <div class="flex gap-2 pt-1">
+                <button type="button" onclick="closeSubAgentModal('sub-ag-remove-kirana-modal')" class="flex-1 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold">Cancel</button>
+                <button type="button" onclick="confirmRemoveSubAgentKirana()" class="flex-1 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black flex items-center justify-center gap-1 shadow">
+                  <i class="ph-bold ph-trash"></i> Remove Store
+                </button>
+              </div>
+            </div>
+          </div>
+
           <!-- MODAL: ASSISTED MULTI-ITEM WHOLESALE ORDER BUILDER -->
-          <div id="sub-ag-order-drawer" class="absolute inset-0 top-7 z-50 bg-white flex flex-col hidden">
+          <div id="sub-ag-order-drawer" class="absolute inset-0 top-0 z-50 bg-white flex flex-col hidden">
             <!-- Top Header -->
             <div class="p-3.5 bg-white border-b border-slate-200 flex items-center justify-between shrink-0">
               <div class="flex items-center gap-2">
@@ -2327,24 +2395,18 @@
       </div>
 
       <!-- ============================================================== -->
-      <!-- 2. DELIVERY PARTNER / DRIVER SMARTPHONE APP                    -->
+      <!-- 2. DELIVERY PARTNER / DRIVER APP                               -->
       <!-- ============================================================== -->
-      <div id="subapp-driver" class="hidden w-full max-w-[412px] h-[850px] bg-white text-slate-900 rounded-[44px] shadow-2xl ring-8 ring-slate-800 border border-slate-700 overflow-hidden flex flex-col relative">
-        <!-- Phone Status Bar -->
-        <div class="bg-slate-900 text-white px-6 pt-2 pb-1.5 flex items-center justify-between shrink-0 select-none z-50">
-          <span class="text-[11px] font-black">05:22 AM</span>
-          <div class="w-24 h-3.5 bg-black rounded-full flex items-center justify-center gap-2 border border-slate-800">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-          </div>
-          <div class="flex items-center gap-1.5 text-xs">
-            <span class="text-[9px] font-black bg-slate-800 px-1 rounded text-emerald-400">GPS</span>
-            <i class="ph-bold ph-battery-full text-emerald-400"></i>
-          </div>
-        </div>
+      <div id="subapp-driver" class="hidden w-full h-[100dvh] sm:h-[92dvh] sm:max-w-[460px] bg-white text-slate-900 rounded-none sm:rounded-2xl border-0 sm:border sm:border-slate-200 shadow-none sm:shadow-xl overflow-hidden flex flex-col relative">
 
         <!-- DRIVER LOGIN SCREEN OVERLAY -->
-        <div id="driver-app-login-box" class="absolute inset-0 top-7 z-40 bg-white flex flex-col justify-between p-6 overflow-y-auto">
-          <div class="pt-4 space-y-5">
+        <div id="driver-app-login-box" class="absolute inset-0 top-0 z-40 bg-white flex flex-col justify-between p-5 sm:p-6 overflow-y-auto">
+          <div class="space-y-5">
+            <div class="flex justify-end">
+              <button type="button" onclick="closeConnectedAppOverlay()" title="Back to Admin Panel" class="text-[10px] font-bold text-slate-400 hover:text-slate-700 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-slate-100 transition">
+                <i class="ph-bold ph-squares-four"></i> Admin
+              </button>
+            </div>
             <!-- Brand Logo & Badge -->
             <div class="flex flex-col items-center text-center space-y-2">
               <svg class="h-16 w-auto" viewBox="0 0 720 290" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2454,7 +2516,7 @@
                 </g>
               </svg>
               <div class="flex items-center gap-1.5">
-                <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9px] font-black px-2 py-0.5 rounded-lg">DELIVERY APP</span>
+                <button type="button" onclick="closeConnectedAppOverlay()" title="Back to Admin Panel" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-[9px] font-black px-2 py-0.5 rounded-lg transition">DELIVERY APP</button>
                 <button onclick="logoutDriverApp()" title="Logout" class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-600 flex items-center justify-center transition">
                   <i class="ph-bold ph-sign-out text-xs"></i>
                 </button>
@@ -2484,15 +2546,15 @@
             <div class="grid grid-cols-3 gap-2 mt-3 bg-slate-50 p-2.5 rounded-2xl border border-slate-200 text-center">
               <div>
                 <span class="text-[9px] text-slate-500 uppercase font-bold block">Morning Drops</span>
-                <span class="text-xs font-black text-slate-900" id="sub-drops-counter">2 / 5 Done</span>
+                <span class="text-xs font-black text-slate-900" id="sub-drops-counter">0 / 0 Done</span>
               </div>
               <div>
                 <span class="text-[9px] text-slate-500 uppercase font-bold block">Payload Weight</span>
-                <span class="text-xs font-black text-amber-700">1.42 MT</span>
+                <span class="text-xs font-black text-amber-700" id="sub-drv-payload">0.00 MT</span>
               </div>
               <div>
                 <span class="text-[9px] text-slate-500 uppercase font-bold block">COD Collected</span>
-                <span class="text-xs font-black text-emerald-700" id="sub-cod-collected">₹15,800</span>
+                <span class="text-xs font-black text-emerald-700" id="sub-cod-collected">₹0</span>
               </div>
             </div>
           </header>
@@ -2585,24 +2647,18 @@
       </div>
 
       <!-- ============================================================== -->
-      <!-- 3. KIRANA RETAILER B2B STOREFRONT SMARTPHONE APP               -->
+      <!-- 3. KIRANA RETAILER B2B STOREFRONT APP                          -->
       <!-- ============================================================== -->
-      <div id="subapp-kirana" class="hidden w-full max-w-[412px] h-[850px] bg-white text-slate-900 rounded-[44px] shadow-2xl ring-8 ring-slate-800 border border-slate-700 overflow-hidden flex flex-col relative">
-        <!-- Phone Status Bar -->
-        <div class="bg-slate-900 text-white px-6 pt-2 pb-1.5 flex items-center justify-between shrink-0 select-none z-50">
-          <span class="text-[11px] font-black">09:41 AM</span>
-          <div class="w-24 h-3.5 bg-black rounded-full flex items-center justify-center gap-2 border border-slate-800">
-            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-          </div>
-          <div class="flex items-center gap-1.5 text-xs">
-            <span class="text-[9px] font-black bg-slate-800 px-1 rounded text-emerald-400">5G</span>
-            <i class="ph-bold ph-battery-full text-emerald-400"></i>
-          </div>
-        </div>
+      <div id="subapp-kirana" class="hidden w-full h-[100dvh] sm:h-[92dvh] sm:max-w-[460px] bg-white text-slate-900 rounded-none sm:rounded-2xl border-0 sm:border sm:border-slate-200 shadow-none sm:shadow-xl overflow-hidden flex flex-col relative">
 
         <!-- KIRANA RETAILER LOGIN & NEW SHOP SIGN UP SCREEN -->
-        <div id="sub-retailer-auth-screen" class="absolute inset-0 top-7 z-40 bg-white flex flex-col justify-between p-5 overflow-y-auto no-scrollbar">
-          <div class="pt-2 space-y-4">
+        <div id="sub-retailer-auth-screen" class="absolute inset-0 top-0 z-40 bg-white flex flex-col justify-between p-5 overflow-y-auto no-scrollbar">
+          <div class="space-y-4">
+            <div class="flex justify-end">
+              <button type="button" onclick="closeConnectedAppOverlay()" title="Back to Admin Panel" class="text-[10px] font-bold text-slate-400 hover:text-slate-700 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-slate-100 transition">
+                <i class="ph-bold ph-squares-four"></i> Admin
+              </button>
+            </div>
             <!-- Brand Logo & Badge -->
             <div class="flex flex-col items-center text-center space-y-1.5">
               <svg class="h-14 w-auto" viewBox="0 0 720 290" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2777,7 +2833,7 @@
               <span class="truncate" id="sub-ret-header-shop-label">Maa Sarada Traders • Egra Hub</span>
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
-              <span class="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-black text-[9px]">RETAILER APP</span>
+              <button type="button" onclick="closeConnectedAppOverlay()" title="Back to Admin Panel" class="text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-1.5 py-0.5 rounded font-black text-[9px] transition">RETAILER APP</button>
               <button onclick="handleSubRetailerLogout()" title="Sign Out" class="w-5 h-5 rounded-md bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-600 flex items-center justify-center transition">
                 <i class="ph-bold ph-sign-out text-[11px]"></i>
               </button>
@@ -2857,7 +2913,7 @@
         </nav>
 
         <!-- MY ORDERS FULL-SCREEN VIEW -->
-        <div id="sub-retailer-orders-view" class="absolute inset-0 top-7 bottom-14 z-25 bg-slate-50 flex flex-col hidden">
+        <div id="sub-retailer-orders-view" class="absolute inset-0 top-0 bottom-14 z-25 bg-slate-50 flex flex-col hidden">
           <!-- Header -->
           <div class="bg-white border-b border-slate-200 p-3.5 flex items-center justify-between shrink-0 shadow-xs">
             <div class="flex items-center gap-2">
@@ -2958,6 +3014,7 @@
     // ============================================
     const FIXED_ADMIN_LOGIN_ID = "amit7074b2b";
     const ADMIN_PASS_STORAGE_KEY = "apnamart24_admin_pass_v1";
+    const ADMIN_SESSION_KEY = "apnamart24_admin_session_active";
     let isAdminAuthenticated = false;
 
     function getStoredAdminPassword() {
@@ -2974,7 +3031,7 @@
       if (!input || !eye) return;
       if (input.type === 'password') {
         input.type = 'text';
-        eye.className = 'ph-bold ph-eye-slash text-base text-brand-400';
+        eye.className = 'ph-bold ph-eye-slash text-base text-brand-600';
       } else {
         input.type = 'password';
         eye.className = 'ph-bold ph-eye text-base';
@@ -2996,6 +3053,9 @@
 
       if (errorBox) errorBox.classList.add('hidden');
       isAdminAuthenticated = true;
+      try {
+        sessionStorage.setItem(ADMIN_SESSION_KEY, '1');
+      } catch (e) {}
       document.getElementById('admin-login-gate').classList.add('hidden');
       document.getElementById('admin-login-form').reset();
       showToast("Welcome back, amit7074b2b! Admin Console unlocked.");
@@ -3003,6 +3063,9 @@
 
     function logoutAdminPanel() {
       isAdminAuthenticated = false;
+      try {
+        sessionStorage.removeItem(ADMIN_SESSION_KEY);
+      } catch (e) {}
       document.getElementById('admin-login-gate').classList.remove('hidden');
       showToast("Admin Panel locked securely.");
     }
@@ -3056,7 +3119,7 @@
     }
 
     // ============================================
-    // CENTRAL ECOSYSTEM STATE ARRAYS
+    // CENTRAL ECOSYSTEM STATE ARRAYS (ALL METRICS START AT 0)
     // ============================================
     const fleetDrivers = [
       {
@@ -3069,14 +3132,14 @@
         plate: "WB 34 AD 8219",
         capacity: "1.5 MT",
         hub: "Egra Central Hub",
-        status: "ON_ROUTE",
-        currentRoute: "Route #WB-EGRA-01 (Egra - Kasba)",
-        dropsDone: 2,
-        totalDrops: 6,
-        loadTonnage: "1.42 MT (95%)",
-        battery: "88%",
-        speed: "42 km/h",
-        activeOrder: "WB-INV-4921",
+        status: "IDLE",
+        currentRoute: "Ready at Egra Bay A",
+        dropsDone: 0,
+        totalDrops: 0,
+        loadTonnage: "0 MT (Empty)",
+        battery: "100%",
+        speed: "0 km/h",
+        activeOrder: "None",
         rating: 4.9
       },
       {
@@ -3089,14 +3152,14 @@
         plate: "WB 29 BF 1102",
         capacity: "2.5 MT",
         hub: "Contai Coastal Depot",
-        status: "AT_STOP",
-        currentRoute: "Route #WB-CONTAI-02 (Contai Bypass)",
-        dropsDone: 5,
-        totalDrops: 9,
-        loadTonnage: "2.10 MT (84%)",
-        battery: "92%",
-        speed: "0 km/h (Unloading)",
-        activeOrder: "WB-INV-4922",
+        status: "IDLE",
+        currentRoute: "Ready at Contai Bay C",
+        dropsDone: 0,
+        totalDrops: 0,
+        loadTonnage: "0 MT (Empty)",
+        battery: "100%",
+        speed: "0 km/h",
+        activeOrder: "None",
         rating: 4.8
       },
       {
@@ -3109,14 +3172,14 @@
         plate: "WB 32 CX 9044",
         capacity: "3.0 MT",
         hub: "Egra Central Hub",
-        status: "ON_ROUTE",
-        currentRoute: "Route #WB-DIGHA-03 (Ramnagar - Digha)",
-        dropsDone: 1,
-        totalDrops: 5,
-        loadTonnage: "2.73 MT (91%)",
-        battery: "76%",
-        speed: "48 km/h",
-        activeOrder: "WB-INV-4924",
+        status: "IDLE",
+        currentRoute: "Ready at Egra Bay B",
+        dropsDone: 0,
+        totalDrops: 0,
+        loadTonnage: "0 MT (Empty)",
+        battery: "100%",
+        speed: "0 km/h",
+        activeOrder: "None",
         rating: 4.9
       },
       {
@@ -3153,12 +3216,12 @@
         beat: "Egra Town & Kasba Mandi",
         transport: "Two-Wheeler (WB 34 V 4192)",
         monthlyTarget: 25,
-        achieved: 21,
-        gmvBooked: "₹9,80,000",
+        achieved: 0,
+        gmvBooked: "₹0",
         commissionRate: "2.0%",
-        commissionEarned: "₹19,600",
+        commissionEarned: "₹0",
         status: "ON_BEAT",
-        lastCheckIn: "10 mins ago at Kasba Rice Market",
+        lastCheckIn: "Ready on Egra Beat",
         joinedDate: "15 Jan 2026",
         rating: 4.9
       },
@@ -3173,12 +3236,12 @@
         beat: "Contai Supermarket & Bypass",
         transport: "Two-Wheeler (WB 29 L 8812)",
         monthlyTarget: 25,
-        achieved: 23,
-        gmvBooked: "₹11,40,000",
+        achieved: 0,
+        gmvBooked: "₹0",
         commissionRate: "2.0%",
-        commissionEarned: "₹22,800",
+        commissionEarned: "₹0",
         status: "ON_BEAT",
-        lastCheckIn: "25 mins ago at Coastal Wholesale Point",
+        lastCheckIn: "Ready on Contai Beat",
         joinedDate: "02 Feb 2026",
         rating: 4.8
       },
@@ -3193,12 +3256,12 @@
         beat: "New Digha & Old Digha Beach Hotels",
         transport: "Electric Scooter",
         monthlyTarget: 20,
-        achieved: 14,
-        gmvBooked: "₹7,25,000",
+        achieved: 0,
+        gmvBooked: "₹0",
         commissionRate: "2.0%",
-        commissionEarned: "₹14,500",
+        commissionEarned: "₹0",
         status: "MEETING",
-        lastCheckIn: "At Sea Hawk Restaurant & Hotel Hub",
+        lastCheckIn: "Ready on Digha Beat",
         joinedDate: "10 Mar 2026",
         rating: 4.7
       },
@@ -3213,142 +3276,21 @@
         beat: "Negua Bazar & Ramnagar Link",
         transport: "Two-Wheeler (WB 34 P 1029)",
         monthlyTarget: 20,
-        achieved: 10,
-        gmvBooked: "₹3,00,000",
+        achieved: 0,
+        gmvBooked: "₹0",
         commissionRate: "2.0%",
-        commissionEarned: "₹6,000",
+        commissionEarned: "₹0",
         status: "IN_DEPOT",
-        lastCheckIn: "Restocking marketing brochures at Egra Hub",
+        lastCheckIn: "At Egra Hub",
         joinedDate: "01 May 2026",
         rating: 4.6
       }
     ];
 
-    const marketingBookedOrders = [
-      {
-        orderId: "FLD-ORD-8821",
-        time: "Today, 09:42 AM",
-        agentId: "MKT-EGRA-01",
-        agentName: "Anirban Chakraborty",
-        shopName: "Kasba Laxmi Bhandar",
-        beat: "Egra Town & Kasba Mandi",
-        itemsSummary: "12x Miniket Rice 25kg, 5x Engine Mustard Oil 15L",
-        totalUnits: 17,
-        orderValue: 26940,
-        commission: 539,
-        paymentMode: "Khata (14-Day)",
-        pushedToDispatch: false
-      },
-      {
-        orderId: "FLD-ORD-8822",
-        time: "Today, 09:15 AM",
-        agentId: "MKT-CONTAI-02",
-        agentName: "Debasish Samanta",
-        shopName: "Contai Highway Super Store",
-        beat: "Contai Supermarket & Bypass",
-        itemsSummary: "10x Engine Mustard Oil 15L, 15x Aashirvaad Atta 10kg",
-        totalUnits: 25,
-        orderValue: 25500,
-        commission: 510,
-        paymentMode: "Instant UPI",
-        pushedToDispatch: true
-      },
-      {
-        orderId: "FLD-ORD-8823",
-        time: "Today, 08:50 AM",
-        agentId: "MKT-DIGHA-03",
-        agentName: "Priyabrata Manna",
-        shopName: "Hotel Sagarika & Kitchen Supply",
-        beat: "New Digha & Old Digha Beach Hotels",
-        itemsSummary: "20x Miniket Rice 25kg, 4x Desi Toor Dal 30kg",
-        totalUnits: 24,
-        orderValue: 43000,
-        commission: 860,
-        paymentMode: "Bank NEFT",
-        pushedToDispatch: false
-      },
-      {
-        orderId: "FLD-ORD-8824",
-        time: "Yesterday, 06:20 PM",
-        agentId: "MKT-EGRA-04",
-        agentName: "Soumya Ranjan Pal",
-        shopName: "Negua Modern Kirana",
-        beat: "Negua Bazar & Ramnagar Link",
-        itemsSummary: "6x Dettol Bathing Soap Cartons, 10x Aashirvaad Atta 10kg",
-        totalUnits: 16,
-        orderValue: 20720,
-        commission: 414,
-        paymentMode: "Cash on Delivery",
-        pushedToDispatch: true
-      }
-    ];
-
-    const wholesaleOrders = [
-      {
-        id: "WB-INV-4921",
-        shopName: "Maa Sarada Traders",
-        owner: "Ramesh Giri",
-        gstin: "19AAACH7409R1ZV",
-        location: "Egra Central Market",
-        itemsSummary: "10x Miniket Rice 25kg, 4x Engine Mustard Oil 15L",
-        totalUnits: 14,
-        totalWeight: "310 kg",
-        orderValue: 22400,
-        paymentMode: "Khata (14-Day)",
-        route: "Egra Town Route 1",
-        status: "NEW",
-        slot: "05:00 AM - 07:30 AM",
-        assignedDriver: "Unassigned"
-      },
-      {
-        id: "WB-INV-4922",
-        shopName: "Bishnu Stores Kirana",
-        owner: "Bishnupada Manna",
-        gstin: "19BGRPM8901L1Z4",
-        location: "Contai Coastal Bypass",
-        itemsSummary: "20x Aashirvaad Atta, 2x Toor Dal Jute Sack",
-        totalUnits: 22,
-        totalWeight: "260 kg",
-        orderValue: 15800,
-        paymentMode: "Instant UPI",
-        route: "Contai Coastal Route 2",
-        status: "PACKING",
-        slot: "05:00 AM - 07:30 AM",
-        assignedDriver: "Tapan Giri (Bolero WB 29 BF 1102)"
-      },
-      {
-        id: "WB-INV-4923",
-        shopName: "Ganesh Variety Store",
-        owner: "Santosh Das",
-        gstin: "19AABCG3312K1Z9",
-        location: "Negua Bazar",
-        itemsSummary: "8x Dettol Soap Master Cartons, 3x Jeera 10kg",
-        totalUnits: 11,
-        totalWeight: "135 kg",
-        orderValue: 30100,
-        paymentMode: "Khata (30-Day)",
-        route: "Egra-Negua Route 1",
-        status: "DISPATCHED",
-        slot: "05:00 AM - 07:30 AM",
-        assignedDriver: "Bikas Maity (Tata Ace WB 34 AD 8219)"
-      },
-      {
-        id: "WB-INV-4924",
-        shopName: "Digha Super Kirana & Hotel Supply",
-        owner: "Pranab Jana",
-        gstin: "19AATPK1289P1Z8",
-        location: "New Digha Sea Beach",
-        itemsSummary: "25x Miniket Rice 25kg, 10x Mustard Oil 15L",
-        totalUnits: 35,
-        totalWeight: "775 kg",
-        orderValue: 54500,
-        paymentMode: "Bank NEFT",
-        route: "Digha Route 3",
-        status: "NEW",
-        slot: "05:00 AM - 07:30 AM",
-        assignedDriver: "Unassigned"
-      }
-    ];
+    const marketingBookedOrders = [];
+    const wholesaleOrders = [];
+    const retailerKhataList = [];
+    const kycApplications = [];
 
     const inventoryCatalog = [
       {
@@ -3413,44 +3355,67 @@
       }
     ];
 
+    const registeredSubRetailers = [
+      { id: "RET-EGRA-01", phone: "9832049182", pin: "1234", shop: "Maa Sarada Traders", owner: "Ramesh Giri", hub: "Egra Hub", limit: 50000, available: 50000 },
+      { id: "RET-CONTAI-02", phone: "9832108873", pin: "5678", shop: "Bishnu Stores Kirana", owner: "Bishnupada Manna", hub: "Contai Depot", limit: 40000, available: 40000 }
+    ];
+
+    const subRetailerOrders = [];
+    const subDriverStops = [];
+    const subAgentBeatShops = [
+      { shop: "Maa Sarada Traders", owner: "Ramesh Giri", area: "Kasba Mandi", status: "PENDING", note: "Ready for morning wholesale order visit" },
+      { shop: "Joy Guru Enterprise", owner: "Debashis Panda", area: "Belda More", status: "PENDING", note: "Pitch 18% margin scheme on Mustard Oil 15L" },
+      { shop: "New Annapurna Bhandar", owner: "Kamalendu Bhowmik", area: "Hospital More", status: "PROSPECT", note: "Collect FSSAI & Trade License for Khata setup" }
+    ];
+    const subAgentOnboardedKiranas = [];
+    const subAgentOnboardedDrivers = [];
+
     let currentEditingSku = null;
     let currentAssignOrderId = null;
+    let pendingRemoveDriverId = null;
+    let pendingRemoveMarketingId = null;
+    let pendingRemoveSkuId = null;
+    let pendingSubAgentRemoveKiranaId = null;
     let pendingNewSkuImageData = "";
     let pendingEditSkuImageData = "";
     let loggedInSubAgent = null;
     let loggedInSubDriver = null;
+    let activeSubRetailer = registeredSubRetailers[0];
     let subAgentCart = {};
-    let subRetailerCart = {};
-    let subKhataAvailable = 31600;
-    let subKhataTotal = 50000;
-    let subActiveRetailer = null;
+    let subKiranaCart = {};
     let subKiranaActiveCat = 'all';
     let subKiranaSearchTerm = '';
-    const subRegisteredRetailers = [
-      { id: "RET-EGRA-01", phone: "9832049182", pin: "1234", shop: "Maa Sarada Traders", owner: "Ramesh Giri", hub: "Egra Hub", limit: 50000, available: 31600 },
-      { id: "RET-CONTAI-02", phone: "9832108873", pin: "5678", shop: "Bishnu Stores Kirana", owner: "Bishnupada Manna", hub: "Contai Depot", limit: 40000, available: 28500 }
-    ];
-    const subRetailerOrders = [
-      { id: "WB-INV-4921", date: "Tomorrow, 5:00 AM", items: "10x Miniket Super Fine Rice (25kg), 4x Engine Mustard Oil (15L)", packs: 14, total: 22400, payMode: "Khata BNPL (14d)", status: "DISPATCH 5:00 AM", otp: "7412", driver: "Bikas Maity (WB 34 AD 8219)" },
-      { id: "WB-INV-4910", date: "10 Nov, 5:35 AM", items: "12x Aashirvaad Chakki Atta (10kg), 2x Desi Toor Dal (30kg)", packs: 14, total: 13250, payMode: "Khata BNPL (14d)", status: "DELIVERED", otp: "3910", driver: "Tapan Giri (WB 29 BF 1102)" },
-      { id: "WB-INV-4895", date: "04 Nov, 6:10 AM", items: "6x Engine Mustard Oil (15L), 3x Dettol Soap Master Box", packs: 9, total: 20730, payMode: "Instant UPI", status: "DELIVERED", otp: "8821", driver: "Bikas Maity (WB 34 AD 8219)" }
-    ];
-    const subDriverStops = [
-      { id: 1, inv: "WB-INV-4919", shop: "Shree Krishna Grocery", addr: "Egra College More", items: "8x Atta 10kg, 2x Oil 15L", amount: "₹10,400", mode: "Cash Collected", status: "DONE" },
-      { id: 2, inv: "WB-INV-4920", shop: "Ganesh Variety Store", addr: "Negua Bazar", items: "11x Dettol Soap Cartons", amount: "₹15,800", mode: "Cash Collected", status: "DONE" },
-      { id: 3, inv: "WB-INV-4921", shop: "Maa Sarada Traders", addr: "Kasba Mandi Road, Egra Gate 2", items: "10x Miniket Rice (25kg) + 4x Engine Oil (15L)", amount: "₹22,400", mode: "Khata BNPL (Pre-Approved)", status: "ACTIVE" },
-      { id: 4, inv: "WB-INV-4925", shop: "Tara Maa Bhandar", addr: "Contai Bypass Crossing", items: "15x Miniket Rice 25kg", amount: "₹21,300", mode: "Collect Cash on Delivery", status: "PENDING" },
-      { id: 5, inv: "WB-INV-4926", shop: "Bishnu Stores Kirana", addr: "Contai Coastal Road", items: "6x Toor Dal 30kg Sacks", amount: "₹23,700", mode: "UPI QR on Delivery", status: "PENDING" }
-    ];
-    const subAgentBeatShops = [
-      { shop: "Maa Sarada Traders", owner: "Ramesh Giri", area: "Kasba Mandi", status: "VISITED", note: "Booked 14 Sacks Miniket & Oil (₹22,400)" },
-      { shop: "Joy Guru Enterprise", owner: "Debashis Panda", area: "Belda More", status: "PENDING", note: "Pitch 18% margin scheme on Mustard Oil 15L" },
-      { shop: "New Annapurna Bhandar", owner: "Kamalendu Bhowmik", area: "Hospital More", status: "PROSPECT", note: "Collect FSSAI & Trade License for Khata setup" }
-    ];
-    const subAgentOnboardedDrivers = [];
 
-    // LocalStorage Sync Key so all data persists across refreshes & connected views
-    const STORAGE_SYNC_KEY = "apnamart24_b2b_ecosystem_v1";
+    // ============================================
+    // REAL-TIME PERSISTENCE & CROSS-TAB SYNC
+    // ============================================
+    const STORAGE_SYNC_KEY = "apnamart24_b2b_ecosystem_v3";
+    const AGENT_SESSION_STORAGE_KEY = "apnamart24_persistent_agent_id_v1";
+    const DRIVER_SESSION_STORAGE_KEY = "apnamart24_persistent_driver_id_v1";
+    const RETAILER_SESSION_STORAGE_KEY = "apnamart24_persistent_retailer_id_v1";
+    let syncChannel = null;
+    try {
+      syncChannel = new BroadcastChannel("apnamart24_b2b_live_sync");
+      syncChannel.onmessage = function(event) {
+        if (event && event.data && event.data.type === "SYNC_STATE") {
+          loadEcosystemState(true);
+          refreshAllLiveViews();
+        }
+      };
+    } catch (e) {}
+
+    window.addEventListener("storage", function(event) {
+      if (event.key === STORAGE_SYNC_KEY) {
+        loadEcosystemState(true);
+        refreshAllLiveViews();
+      }
+    });
+
+    function replaceArrayContents(targetArr, nextArr) {
+      if (!Array.isArray(nextArr)) return;
+      targetArr.length = 0;
+      targetArr.push(...nextArr);
+    }
 
     function saveEcosystemState() {
       try {
@@ -3459,47 +3424,46 @@
           marketingAgents,
           marketingBookedOrders,
           wholesaleOrders,
-          inventoryCatalog
+          inventoryCatalog,
+          retailerKhataList,
+          kycApplications,
+          registeredSubRetailers,
+          subRetailerOrders,
+          subDriverStops,
+          subAgentBeatShops,
+          subAgentOnboardedKiranas,
+          subAgentOnboardedDrivers
         };
         localStorage.setItem(STORAGE_SYNC_KEY, JSON.stringify(snapshot));
-      } catch (e) {
-        // Ignore storage quota warnings on large base64 images
-      }
+        if (syncChannel) {
+          syncChannel.postMessage({ type: "SYNC_STATE", ts: Date.now() });
+        }
+      } catch (e) {}
     }
 
-    function loadEcosystemState() {
+    function loadEcosystemState(fromExternalEvent) {
       try {
         const raw = localStorage.getItem(STORAGE_SYNC_KEY);
         if (!raw) return;
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed.fleetDrivers)) {
-          fleetDrivers.length = 0;
-          fleetDrivers.push(...parsed.fleetDrivers);
-        }
-        if (Array.isArray(parsed.marketingAgents)) {
-          marketingAgents.length = 0;
-          marketingAgents.push(...parsed.marketingAgents);
-        }
-        if (Array.isArray(parsed.marketingBookedOrders)) {
-          marketingBookedOrders.length = 0;
-          marketingBookedOrders.push(...parsed.marketingBookedOrders);
-        }
-        if (Array.isArray(parsed.wholesaleOrders)) {
-          wholesaleOrders.length = 0;
-          wholesaleOrders.push(...parsed.wholesaleOrders);
-        }
-        if (Array.isArray(parsed.inventoryCatalog)) {
-          inventoryCatalog.length = 0;
-          inventoryCatalog.push(...parsed.inventoryCatalog);
-        }
-      } catch (e) {
-        // Fallback to default seeded state
-      }
+        replaceArrayContents(fleetDrivers, parsed.fleetDrivers);
+        replaceArrayContents(marketingAgents, parsed.marketingAgents);
+        replaceArrayContents(marketingBookedOrders, parsed.marketingBookedOrders);
+        replaceArrayContents(wholesaleOrders, parsed.wholesaleOrders);
+        replaceArrayContents(inventoryCatalog, parsed.inventoryCatalog);
+        replaceArrayContents(retailerKhataList, parsed.retailerKhataList);
+        replaceArrayContents(kycApplications, parsed.kycApplications);
+        replaceArrayContents(registeredSubRetailers, parsed.registeredSubRetailers);
+        replaceArrayContents(subRetailerOrders, parsed.subRetailerOrders);
+        replaceArrayContents(subDriverStops, parsed.subDriverStops);
+        replaceArrayContents(subAgentBeatShops, parsed.subAgentBeatShops);
+        replaceArrayContents(subAgentOnboardedKiranas, parsed.subAgentOnboardedKiranas);
+        replaceArrayContents(subAgentOnboardedDrivers, parsed.subAgentOnboardedDrivers);
+      } catch (e) {}
     }
 
-    // Initialization
-    window.onload = function() {
-      loadEcosystemState();
+    function refreshAllLiveViews() {
+      updateDashboardKPIs();
       renderOrdersTable(wholesaleOrders);
       renderInventoryTable();
       renderKhataTable();
@@ -3508,7 +3472,109 @@
       renderMarketingAgents();
       populateAgentOrderDropdowns();
       renderMarketingBookedOrders('ALL');
-    };
+      renderKiranaCatalogCards();
+      renderSubRetailerOrders();
+      refreshSubKhataUI();
+      renderDriverAssignedOrders();
+      renderSubAgentOnboardedKiranas();
+      renderSubAgentOnboardedDrivers();
+      renderSubAgentBeatShops();
+    }
+
+    function manualAdminRefresh() {
+      const icon = document.getElementById('admin-global-refresh-icon');
+      if (icon) icon.classList.add('animate-spin');
+      loadEcosystemState(true);
+      refreshAllLiveViews();
+      setTimeout(() => {
+        if (icon) icon.classList.remove('animate-spin');
+        showToast("Admin Panel & Live Ecosystem Synced & Refreshed!");
+      }, 500);
+    }
+
+    function updateDashboardKPIs() {
+      const totalGmv = wholesaleOrders.reduce((sum, o) => sum + (Number(o.orderValue) || 0), 0);
+      const totalPacks = wholesaleOrders.reduce((sum, o) => sum + (Number(o.totalUnits) || 0), 0);
+      const totalKg = wholesaleOrders.reduce((sum, o) => {
+        const w = parseFloat(String(o.totalWeight || '0').replace(/[^\d.]/g, '')) || 0;
+        return sum + w;
+      }, 0);
+      const totalMt = (totalKg / 1000).toFixed(1);
+      const totalShops = retailerKhataList.length;
+      const totalKhataOut = retailerKhataList.reduce((sum, k) => sum + (Number(k.outstanding) || 0), 0);
+
+      const gmvEl = document.getElementById('kpi-gmv');
+      const gmvSub = document.getElementById('kpi-gmv-sub');
+      if (gmvEl) gmvEl.innerText = `₹${totalGmv.toLocaleString('en-IN')}`;
+      if (gmvSub) {
+        gmvSub.innerHTML = `<i class="ph-bold ${wholesaleOrders.length > 0 ? 'ph-trend-up text-emerald-600' : 'ph-minus'}"></i><span>${wholesaleOrders.length} wholesale order${wholesaleOrders.length === 1 ? '' : 's'} recorded</span>`;
+      }
+
+      const tonEl = document.getElementById('kpi-tonnage');
+      const tonSub = document.getElementById('kpi-tonnage-sub');
+      if (tonEl) tonEl.innerText = `${totalMt} MT`;
+      if (tonSub) tonSub.innerHTML = `<span>${totalPacks} total packs • ${totalKg} kg weight</span>`;
+
+      const shopsEl = document.getElementById('kpi-shops');
+      const shopsSub = document.getElementById('kpi-shops-sub');
+      if (shopsEl) shopsEl.innerText = `${totalShops} Shops`;
+      if (shopsSub) {
+        const egraCnt = retailerKhataList.filter(k => (k.location || '').toLowerCase().includes('egra')).length;
+        const contaiCnt = retailerKhataList.filter(k => (k.location || '').toLowerCase().includes('contai')).length;
+        const otherCnt = Math.max(0, totalShops - egraCnt - contaiCnt);
+        shopsSub.innerHTML = `<span>Egra (${egraCnt}), Contai (${contaiCnt}), Other (${otherCnt})</span>`;
+      }
+
+      const khataEl = document.getElementById('kpi-khata');
+      const khataSub = document.getElementById('kpi-khata-sub');
+      if (khataEl) khataEl.innerText = `₹${totalKhataOut.toLocaleString('en-IN')}`;
+      if (khataSub) {
+        const overdueCnt = retailerKhataList.filter(k => k.isOverdue).length;
+        khataSub.innerHTML = `<i class="ph-bold ph-check-circle"></i><span>${overdueCnt} overdue account${overdueCnt === 1 ? '' : 's'}</span>`;
+      }
+
+      // Fleet KPIs
+      const activeDrivers = fleetDrivers.filter(d => d.status !== 'IDLE').length;
+      const dropsDone = fleetDrivers.reduce((s, d) => s + (d.dropsDone || 0), 0);
+      const totalDrops = fleetDrivers.reduce((s, d) => s + (d.totalDrops || 0), 0);
+      const dropsEl = document.getElementById('stat-fleet-drops');
+      const fleetTonEl = document.getElementById('stat-fleet-tonnage');
+      const fleetSlaEl = document.getElementById('stat-fleet-sla');
+      if (dropsEl) dropsEl.innerText = `${dropsDone} / ${totalDrops} Done`;
+      if (fleetTonEl) fleetTonEl.innerText = `${(totalKg / 1000).toFixed(2)} MT`;
+      if (fleetSlaEl) fleetSlaEl.innerText = activeDrivers > 0 ? '98.4%' : '0%';
+
+      // Marketing KPIs
+      const mktGmv = marketingBookedOrders.reduce((s, o) => s + (Number(o.orderValue) || 0), 0);
+      const mktComm = marketingBookedOrders.reduce((s, o) => s + (Number(o.commission) || 0), 0);
+      const mktGmvEl = document.getElementById('stat-marketing-gmv');
+      const mktCommEl = document.getElementById('stat-marketing-comm');
+      if (mktGmvEl) mktGmvEl.innerText = `₹${mktGmv.toLocaleString('en-IN')}`;
+      if (mktCommEl) mktCommEl.innerText = `₹${mktComm.toLocaleString('en-IN')}`;
+    }
+
+    function deductInventoryStock(itemsSummary, lineItems) {
+      if (Array.isArray(lineItems) && lineItems.length > 0) {
+        lineItems.forEach(li => {
+          const sku = inventoryCatalog.find(c => c.id === li.skuId);
+          if (sku) {
+            sku.stockUnits = Math.max(0, (Number(sku.stockUnits) || 0) - (Number(li.qty) || 0));
+          }
+        });
+        return;
+      }
+      const parts = String(itemsSummary || '').split(',').map(p => p.trim()).filter(Boolean);
+      parts.forEach(part => {
+        const m = part.match(/^(\d+)\s*[xX]\s*(.+)$/);
+        if (!m) return;
+        const qty = parseInt(m[1], 10) || 0;
+        const nameLower = m[2].toLowerCase();
+        const sku = inventoryCatalog.find(c => c.name.toLowerCase().includes(nameLower.split(' ')[0]));
+        if (sku) {
+          sku.stockUnits = Math.max(0, (Number(sku.stockUnits) || 0) - qty);
+        }
+      });
+    }
 
     // ============================================
     // CONNECTED APPS SWITCHER & LIVE SYNC HANDLERS
@@ -3527,714 +3593,89 @@
         return;
       }
 
+      try {
+        history.replaceState(null, '', '#' + appType);
+      } catch (e) {}
+
       document.getElementById('connected-app-overlay').classList.remove('hidden');
       document.getElementById('subapp-agent').classList.add('hidden');
       document.getElementById('subapp-driver').classList.add('hidden');
       document.getElementById('subapp-kirana').classList.add('hidden');
 
-      const badge = document.getElementById('conn-app-badge');
       if (appType === 'agent') {
-        if (badge) {
-          badge.innerText = 'Marketing & Field Sales App';
-          badge.className = 'px-2.5 py-1 rounded-xl text-[11px] font-black uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/30';
-        }
         document.getElementById('subapp-agent').classList.remove('hidden');
+        restorePersistentFieldAgentSession();
+        renderSubAgentOnboardedKiranas();
         renderSubAgentBeatShops();
         renderSubAgentOnboardedDrivers();
       } else if (appType === 'driver') {
-        if (badge) {
-          badge.innerText = 'Delivery Partner / Driver App';
-          badge.className = 'px-2.5 py-1 rounded-xl text-[11px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
-        }
         document.getElementById('subapp-driver').classList.remove('hidden');
+        restorePersistentDriverSession();
         renderDriverAssignedOrders();
       } else if (appType === 'kirana') {
-        if (badge) {
-          badge.innerText = 'Kirana Retailer B2B Store';
-          badge.className = 'px-2.5 py-1 rounded-xl text-[11px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30';
-        }
         document.getElementById('subapp-kirana').classList.remove('hidden');
+        restorePersistentRetailerSession();
         renderKiranaCatalogCards();
-        updateSubKiranaTotals();
         renderSubRetailerOrders();
+        refreshSubKhataUI();
       }
     }
 
     function closeConnectedAppOverlay() {
       document.getElementById('connected-app-overlay').classList.add('hidden');
-      renderOrdersTable(wholesaleOrders);
-      renderInventoryTable();
-      renderFleetDrivers();
-      renderMarketingAgents();
-      renderMarketingBookedOrders('ALL');
-    }
-
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        const overlay = document.getElementById('connected-app-overlay');
-        if (overlay && !overlay.classList.contains('hidden')) {
-          closeConnectedAppOverlay();
-        }
-      }
-    });
-
-    function handleDriverAppLogin(event) {
-      event.preventDefault();
-      const id = document.getElementById('sub-drv-id').value.trim().toUpperCase();
-      const pass = document.getElementById('sub-drv-pass').value.trim();
-      const errBox = document.getElementById('sub-drv-login-error');
-      const errText = document.getElementById('sub-drv-login-error-text');
-
-      const found = fleetDrivers.find(d =>
-        ((d.loginId || '').toUpperCase() === id || (d.id || '').toUpperCase() === id) &&
-        d.password === pass
-      );
-
-      if (!found) {
-        if (errText) errText.innerText = `Access Denied: "${id}" is not an issued Delivery Partner ID or Password / PIN is incorrect.`;
-        if (errBox) errBox.classList.remove('hidden');
-        return;
-      }
-
-      if (errBox) errBox.classList.add('hidden');
-      loggedInSubDriver = found;
-      document.getElementById('driver-app-login-box').classList.add('hidden');
-      document.getElementById('driver-app-workspace').classList.remove('hidden');
-
-      const initials = found.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
-      document.getElementById('sub-drv-avatar').innerText = initials;
-      document.getElementById('active-sub-drv-name').innerText = found.name;
-      document.getElementById('active-sub-drv-code').innerText = found.loginId || found.id;
-      document.getElementById('active-sub-drv-vehicle').innerText = found.vehicle;
-      document.getElementById('active-sub-drv-plate').innerText = found.plate;
-
-      syncWholesaleOrdersIntoDriverStops();
-      renderDriverAssignedOrders();
-      showToast(`Welcome ${found.name} (${found.loginId || found.id})!`);
-    }
-
-    function logoutDriverApp() {
-      loggedInSubDriver = null;
-      document.getElementById('sub-drv-pass').value = '';
-      document.getElementById('driver-app-workspace').classList.add('hidden');
-      document.getElementById('driver-app-login-box').classList.remove('hidden');
-      showToast('Signed out of Delivery Partner App');
-    }
-
-    function syncWholesaleOrdersIntoDriverStops() {
-      wholesaleOrders.forEach(ord => {
-        const exists = subDriverStops.some(s => s.inv === ord.id);
-        if (!exists) {
-          subDriverStops.push({
-            id: subDriverStops.length + 1,
-            inv: ord.id,
-            shop: ord.shopName,
-            addr: ord.location || "Egra & Contai Route",
-            items: ord.itemsSummary,
-            amount: `₹${ord.orderValue.toLocaleString('en-IN')}`,
-            mode: ord.paymentMode,
-            status: ord.status === 'DISPATCHED' ? 'DONE' : 'PENDING'
-          });
-        }
-      });
-    }
-
-    function renderDriverAssignedOrders() {
-      syncWholesaleOrdersIntoDriverStops();
-      const doneCount = subDriverStops.filter(s => s.status === 'DONE').length;
-      const counterEl = document.getElementById('sub-drops-counter');
-      if (counterEl) counterEl.innerText = `${doneCount} / ${subDriverStops.length} Done`;
-
-      const active = subDriverStops.find(s => s.status === 'ACTIVE');
-      const badgeEl = document.getElementById('sub-active-drop-badge');
-      if (active) {
-        if (badgeEl) {
-          badgeEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Active Drop #${active.id} • 1.8 km`;
-        }
-        document.getElementById('sub-active-shop-name').innerText = active.shop;
-        document.getElementById('sub-active-shop-addr').innerText = active.addr;
-        document.getElementById('sub-active-shop-items').innerText = `📦 ${active.items}`;
-        document.getElementById('sub-active-inv-id').innerText = active.inv;
-        document.getElementById('sub-active-inv-amount').innerText = active.amount;
-        document.getElementById('sub-active-inv-mode').innerText = active.mode;
-      } else {
-        if (badgeEl) {
-          badgeEl.innerHTML = `<i class="ph-fill ph-check-circle text-emerald-600 text-sm"></i> Shift Complete`;
-        }
-        document.getElementById('sub-active-shop-name').innerText = "All Morning Drops Completed!";
-        document.getElementById('sub-active-shop-addr').innerText = "Return Mini-Truck to Egra Central Hub Bay A";
-        document.getElementById('sub-active-shop-items').innerText = "✅ 100% Route SLA Achieved";
-      }
-
-      const list = document.getElementById('driver-assigned-orders-list');
-      if (!list) return;
-      list.innerHTML = subDriverStops.map(s => {
-        if (s.status === 'DONE') {
-          return `<div class="bg-white border border-emerald-200 rounded-2xl p-3 flex items-center justify-between text-xs opacity-80">
-            <div class="flex items-center gap-2.5"><i class="ph-fill ph-check-circle text-emerald-600 text-base"></i><div><span class="font-bold text-slate-500 line-through">${s.shop}</span><span class="text-[9px] text-slate-400 block">${s.inv} • ${s.amount}</span></div></div>
-            <span class="text-[10px] text-emerald-700 font-black">POD Signed</span>
-          </div>`;
-        } else if (s.status === 'ACTIVE') {
-          return `<div class="bg-white border-2 border-emerald-500 rounded-2xl p-3 flex items-center justify-between text-xs shadow-xs">
-            <div class="flex items-center gap-2.5"><span class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span><div><span class="font-black text-slate-900">${s.shop}</span><span class="text-[9px] text-amber-700 font-bold block">${s.items}</span></div></div>
-            <span class="text-[10px] font-black text-emerald-700">CURRENT</span>
-          </div>`;
-        } else {
-          return `<div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between text-xs">
-            <div class="flex items-center gap-2.5"><i class="ph-bold ph-circle text-slate-400 text-base"></i><div><span class="font-bold text-slate-800">${s.shop}</span><span class="text-[9px] text-slate-500 block">${s.addr}</span></div></div>
-            <span class="text-[10px] text-slate-500 font-bold">Stop #${s.id}</span>
-          </div>`;
-        }
-      }).join('');
-    }
-
-    function verifySubPodOtp() {
-      const otp = document.getElementById('sub-pod-otp').value.trim();
-      if (otp.length < 4) {
-        showToast("Enter 4-digit OTP from shopkeeper!");
-        return;
-      }
-      const idx = subDriverStops.findIndex(s => s.status === 'ACTIVE');
-      if (idx !== -1) {
-        const completedStop = subDriverStops[idx];
-        completedStop.status = 'DONE';
-        if (subDriverStops[idx + 1]) subDriverStops[idx + 1].status = 'ACTIVE';
-        document.getElementById('sub-pod-otp').value = '';
-
-        // Sync delivery status straight back to Admin Wholesale Dispatch Queue
-        const adminOrd = wholesaleOrders.find(o => o.id === completedStop.inv);
-        if (adminOrd) {
-          adminOrd.status = 'DISPATCHED';
-          if (loggedInSubDriver) {
-            adminOrd.assignedDriver = `${loggedInSubDriver.name} (${loggedInSubDriver.plate})`;
-          }
-          renderOrdersTable(wholesaleOrders);
-        }
-
-        saveEcosystemState();
-        renderDriverAssignedOrders();
-        showToast(`POD Verified for ${completedStop.shop} (${completedStop.inv})! Synced to Admin.`);
-      }
-    }
-
-    function toggleSubDriverDutyStatus() {
-      const btn = document.getElementById('sub-duty-toggle');
-      if (!btn) return;
-      const on = btn.innerText.includes('On Duty');
-      btn.innerText = on ? '○ Off Duty' : '● On Duty';
-      btn.className = on
-        ? "bg-slate-200 text-slate-700 px-3 py-1.5 rounded-xl text-[10px] font-black transition"
-        : "bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-[10px] font-black transition shadow";
-      showToast(on ? "Driver set to Off Duty" : "Driver On Duty • Live GPS Active");
-    }
-
-    // ==============================================================
-    // KIRANA RETAILER STOREFRONT APP (EXACT UI & LIVE ADMIN SYNC)
-    // ==============================================================
-    function switchSubRetailerAuthMode(mode) {
-      const signinForm = document.getElementById('sub-retailer-signin-form');
-      const signupForm = document.getElementById('sub-retailer-signup-form');
-      const tabIn = document.getElementById('sub-auth-tab-signin');
-      const tabUp = document.getElementById('sub-auth-tab-signup');
-      const err = document.getElementById('sub-ret-auth-error');
-      if (err) err.classList.add('hidden');
-
-      if (mode === 'signin') {
-        signinForm.classList.remove('hidden');
-        signupForm.classList.add('hidden');
-        tabIn.className = "py-2 rounded-xl bg-white text-slate-900 shadow-xs transition";
-        tabUp.className = "py-2 rounded-xl text-slate-500 hover:text-slate-800 transition";
-      } else {
-        signinForm.classList.add('hidden');
-        signupForm.classList.remove('hidden');
-        tabUp.className = "py-2 rounded-xl bg-white text-slate-900 shadow-xs transition";
-        tabIn.className = "py-2 rounded-xl text-slate-500 hover:text-slate-800 transition";
-      }
-    }
-
-    function fillSubRetailerDemoCreds() {
-      document.getElementById('sub-ret-signin-id').value = "RET-EGRA-01";
-      document.getElementById('sub-ret-signin-pin').value = "1234";
-      const err = document.getElementById('sub-ret-auth-error');
-      if (err) err.classList.add('hidden');
-    }
-
-    function applySubRetailerSession(ret) {
-      subActiveRetailer = ret;
-      document.getElementById('sub-ret-header-shop-label').innerText = `${ret.shop} • ${ret.hub}`;
-      subKhataTotal = ret.limit || 50000;
-      subKhataAvailable = ret.available || 31600;
-      refreshSubKhataUI();
-      document.getElementById('sub-retailer-auth-screen').classList.add('hidden');
-      renderKiranaCatalogCards();
-      updateSubKiranaTotals();
-      renderSubRetailerOrders();
-      showToast(`Welcome ${ret.shop} (${ret.owner})!`);
-    }
-
-    function handleSubRetailerSignIn(e) {
-      e.preventDefault();
-      const input = document.getElementById('sub-ret-signin-id').value.trim().toUpperCase();
-      const pin = document.getElementById('sub-ret-signin-pin').value.trim();
-      const errBox = document.getElementById('sub-ret-auth-error');
-      const errText = document.getElementById('sub-ret-auth-error-text');
-
-      const matched = subRegisteredRetailers.find(r =>
-        (r.id.toUpperCase() === input || r.phone === input) && r.pin === pin
-      );
-
-      if (!matched) {
-        errText.innerText = "Invalid Store ID / Mobile Number or PIN.";
-        errBox.classList.remove('hidden');
-        return;
-      }
-
-      errBox.classList.add('hidden');
-      applySubRetailerSession(matched);
-    }
-
-    function handleSubRetailerSignUp(e) {
-      e.preventDefault();
-      const shop = document.getElementById('sub-ret-reg-shop').value.trim();
-      const owner = document.getElementById('sub-ret-reg-owner').value.trim();
-      const phone = document.getElementById('sub-ret-reg-phone').value.trim();
-      const gst = document.getElementById('sub-ret-reg-gst').value.trim().toUpperCase();
-      const pin = document.getElementById('sub-ret-reg-pin').value.trim();
-      const hub = document.getElementById('sub-ret-reg-hub').value;
-
-      const newRet = {
-        id: `RET-WB-${Math.floor(100 + Math.random() * 900)}`,
-        phone,
-        pin,
-        shop,
-        owner,
-        hub,
-        limit: 30000,
-        available: 30000
-      };
-      subRegisteredRetailers.unshift(newRet);
-
-      // Sync new Kirana registration directly to Admin KYC Queue
-      kycApplications.unshift({
-        id: `KYC-WB-${Math.floor(910 + Math.random() * 85)}`,
-        shopName: shop,
-        owner: owner,
-        phone: phone.startsWith('+91') ? phone : `+91 ${phone}`,
-        address: `${hub} Service Area`,
-        gstin: gst || "Applied via Retailer App",
-        fssai: "Pending Verification",
-        appliedDate: "Just now (Kirana App)",
-        docs: ["Self-Registered Mobile OTP", "Khata ₹30k Requested"]
-      });
-      renderKycCards();
-      saveEcosystemState();
-
-      e.target.reset();
-      applySubRetailerSession(newRet);
-    }
-
-    function handleSubRetailerLogout() {
-      subActiveRetailer = null;
-      document.getElementById('sub-ret-signin-pin').value = '';
-      document.getElementById('sub-ret-auth-error').classList.add('hidden');
-      document.getElementById('sub-retailer-auth-screen').classList.remove('hidden');
-      showToast("Signed out of Kirana Retailer App");
-    }
-
-    function switchSubRetailerTab(tab) {
-      const ordersView = document.getElementById('sub-retailer-orders-view');
-      const btnMandi = document.getElementById('sub-rtab-mandi');
-      const btnOrders = document.getElementById('sub-rtab-orders');
-
-      if (tab === 'orders') {
-        renderSubRetailerOrders();
-        ordersView.classList.remove('hidden');
-        btnOrders.className = "flex flex-col items-center gap-0.5 text-brand-600 font-bold text-[10px]";
-        btnMandi.className = "flex flex-col items-center gap-0.5 text-slate-500 font-semibold text-[10px]";
-      } else {
-        ordersView.classList.add('hidden');
-        btnMandi.className = "flex flex-col items-center gap-0.5 text-brand-600 font-bold text-[10px]";
-        btnOrders.className = "flex flex-col items-center gap-0.5 text-slate-500 font-semibold text-[10px]";
-      }
-    }
-
-    function renderSubRetailerOrders() {
-      const list = document.getElementById('sub-retailer-orders-list');
-      const activeCountEl = document.getElementById('sub-ret-active-orders-count');
-      if (!list) return;
-
-      const activeCnt = subRetailerOrders.filter(o => o.status !== 'DELIVERED').length;
-      if (activeCountEl) activeCountEl.innerText = `${activeCnt} Scheduled (5 AM)`;
-
-      list.innerHTML = subRetailerOrders.map(o => {
-        const isDelivered = o.status === 'DELIVERED';
-        return `
-          <div class="bg-white border ${isDelivered ? 'border-slate-200' : 'border-brand-400'} rounded-2xl p-3 space-y-2 shadow-xs">
-            <div class="flex items-start justify-between">
-              <div>
-                <div class="flex items-center gap-1.5">
-                  <span class="text-[10px] font-mono font-black text-brand-600">${o.id}</span>
-                  <span class="text-[9px] text-slate-400">• ${o.date}</span>
-                </div>
-                <p class="text-[10px] text-slate-500 mt-0.5">Fleet: <strong class="text-slate-700">${o.driver}</strong></p>
-              </div>
-              <span class="text-[9px] font-black px-2 py-0.5 rounded ${isDelivered ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-800 border border-amber-200'}">${o.status}</span>
-            </div>
-
-            <p class="text-[10px] text-slate-700 bg-slate-50 p-2 rounded-xl border border-slate-100 leading-relaxed">${o.items}</p>
-
-            ${!isDelivered ? `
-              <div class="bg-emerald-50 border border-emerald-200 rounded-xl px-2.5 py-1.5 flex items-center justify-between text-[10px]">
-                <span class="text-emerald-900 font-bold">Share Delivery OTP at Unloading:</span>
-                <span class="font-mono font-black text-emerald-800 text-xs tracking-widest bg-white px-2 py-0.5 rounded border border-emerald-300">${o.otp}</span>
-              </div>
-            ` : ''}
-
-            <div class="flex items-center justify-between text-[11px] pt-0.5">
-              <div>
-                <span class="text-slate-500 text-[10px]">Total (${o.packs} packs): </span>
-                <strong class="text-slate-900 font-black">₹${o.total.toLocaleString('en-IN')}</strong>
-                <span class="text-[9px] text-slate-400 ml-1">(${o.payMode})</span>
-              </div>
-              <button onclick="showToast('Downloading GST Tax Invoice ${o.id} PDF...')" class="text-brand-600 hover:text-brand-700 font-black text-[10px] flex items-center gap-1 bg-brand-50 px-2 py-1 rounded-lg border border-brand-200">
-                <i class="ph-bold ph-file-pdf"></i> GST Bill
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function mapAdminCatToKiranaFilter(cat) {
-      const c = (cat || '').toLowerCase();
-      if (c.includes('staple')) return 'staples';
-      if (c.includes('oil')) return 'oils';
-      if (c.includes('pulse')) return 'pulses';
-      return 'fmcg';
-    }
-
-    function getSubKiranaUnitPrice(sku, qty) {
-      const q = qty > 0 ? qty : (sku.moq || 1);
-      if (q >= 16) return sku.t3;
-      if (q >= 6) return sku.t2;
-      return sku.t1;
-    }
-
-    function renderKiranaCatalogCards() {
-      const grid = document.getElementById('kirana-catalog-grid');
-      if (!grid) return;
-
-      const filtered = inventoryCatalog.filter(item => {
-        const catKey = mapAdminCatToKiranaFilter(item.category);
-        const matchesCat = subKiranaActiveCat === 'all' || catKey === subKiranaActiveCat;
-        const matchesSearch = !subKiranaSearchTerm || item.name.toLowerCase().includes(subKiranaSearchTerm.toLowerCase());
-        return matchesCat && matchesSearch;
-      });
-
-      if (filtered.length === 0) {
-        grid.innerHTML = `<div class="bg-white border border-slate-200 rounded-2xl p-6 text-center text-xs text-slate-500 font-bold">No wholesale items match your filter.</div>`;
-        return;
-      }
-
-      grid.innerHTML = filtered.map(item => {
-        const q = subRetailerCart[item.id] || 0;
-        const activePrice = getSubKiranaUnitPrice(item, q);
-        const moq = item.moq || 1;
-        const mrp = Math.round(item.t1 * 1.18);
-        const marginPct = Math.round(((mrp - activePrice) / mrp) * 100);
-        const fallbackImg = `https://placehold.co/120x120/1e293b/f97316?text=${encodeURIComponent(item.name.slice(0, 6))}`;
-
-        return `
-          <div class="bg-white border border-slate-200 rounded-2xl p-3 space-y-2.5 shadow-xs">
-            <div class="flex items-start justify-between gap-2.5">
-              <div class="flex items-center gap-2.5 min-w-0">
-                <img src="${item.image || fallbackImg}" alt="${item.name}" class="w-14 h-14 rounded-2xl object-cover border border-slate-200 shrink-0 bg-slate-50">
-                <div class="min-w-0">
-                  <span class="text-[9px] font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded uppercase">${marginPct}% Retail Margin</span>
-                  <h4 class="text-xs font-black text-slate-900 leading-snug mt-1">${item.name}</h4>
-                  <span class="text-[10px] text-slate-500">MOQ: ${moq} Pack • MRP ₹${mrp}</span>
-                </div>
-              </div>
-              <div class="text-right shrink-0">
-                <span class="text-sm font-black text-brand-600 block">₹${activePrice}</span>
-                <span class="text-[9px] text-slate-400 line-through">₹${mrp}</span>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-3 gap-1 text-[9px] text-center font-bold">
-              <div class="p-1 rounded-lg ${q > 0 && q <= 5 ? 'bg-amber-50 border border-amber-400 text-amber-900' : 'bg-slate-50 border border-slate-200 text-slate-600'}">2-5: ₹${item.t1}</div>
-              <div class="p-1 rounded-lg ${q >= 6 && q <= 15 ? 'bg-amber-50 border border-amber-400 text-amber-900' : 'bg-slate-50 border border-slate-200 text-slate-600'}">6-15: ₹${item.t2}</div>
-              <div class="p-1 rounded-lg ${q >= 16 ? 'bg-amber-50 border border-amber-400 text-amber-900' : 'bg-slate-50 border border-slate-200 text-slate-600'}">16+: ₹${item.t3}</div>
-            </div>
-
-            <div class="flex items-center justify-between pt-1 border-t border-slate-100">
-              <span class="text-[10px] text-slate-500">
-                ${q > 0 ? `Line Total: <strong class="text-slate-900">₹${(activePrice * q).toLocaleString('en-IN')}</strong>` : `Stock: <strong class="text-emerald-700">${item.stockUnits} packs</strong>`}
-              </span>
-              ${q === 0 ? `
-                <button onclick="updateSubKiranaQty('${item.id}', ${moq})" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-1.5 rounded-xl text-[11px] font-black transition shadow-xs">
-                  + Add ${moq}
-                </button>
-              ` : `
-                <div class="flex items-center gap-1.5 bg-slate-100 border border-slate-300 rounded-xl p-0.5">
-                  <button onclick="stepSubKiranaQty('${item.id}', -1)" class="w-6 h-6 rounded-lg bg-white text-slate-800 font-black">-</button>
-                  <span class="w-6 text-center text-xs font-black text-slate-900">${q}</span>
-                  <button onclick="stepSubKiranaQty('${item.id}', 1)" class="w-6 h-6 rounded-lg bg-brand-600 text-white font-black">+</button>
-                </div>
-              `}
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function updateSubKiranaQty(id, qty) {
-      subRetailerCart[id] = qty;
-      renderKiranaCatalogCards();
-      updateSubKiranaTotals();
-      showToast("Added to wholesale cart");
-    }
-
-    function stepSubKiranaQty(id, delta) {
-      const sku = inventoryCatalog.find(s => s.id === id);
-      if (!sku) return;
-      const moq = sku.moq || 1;
-      const next = (subRetailerCart[id] || 0) + delta;
-      if (next < moq) {
-        delete subRetailerCart[id];
-        showToast("Removed (below MOQ)");
-      } else {
-        subRetailerCart[id] = next;
-      }
-      renderKiranaCatalogCards();
-      updateSubKiranaTotals();
-    }
-
-    function updateSubKiranaTotals() {
-      let count = 0, base = 0, gst = 0;
-      Object.keys(subRetailerCart).forEach(id => {
-        const s = inventoryCatalog.find(x => x.id === id);
-        const q = subRetailerCart[id];
-        if (s && q > 0) {
-          const line = getSubKiranaUnitPrice(s, q) * q;
-          const gstRate = s.category === 'FMCG Packaged' ? 0.18 : 0.05;
-          count += q;
-          base += line;
-          gst += line * gstRate;
-        }
-      });
-      const grand = Math.round(base + gst);
-      const badgeEl = document.getElementById('sub-nav-badge');
-      if (badgeEl) badgeEl.innerText = count;
-
-      const bar = document.getElementById('sub-floating-cart');
-      if (bar) {
-        if (count > 0) {
-          bar.classList.remove('hidden');
-          document.getElementById('sub-float-qty').innerText = count;
-          document.getElementById('sub-float-total').innerText = `₹${grand.toLocaleString('en-IN')}`;
-        } else {
-          bar.classList.add('hidden');
-        }
-      }
-
-      const pct = Math.min(100, (grand / 8000) * 100);
-      const fBar = document.getElementById('sub-freight-bar');
-      const fRatio = document.getElementById('sub-freight-ratio');
-      const fMsg = document.getElementById('sub-freight-msg');
-      if (fBar) fBar.style.width = `${pct}%`;
-      if (fRatio) fRatio.innerText = `₹${grand.toLocaleString('en-IN')} / 8k`;
-      if (fMsg) fMsg.innerText = grand >= 8000 ? "FREE Mini-Truck Unloading Unlocked!" : `Add ₹${(8000 - grand).toLocaleString('en-IN')} for FREE mini-truck freight`;
-
-      const bBase = document.getElementById('sub-bill-base');
-      const bGst = document.getElementById('sub-bill-gst');
-      const bTot = document.getElementById('sub-bill-total');
-      if (bBase) bBase.innerText = `₹${base.toLocaleString('en-IN')}`;
-      if (bGst) bGst.innerText = `+ ₹${Math.round(gst).toLocaleString('en-IN')}`;
-      if (bTot) bTot.innerText = `₹${grand.toLocaleString('en-IN')}`;
-      return grand;
-    }
-
-    function openSubCartSheet() {
-      const box = document.getElementById('sub-cart-items-box');
-      const keys = Object.keys(subRetailerCart);
-      box.innerHTML = keys.length === 0
-        ? `<p class="text-center text-slate-400 py-8 text-xs font-bold">Wholesale Cart is Empty</p>`
-        : keys.map(id => {
-            const s = inventoryCatalog.find(x => x.id === id);
-            const q = subRetailerCart[id];
-            const p = getSubKiranaUnitPrice(s, q);
-            return `<div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
-              <div class="flex items-center gap-2">
-                <img src="${s.image}" class="w-9 h-9 rounded-lg object-cover border border-slate-200">
-                <div><strong class="block text-slate-900">${s.name}</strong><span class="text-[10px] text-slate-500">₹${p} × ${q} packs</span></div>
-              </div>
-              <strong class="text-slate-900">₹${(p * q).toLocaleString('en-IN')}</strong>
-            </div>`;
-          }).join('');
-      document.getElementById('sub-cart-sheet').classList.remove('hidden');
-    }
-
-    function placeSubWholesaleOrder() {
-      const total = updateSubKiranaTotals();
-      if (total === 0) return showToast("Add wholesale items first!");
-      const modeRadio = document.querySelector('input[name="subRetPayType"]:checked');
-      const mode = modeRadio ? modeRadio.value : 'khata';
-      if (mode === 'khata') {
-        if (total > subKhataAvailable) return showToast("Exceeds available Khata credit limit!");
-        subKhataAvailable -= total;
-        refreshSubKhataUI();
-      }
-
-      const lineItems = [];
-      const summaryParts = [];
-      let packs = 0;
-      Object.keys(subRetailerCart).forEach(id => {
-        const s = inventoryCatalog.find(x => x.id === id);
-        const q = subRetailerCart[id];
-        if (s && q > 0) {
-          summaryParts.push(`${q}x ${s.name}`);
-          lineItems.push({ skuId: s.id, name: s.name, qty: q, bay: s.bay, image: s.image });
-          packs += q;
-        }
-      });
-      const summary = summaryParts.join(', ');
-      const newInv = `WB-INV-${Math.floor(4930 + Math.random() * 80)}`;
-      const shopName = subActiveRetailer ? subActiveRetailer.shop : "Maa Sarada Traders";
-      const hubName = subActiveRetailer ? subActiveRetailer.hub : "Egra Central Market";
-
-      subRetailerOrders.unshift({
-        id: newInv,
-        date: "Tomorrow, 5:00 AM",
-        items: summary,
-        packs,
-        total,
-        payMode: mode === 'khata' ? "Khata BNPL (14d)" : "Instant UPI",
-        status: "DISPATCH 5:00 AM",
-        otp: `${Math.floor(1000 + Math.random() * 9000)}`,
-        driver: "Egra Hub Mini-Truck (Assigning)"
-      });
-      renderSubRetailerOrders();
-
-      // Sync directly to Admin Wholesale Dispatch Queue!
-      wholesaleOrders.unshift({
-        id: newInv,
-        shopName: shopName,
-        owner: subActiveRetailer ? subActiveRetailer.owner : "Ramesh Giri",
-        gstin: "19KIRANA7409R1ZV",
-        location: hubName,
-        itemsSummary: summary,
-        lineItems: lineItems,
-        totalUnits: packs,
-        totalWeight: `${packs * 20} kg`,
-        orderValue: total,
-        paymentMode: mode === 'khata' ? "Khata (14-Day)" : "Instant UPI",
-        route: "Egra Town Route 1",
-        status: "NEW",
-        slot: "05:00 AM - 07:30 AM",
-        assignedDriver: "Unassigned"
-      });
-      renderOrdersTable(wholesaleOrders);
-      saveEcosystemState();
-
-      subRetailerCart = {};
-      renderKiranaCatalogCards();
-      updateSubKiranaTotals();
-      closeSubSheet('sub-cart-sheet');
-      showToast(`Order ${newInv} Confirmed! Synced to Admin Dispatch for 5:00 AM.`);
-    }
-
-    function openSubKhataSheet() {
-      refreshSubKhataUI();
-      document.getElementById('sub-khata-sheet').classList.remove('hidden');
-    }
-
-    function repaySubKhata() {
-      subKhataAvailable = subKhataTotal;
-      refreshSubKhataUI();
-      closeSubSheet('sub-khata-sheet');
-      showToast(`Khata Settled! ₹${subKhataTotal.toLocaleString('en-IN')} Limit Restored.`);
-    }
-
-    function refreshSubKhataUI() {
-      const balEl = document.getElementById('sub-khata-balance-text');
-      const limEl = document.getElementById('sub-sheet-khata-limit');
-      const availEl = document.getElementById('sub-sheet-khata-avail');
-      const usedEl = document.getElementById('sub-sheet-khata-used');
-      const meterEl = document.getElementById('sub-khata-meter');
-      if (balEl) balEl.innerText = `₹${subKhataAvailable.toLocaleString('en-IN')}`;
-      if (limEl) limEl.innerText = `₹${subKhataTotal.toLocaleString('en-IN')}`;
-      if (availEl) availEl.innerText = `₹${subKhataAvailable.toLocaleString('en-IN')}`;
-      if (usedEl) usedEl.innerText = `₹${(subKhataTotal - subKhataAvailable).toLocaleString('en-IN')}`;
-      if (meterEl) meterEl.style.width = `${(subKhataAvailable / subKhataTotal) * 100}%`;
-    }
-
-    function filterSubKiranaCategory(cat) {
-      subKiranaActiveCat = cat;
-      document.querySelectorAll('.sub-cat-btn').forEach(b => {
-        b.className = b.dataset.cat === cat
-          ? "sub-cat-btn px-3 py-1 rounded-full bg-slate-900 text-white shrink-0"
-          : "sub-cat-btn px-3 py-1 rounded-full bg-slate-100 text-slate-700 shrink-0";
-      });
-      renderKiranaCatalogCards();
-    }
-
-    function searchSubKiranaCatalog(val) {
-      subKiranaSearchTerm = val;
-      renderKiranaCatalogCards();
-    }
-
-    function closeSubSheet(id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.add('hidden');
-    }
-
-    // Mobile Sidebar Drawer Toggle
-    function toggleMobileSidebar() {
-      const sidebar = document.getElementById('ops-sidebar');
-      const backdrop = document.getElementById('sidebar-backdrop');
-      if (!sidebar || !backdrop) return;
-
-      const isClosed = sidebar.classList.contains('-translate-x-full');
-      if (isClosed) {
-        sidebar.classList.remove('-translate-x-full');
-        backdrop.classList.remove('hidden');
-      } else {
-        sidebar.classList.add('-translate-x-full');
-        backdrop.classList.add('hidden');
-      }
-    }
-
-    // Tab Navigation
-    function switchTab(tabId) {
-      const tabs = ['dashboard', 'orders', 'fleet', 'marketing', 'inventory', 'khata', 'kyc'];
-      tabs.forEach(t => {
-        const sec = document.getElementById(`tab-${t}`);
-        const nav = document.getElementById(`nav-${t}`);
-        if (sec && nav) {
-          if (t === tabId) {
-            sec.classList.remove('hidden');
-            sec.classList.add('fade-in');
-            nav.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition bg-brand-600 text-white shadow-sm";
-          } else {
-            sec.classList.add('hidden');
-            nav.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition text-slate-600 hover:bg-slate-100 hover:text-slate-900";
-          }
-        }
-      });
-
-      // Auto-close sidebar on mobile screens after selecting a tab
-      const sidebar = document.getElementById('ops-sidebar');
-      const backdrop = document.getElementById('sidebar-backdrop');
-      if (window.innerWidth < 1024 && sidebar && !sidebar.classList.contains('-translate-x-full')) {
-        sidebar.classList.add('-translate-x-full');
-        if (backdrop) backdrop.classList.add('hidden');
-      }
+      try {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      } catch (e) {}
+      refreshAllLiveViews();
     }
 
     // ============================================
     // MARKETING AGENT APP LOGIN, BEAT, KYC & ORDER BUILDER
     // ============================================
+    function applyFieldAgentWorkspace(found) {
+      loggedInSubAgent = found;
+      document.getElementById('agent-app-login-box').classList.add('hidden');
+      document.getElementById('agent-app-workspace').classList.remove('hidden');
+
+      document.getElementById('active-sub-agent-name').innerText = found.name;
+      document.getElementById('active-sub-agent-code').innerText = found.loginId || found.id;
+      document.getElementById('active-sub-agent-beat').innerText = found.beat;
+
+      const initials = found.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+      document.getElementById('sub-ag-initials').innerText = initials;
+
+      updateSubAgentHeaderMetrics();
+      renderSubAgentOnboardedKiranas();
+      renderSubAgentBeatShops();
+      renderSubAgentOnboardedDrivers();
+    }
+
+    function restorePersistentFieldAgentSession() {
+      let savedId = null;
+      try {
+        savedId = localStorage.getItem(AGENT_SESSION_STORAGE_KEY);
+      } catch (e) {}
+
+      if (savedId) {
+        const found = marketingAgents.find(a =>
+          (a.id || '').toUpperCase() === savedId.toUpperCase() ||
+          (a.loginId || '').toUpperCase() === savedId.toUpperCase()
+        );
+        if (found) {
+          applyFieldAgentWorkspace(found);
+          return true;
+        }
+        try {
+          localStorage.removeItem(AGENT_SESSION_STORAGE_KEY);
+        } catch (e) {}
+      }
+
+      loggedInSubAgent = null;
+      document.getElementById('agent-app-workspace').classList.add('hidden');
+      document.getElementById('agent-app-login-box').classList.remove('hidden');
+      return false;
+    }
+
     function openSubAgentModal(id) {
       const el = document.getElementById(id);
       if (el) el.classList.remove('hidden');
@@ -4276,25 +3717,18 @@
       }
 
       if (errBox) errBox.classList.add('hidden');
-      loggedInSubAgent = found;
-      document.getElementById('agent-app-login-box').classList.add('hidden');
-      document.getElementById('agent-app-workspace').classList.remove('hidden');
-
-      document.getElementById('active-sub-agent-name').innerText = found.name;
-      document.getElementById('active-sub-agent-code').innerText = found.loginId || found.id;
-      document.getElementById('active-sub-agent-beat').innerText = found.beat;
-
-      const initials = found.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
-      document.getElementById('sub-ag-initials').innerText = initials;
-
-      updateSubAgentHeaderMetrics();
-      renderSubAgentBeatShops();
-      renderSubAgentOnboardedDrivers();
+      try {
+        localStorage.setItem(AGENT_SESSION_STORAGE_KEY, found.id);
+      } catch (e) {}
+      applyFieldAgentWorkspace(found);
       showToast(`Welcome ${found.name} (${found.loginId || found.id})!`);
     }
 
     function logoutFieldAgentApp() {
       loggedInSubAgent = null;
+      try {
+        localStorage.removeItem(AGENT_SESSION_STORAGE_KEY);
+      } catch (e) {}
       document.getElementById('sub-agent-pass').value = '';
       document.getElementById('agent-app-workspace').classList.add('hidden');
       document.getElementById('agent-app-login-box').classList.remove('hidden');
@@ -4307,33 +3741,62 @@
       if (!container) return;
       if (countEl) countEl.innerText = `${subAgentBeatShops.length} Shops`;
 
+      if (subAgentBeatShops.length === 0) {
+        container.innerHTML = `<div class="bg-white border border-slate-200 rounded-2xl p-4 text-center text-[11px] text-slate-400 font-bold">No shops in today's beat list.</div>`;
+        return;
+      }
+
       container.innerHTML = subAgentBeatShops.map((b, idx) => `
         <div class="bg-white border border-slate-200 rounded-2xl p-3 space-y-2 shadow-xs">
-          <div class="flex items-start justify-between">
+          <div class="flex items-start justify-between gap-2">
             <div>
               <h4 class="text-xs font-black text-slate-900">${b.shop}</h4>
               <p class="text-[10px] text-slate-500">${b.owner} • ${b.area}</p>
             </div>
-            <span class="text-[9px] font-black px-2 py-0.5 rounded ${b.status === 'VISITED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : b.status === 'PENDING' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-purple-50 text-purple-700 border border-purple-200'}">${b.status}</span>
+            <span class="text-[9px] font-black px-2 py-0.5 rounded shrink-0 ${b.status === 'VISITED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : b.status === 'PENDING' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-purple-50 text-purple-700 border border-purple-200'}">${b.status}</span>
           </div>
           <p class="text-[10px] text-slate-700 bg-slate-50 p-2 rounded-xl border border-slate-100">${b.note}</p>
-          <div class="flex gap-2">
-            <button onclick="openSubAssistedCatalogModal('${b.shop.replace(/'/g, "\\'")}')" class="flex-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 py-1.5 rounded-xl text-[11px] font-black transition flex items-center justify-center gap-1">
+          <div class="flex gap-1.5">
+            <button type="button" onclick="openSubAssistedCatalogModal('${b.shop.replace(/'/g, "\\'")}')" class="flex-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 py-1.5 rounded-xl text-[11px] font-black transition flex items-center justify-center gap-1">
               <i class="ph-bold ph-shopping-cart-simple"></i> Take Order
             </button>
             ${b.status !== 'VISITED' ? `
-              <button onclick="checkInSubAgentShop(${idx})" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-1.5 rounded-xl text-[11px] font-black transition">
+              <button type="button" onclick="checkInSubAgentShop(${idx})" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-1.5 rounded-xl text-[11px] font-black transition">
                 GPS Check-In
               </button>
             ` : ''}
+            <button type="button" onclick="removeSubAgentBeatShop(${idx})" class="px-2.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-[11px] font-black transition flex items-center justify-center gap-1" title="Remove Kirana from Beat">
+              <i class="ph-bold ph-trash"></i>
+            </button>
           </div>
         </div>
       `).join('');
     }
 
+    function scrollToSubAgentSection(targetId) {
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function removeSubAgentBeatShop(idx) {
+      const target = subAgentBeatShops[idx];
+      if (!target) return;
+      if (target.kycId) {
+        openRemoveSubAgentKiranaModal(target.kycId);
+        return;
+      }
+      subAgentBeatShops.splice(idx, 1);
+      saveEcosystemState();
+      renderSubAgentBeatShops();
+      showToast(`Removed "${target.shop}" from beat list.`);
+    }
+
     function checkInSubAgentShop(idx) {
       subAgentBeatShops[idx].status = 'VISITED';
       subAgentBeatShops[idx].note = "GPS Checked In • Wholesale catalog shared on WhatsApp";
+      saveEcosystemState();
       renderSubAgentBeatShops();
       showToast(`Checked in at ${subAgentBeatShops[idx].shop}!`);
     }
@@ -4365,35 +3828,12 @@
           </div>
           <div class="flex items-center justify-between text-[10px] bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-100">
             <span class="text-slate-600">Hub: <strong class="text-slate-900">${d.hub}</strong></span>
-            <div class="flex items-center gap-2">
-              <button onclick="copyDriverCredentials('${d.name}', '${d.loginId}', '${d.password}')" class="text-emerald-700 font-black hover:underline flex items-center gap-1">
-                <i class="ph-bold ph-copy"></i> Copy ID & Pass
-              </button>
-              <button onclick="removeSubAgentOnboardedDriver('${d.loginId}')" class="text-red-600 font-black hover:underline flex items-center gap-0.5" title="Remove Driver">
-                <i class="ph-bold ph-trash"></i> Remove
-              </button>
-            </div>
+            <button onclick="copyDriverCredentials('${d.name}', '${d.loginId}', '${d.password}')" class="text-emerald-700 font-black hover:underline flex items-center gap-1">
+              <i class="ph-bold ph-copy"></i> Copy ID & Pass
+            </button>
           </div>
         </div>
       `).join('');
-    }
-
-    function removeSubAgentOnboardedDriver(loginId) {
-      const subIdx = subAgentOnboardedDrivers.findIndex(d => d.loginId === loginId);
-      let removedName = loginId;
-      if (subIdx !== -1) {
-        removedName = subAgentOnboardedDrivers[subIdx].name;
-        subAgentOnboardedDrivers.splice(subIdx, 1);
-      }
-      const fleetIdx = fleetDrivers.findIndex(d => d.loginId === loginId || d.id === loginId);
-      if (fleetIdx !== -1) {
-        removedName = fleetDrivers[fleetIdx].name;
-        fleetDrivers.splice(fleetIdx, 1);
-      }
-      saveEcosystemState();
-      renderSubAgentOnboardedDrivers();
-      renderFleetDrivers();
-      showToast(`Removed Delivery Partner ${removedName} (${loginId})`);
     }
 
     function submitSubAgentDriverOnboarding(e) {
@@ -4410,7 +3850,6 @@
 
       subAgentOnboardedDrivers.unshift({ loginId, password, name, phone, plate, vehicle, hub });
 
-      // Also sync directly to Central Admin Fleet Roster!
       fleetDrivers.unshift({
         id: `DRV-WB-${Math.floor(100 + Math.random() * 900)}`,
         loginId: loginId,
@@ -4446,16 +3885,43 @@
       const owner = document.getElementById('sub-inp-owner').value.trim();
       const phone = document.getElementById('sub-inp-phone').value.trim();
       const gstin = document.getElementById('sub-inp-gstin').value.trim().toUpperCase();
+      const kycId = `KYC-WB-${Math.floor(905 + Math.random() * 90)}`;
+      const storeId = `RET-WB-${Math.floor(100 + Math.random() * 900)}`;
+      const beatArea = loggedInSubAgent ? loggedInSubAgent.beat : "Egra Town Beat";
+      const formattedPhone = phone.startsWith('+91') ? phone : `+91 ${phone}`;
 
-      subAgentBeatShops.unshift({
+      subAgentOnboardedKiranas.unshift({
+        kycId,
+        storeId,
+        agentId: loggedInSubAgent ? loggedInSubAgent.id : "MKT-EGRA-01",
         shop,
         owner,
-        area: loggedInSubAgent ? loggedInSubAgent.beat : "Egra Town Beat",
-        status: "VISITED",
-        note: "New KYC Approved • ₹30,000 Khata Active"
+        phone: formattedPhone,
+        gstin: gstin || "19FIELD9012F1Z1",
+        area: beatArea,
+        addedAt: "Today"
       });
 
-      // Add newly onboarded shop to order dropdown
+      subAgentBeatShops.unshift({
+        kycId,
+        shop,
+        owner,
+        area: beatArea,
+        status: "VISITED",
+        note: "New KYC Approved • ₹30,000 Khata Active (PIN: 1234)"
+      });
+
+      registeredSubRetailers.unshift({
+        id: storeId,
+        phone: phone.replace(/\D/g, '').slice(-10) || phone,
+        pin: "1234",
+        shop,
+        owner,
+        hub: loggedInSubAgent ? loggedInSubAgent.hub : "Egra Hub",
+        limit: 30000,
+        available: 30000
+      });
+
       const sel = document.getElementById('sub-ord-shop-select');
       if (sel) {
         const opt = document.createElement('option');
@@ -4465,13 +3931,12 @@
         sel.value = shop;
       }
 
-      // Sync to Admin KYC Queue
       kycApplications.unshift({
-        id: `KYC-WB-${Math.floor(905 + Math.random() * 90)}`,
+        id: kycId,
         shopName: shop,
         owner: owner,
-        phone: phone.startsWith('+91') ? phone : `+91 ${phone}`,
-        address: loggedInSubAgent ? loggedInSubAgent.beat : "Egra Field Beat",
+        phone: formattedPhone,
+        address: beatArea,
         gstin: gstin || "19FIELD9012F1Z1",
         fssai: "Pending Field Upload",
         appliedDate: "Just now (Field Agent)",
@@ -4486,10 +3951,115 @@
       }
 
       saveEcosystemState();
+      renderSubAgentOnboardedKiranas();
       renderSubAgentBeatShops();
       closeSubAgentModal('sub-ag-onboard-modal');
       e.target.reset();
-      showToast(`Onboarded ${shop}! Synced to Admin KYC & ready for orders.`);
+      scrollToSubAgentSection('sub-ag-kiranas-section');
+      showToast(`Added ${shop} (${storeId} • PIN: 1234)! Visible in My Kiranas & synced to Admin.`);
+    }
+
+    function renderSubAgentOnboardedKiranas() {
+      const section = document.getElementById('sub-ag-kiranas-section');
+      const list = document.getElementById('sub-ag-kiranas-list');
+      const countEl = document.getElementById('sub-ag-kiranas-count');
+      const navBadgeEl = document.getElementById('sub-nav-kiranas-badge');
+      if (!section || !list) return;
+
+      section.classList.remove('hidden');
+
+      const visibleKiranas = subAgentOnboardedKiranas.filter(k =>
+        !loggedInSubAgent || k.agentId === loggedInSubAgent.id
+      );
+
+      if (countEl) countEl.innerText = `${visibleKiranas.length} Store${visibleKiranas.length === 1 ? '' : 's'}`;
+      if (navBadgeEl) navBadgeEl.innerText = `${visibleKiranas.length}`;
+
+      if (visibleKiranas.length === 0) {
+        list.innerHTML = `
+          <div class="bg-white border border-dashed border-rose-200 rounded-2xl p-3.5 text-center space-y-2">
+            <p class="text-[11px] text-slate-500 font-semibold">No Kirana store added by you yet.</p>
+            <button type="button" onclick="openSubAgentModal('sub-ag-onboard-modal')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3 py-1.5 rounded-xl text-[11px] font-black transition inline-flex items-center gap-1">
+              <i class="ph-bold ph-plus-circle"></i> + Add New Kirana Store
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = visibleKiranas.map(k => `
+        <div class="bg-white border border-rose-200 rounded-2xl p-3 space-y-2 shadow-xs">
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <h4 class="text-xs font-black text-slate-900 truncate">${k.shop}</h4>
+                <span class="text-[9px] font-mono font-black bg-rose-50 text-rose-700 border border-rose-200 px-1.5 py-0.2 rounded">${k.storeId || k.kycId}</span>
+              </div>
+              <p class="text-[10px] text-slate-500 mt-0.5">${k.owner} • <span class="font-mono font-semibold text-slate-700">${k.phone}</span></p>
+            </div>
+            <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9px] font-black px-2 py-0.5 rounded shrink-0">₹30k Khata</span>
+          </div>
+
+          <div class="flex items-center justify-between text-[10px] bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-100">
+            <span class="text-slate-600 font-mono">GSTIN: <strong class="text-slate-800">${k.gstin}</strong></span>
+            <span class="text-slate-500 truncate max-w-[130px]">${k.area}</span>
+          </div>
+
+          <div class="flex items-center gap-2 pt-0.5">
+            <button type="button" onclick="openSubAssistedCatalogModal('${k.shop.replace(/'/g, "\\'")}')" class="flex-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 py-1.5 rounded-xl text-[11px] font-black transition flex items-center justify-center gap-1">
+              <i class="ph-bold ph-shopping-cart-simple"></i> Take Order
+            </button>
+            <button type="button" onclick="openRemoveSubAgentKiranaModal('${k.kycId}')" class="px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-[11px] font-black transition flex items-center justify-center gap-1" title="Remove Kirana Store">
+              <i class="ph-bold ph-trash"></i> Remove
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openRemoveSubAgentKiranaModal(kycId) {
+      const store = subAgentOnboardedKiranas.find(k => k.kycId === kycId);
+      if (!store) return;
+      pendingSubAgentRemoveKiranaId = kycId;
+      document.getElementById('sub-ag-remove-kirana-name').innerText = `${store.shop} (${store.kycId})`;
+      document.getElementById('sub-ag-remove-kirana-meta').innerText = `${store.owner} • ${store.phone}`;
+      openSubAgentModal('sub-ag-remove-kirana-modal');
+    }
+
+    function confirmRemoveSubAgentKirana() {
+      if (!pendingSubAgentRemoveKiranaId) return;
+      const idx = subAgentOnboardedKiranas.findIndex(k => k.kycId === pendingSubAgentRemoveKiranaId);
+      if (idx !== -1) {
+        const removed = subAgentOnboardedKiranas[idx];
+        subAgentOnboardedKiranas.splice(idx, 1);
+
+        const beatIdx = subAgentBeatShops.findIndex(b => b.kycId === removed.kycId || b.shop === removed.shop);
+        if (beatIdx !== -1) subAgentBeatShops.splice(beatIdx, 1);
+
+        const kycIdx = kycApplications.findIndex(a => a.id === removed.kycId || a.shopName === removed.shop);
+        if (kycIdx !== -1) kycApplications.splice(kycIdx, 1);
+
+        const khataIdx = retailerKhataList.findIndex(k => k.name === removed.shop && k.outstanding === 0);
+        if (khataIdx !== -1) retailerKhataList.splice(khataIdx, 1);
+
+        const sel = document.getElementById('sub-ord-shop-select');
+        if (sel) {
+          for (let i = sel.options.length - 1; i >= 0; i--) {
+            if (sel.options[i].value === removed.shop) sel.remove(i);
+          }
+        }
+
+        if (loggedInSubAgent && loggedInSubAgent.achieved > 0) {
+          loggedInSubAgent.achieved -= 1;
+          updateSubAgentHeaderMetrics();
+        }
+
+        saveEcosystemState();
+        refreshAllLiveViews();
+        showToast(`Removed Kirana store "${removed.shop}"!`);
+      }
+      pendingSubAgentRemoveKiranaId = null;
+      closeSubAgentModal('sub-ag-remove-kirana-modal');
     }
 
     function openSubAssistedCatalogModal(preselectShop = '') {
@@ -4540,7 +4110,7 @@
                 <img src="${sku.image || fallbackImg}" alt="${sku.name}" class="w-11 h-11 rounded-xl object-cover border border-slate-200 shrink-0">
                 <div>
                   <h4 class="text-xs font-black text-slate-900 leading-tight">${sku.name}</h4>
-                  <span class="text-[10px] text-slate-500">${sku.category} • MOQ: ${moq}</span>
+                  <span class="text-[10px] text-slate-500">${sku.category} • Stock: ${sku.stockUnits}</span>
                 </div>
               </div>
               <span class="text-xs font-black text-brand-600 shrink-0">₹${activePrice}</span>
@@ -4635,7 +4205,6 @@
       });
       const itemsSummary = lineParts.join(', ');
 
-      // Update or log beat visit
       const existing = subAgentBeatShops.find(b => b.shop === shop);
       if (existing) {
         existing.status = 'VISITED';
@@ -4651,7 +4220,6 @@
       }
       renderSubAgentBeatShops();
 
-      // Update Agent GMV & Commission in Admin Panel
       if (loggedInSubAgent) {
         const prevGmv = typeof loggedInSubAgent.gmvBooked === 'string'
           ? parseInt(loggedInSubAgent.gmvBooked.replace(/\D/g, ''), 10) || 0
@@ -4679,8 +4247,9 @@
       };
       marketingBookedOrders.unshift(newFieldOrd);
 
+      const newInvId = newFieldOrd.orderId.replace('FLD-ORD', 'WB-INV');
       wholesaleOrders.unshift({
-        id: newFieldOrd.orderId.replace('FLD-ORD', 'WB-INV'),
+        id: newInvId,
         shopName: shop,
         owner: `Via ${newFieldOrd.agentName}`,
         gstin: "19FIELD7409R1ZV",
@@ -4697,12 +4266,727 @@
         assignedDriver: "Unassigned"
       });
 
+      deductInventoryStock(itemsSummary, lineItems);
       subAgentCart = {};
       saveEcosystemState();
-      renderOrdersTable(wholesaleOrders);
-      renderMarketingBookedOrders('ALL');
+      refreshAllLiveViews();
       closeSubAgentModal('sub-ag-order-drawer');
       showToast(`Order ₹${roundedTotal.toLocaleString('en-IN')} booked for ${shop} & pushed to Admin Dispatch!`);
+    }
+
+    // ============================================
+    // DELIVERY DRIVER APP LOGIN & POD SYNC
+    // ============================================
+    function applyDriverWorkspace(found) {
+      loggedInSubDriver = found;
+      document.getElementById('driver-app-login-box').classList.add('hidden');
+      document.getElementById('driver-app-workspace').classList.remove('hidden');
+
+      const initials = found.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+      document.getElementById('sub-drv-avatar').innerText = initials;
+      document.getElementById('active-sub-drv-name').innerText = found.name;
+      document.getElementById('active-sub-drv-code').innerText = found.loginId || found.id;
+      document.getElementById('active-sub-drv-vehicle').innerText = found.vehicle;
+      document.getElementById('active-sub-drv-plate').innerText = found.plate;
+
+      syncWholesaleOrdersIntoDriverStops();
+      renderDriverAssignedOrders();
+    }
+
+    function restorePersistentDriverSession() {
+      let savedId = null;
+      try {
+        savedId = localStorage.getItem(DRIVER_SESSION_STORAGE_KEY);
+      } catch (e) {}
+
+      if (savedId) {
+        const found = fleetDrivers.find(d =>
+          (d.id || '').toUpperCase() === savedId.toUpperCase() ||
+          (d.loginId || '').toUpperCase() === savedId.toUpperCase()
+        );
+        if (found) {
+          applyDriverWorkspace(found);
+          return true;
+        }
+        try {
+          localStorage.removeItem(DRIVER_SESSION_STORAGE_KEY);
+        } catch (e) {}
+      }
+
+      loggedInSubDriver = null;
+      document.getElementById('driver-app-workspace').classList.add('hidden');
+      document.getElementById('driver-app-login-box').classList.remove('hidden');
+      return false;
+    }
+
+    function handleDriverAppLogin(event) {
+      event.preventDefault();
+      const id = document.getElementById('sub-drv-id').value.trim().toUpperCase();
+      const pass = document.getElementById('sub-drv-pass').value.trim();
+      const errBox = document.getElementById('sub-drv-login-error');
+      const errText = document.getElementById('sub-drv-login-error-text');
+
+      const found = fleetDrivers.find(d =>
+        ((d.loginId || '').toUpperCase() === id || (d.id || '').toUpperCase() === id) &&
+        d.password === pass
+      );
+
+      if (!found) {
+        if (errText) errText.innerText = `Access Denied: "${id}" is not an issued Delivery Partner ID or Password / PIN is incorrect.`;
+        if (errBox) errBox.classList.remove('hidden');
+        return;
+      }
+
+      if (errBox) errBox.classList.add('hidden');
+      try {
+        localStorage.setItem(DRIVER_SESSION_STORAGE_KEY, found.id);
+      } catch (e) {}
+      applyDriverWorkspace(found);
+      showToast(`Welcome ${found.name} (${found.loginId || found.id})!`);
+    }
+
+    function logoutDriverApp() {
+      loggedInSubDriver = null;
+      try {
+        localStorage.removeItem(DRIVER_SESSION_STORAGE_KEY);
+      } catch (e) {}
+      document.getElementById('sub-drv-pass').value = '';
+      document.getElementById('driver-app-workspace').classList.add('hidden');
+      document.getElementById('driver-app-login-box').classList.remove('hidden');
+      showToast('Signed out of Delivery Partner App');
+    }
+
+    function syncWholesaleOrdersIntoDriverStops() {
+      wholesaleOrders.forEach(ord => {
+        const exists = subDriverStops.some(s => s.inv === ord.id);
+        if (!exists) {
+          const hasActive = subDriverStops.some(s => s.status === 'ACTIVE');
+          subDriverStops.push({
+            id: subDriverStops.length + 1,
+            inv: ord.id,
+            shop: ord.shopName,
+            addr: ord.location || "Egra & Contai Route",
+            items: ord.itemsSummary,
+            amount: `₹${ord.orderValue.toLocaleString('en-IN')}`,
+            mode: ord.paymentMode,
+            status: ord.status === 'DISPATCHED' ? 'DONE' : (!hasActive ? 'ACTIVE' : 'PENDING')
+          });
+        }
+      });
+    }
+
+    function renderDriverAssignedOrders() {
+      syncWholesaleOrdersIntoDriverStops();
+      const doneCount = subDriverStops.filter(s => s.status === 'DONE').length;
+      const counterEl = document.getElementById('sub-drops-counter');
+      if (counterEl) counterEl.innerText = `${doneCount} / ${subDriverStops.length} Done`;
+
+      const active = subDriverStops.find(s => s.status === 'ACTIVE');
+      const badgeEl = document.getElementById('sub-active-drop-badge');
+      if (active) {
+        if (badgeEl) {
+          badgeEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Active Drop #${active.id} • 1.8 km`;
+        }
+        document.getElementById('sub-active-shop-name').innerText = active.shop;
+        document.getElementById('sub-active-shop-addr').innerText = active.addr;
+        document.getElementById('sub-active-shop-items').innerText = `📦 ${active.items}`;
+        document.getElementById('sub-active-inv-id').innerText = active.inv;
+        document.getElementById('sub-active-inv-amount').innerText = active.amount;
+        document.getElementById('sub-active-inv-mode').innerText = active.mode;
+      } else {
+        if (badgeEl) {
+          badgeEl.innerHTML = `<i class="ph-fill ph-check-circle text-emerald-600 text-sm"></i> Shift Ready`;
+        }
+        document.getElementById('sub-active-shop-name').innerText = subDriverStops.length === 0 ? "No Assigned Drops Yet" : "All Morning Drops Completed!";
+        document.getElementById('sub-active-shop-addr').innerText = "Awaiting dispatch allocation from Egra Central Hub";
+        document.getElementById('sub-active-shop-items').innerText = "📦 Assign a vehicle in Admin Orders to start route";
+        document.getElementById('sub-active-inv-id').innerText = "—";
+        document.getElementById('sub-active-inv-amount').innerText = "₹0";
+        document.getElementById('sub-active-inv-mode').innerText = "—";
+      }
+
+      const list = document.getElementById('driver-assigned-orders-list');
+      if (!list) return;
+      if (subDriverStops.length === 0) {
+        list.innerHTML = `<p class="text-center text-slate-400 py-4 text-[11px] font-bold">No wholesale drops queued for this shift yet.</p>`;
+        return;
+      }
+      list.innerHTML = subDriverStops.map(s => {
+        if (s.status === 'DONE') {
+          return `<div class="bg-white border border-emerald-200 rounded-2xl p-3 flex items-center justify-between text-xs opacity-80">
+            <div class="flex items-center gap-2.5"><i class="ph-fill ph-check-circle text-emerald-600 text-base"></i><div><span class="font-bold text-slate-500 line-through">${s.shop}</span><span class="text-[9px] text-slate-400 block">${s.inv} • ${s.amount}</span></div></div>
+            <span class="text-[10px] text-emerald-700 font-black">POD Signed</span>
+          </div>`;
+        } else if (s.status === 'ACTIVE') {
+          return `<div class="bg-white border-2 border-emerald-500 rounded-2xl p-3 flex items-center justify-between text-xs shadow-xs">
+            <div class="flex items-center gap-2.5"><span class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span><div><span class="font-black text-slate-900">${s.shop}</span><span class="text-[9px] text-amber-700 font-bold block">${s.items}</span></div></div>
+            <span class="text-[10px] font-black text-emerald-700">CURRENT</span>
+          </div>`;
+        } else {
+          return `<div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2.5"><i class="ph-bold ph-circle text-slate-400 text-base"></i><div><span class="font-bold text-slate-800">${s.shop}</span><span class="text-[9px] text-slate-500 block">${s.addr}</span></div></div>
+            <span class="text-[10px] text-slate-500 font-bold">Stop #${s.id}</span>
+          </div>`;
+        }
+      }).join('');
+    }
+
+    function verifySubPodOtp() {
+      const otp = document.getElementById('sub-pod-otp').value.trim();
+      if (otp.length < 4) {
+        showToast("Enter 4-digit OTP from shopkeeper!");
+        return;
+      }
+      const idx = subDriverStops.findIndex(s => s.status === 'ACTIVE');
+      if (idx !== -1) {
+        const completedStop = subDriverStops[idx];
+        completedStop.status = 'DONE';
+        if (subDriverStops[idx + 1]) subDriverStops[idx + 1].status = 'ACTIVE';
+        document.getElementById('sub-pod-otp').value = '';
+
+        const adminOrd = wholesaleOrders.find(o => o.id === completedStop.inv);
+        if (adminOrd) {
+          adminOrd.status = 'DISPATCHED';
+          if (loggedInSubDriver) {
+            adminOrd.assignedDriver = `${loggedInSubDriver.name} (${loggedInSubDriver.plate})`;
+            loggedInSubDriver.dropsDone = (loggedInSubDriver.dropsDone || 0) + 1;
+          }
+        }
+
+        const retOrd = subRetailerOrders.find(o => o.id === completedStop.inv);
+        if (retOrd) {
+          retOrd.status = 'DELIVERED';
+        }
+
+        saveEcosystemState();
+        refreshAllLiveViews();
+        showToast(`POD Verified for ${completedStop.shop} (${completedStop.inv})! Synced to Admin.`);
+      } else {
+        showToast("No active drop waiting for POD right now.");
+      }
+    }
+
+    function toggleSubDriverDutyStatus() {
+      const btn = document.getElementById('sub-duty-toggle');
+      if (!btn) return;
+      const on = btn.innerText.includes('On Duty');
+      btn.innerText = on ? '○ Off Duty' : '● On Duty';
+      btn.className = on
+        ? "bg-slate-200 text-slate-700 px-3 py-1.5 rounded-xl text-[10px] font-black transition"
+        : "bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-[10px] font-black transition shadow";
+      showToast(on ? "Driver set to Off Duty" : "Driver On Duty • Live GPS Active");
+    }
+
+    function applySubRetailerSession(ret, silent = false) {
+      activeSubRetailer = ret;
+      try {
+        localStorage.setItem(RETAILER_SESSION_STORAGE_KEY, ret.id);
+      } catch (e) {}
+      document.getElementById('sub-ret-header-shop-label').innerText = `${ret.shop} • ${ret.hub}`;
+      refreshSubKhataUI();
+      document.getElementById('sub-retailer-auth-screen').classList.add('hidden');
+      renderKiranaCatalogCards();
+      updateSubKiranaTotals();
+      renderSubRetailerOrders();
+      if (!silent) {
+        showToast(`Welcome ${ret.shop} (${ret.owner})!`);
+      }
+    }
+
+    function restorePersistentRetailerSession() {
+      let savedId = null;
+      try {
+        savedId = localStorage.getItem(RETAILER_SESSION_STORAGE_KEY);
+      } catch (e) {}
+
+      if (savedId) {
+        const matched = registeredSubRetailers.find(r =>
+          (r.id || '').toUpperCase() === savedId.toUpperCase() ||
+          r.phone === savedId
+        );
+        if (matched) {
+          applySubRetailerSession(matched, true);
+          return true;
+        }
+        try {
+          localStorage.removeItem(RETAILER_SESSION_STORAGE_KEY);
+        } catch (e) {}
+      }
+
+      document.getElementById('sub-retailer-auth-screen').classList.remove('hidden');
+      return false;
+    }
+
+    function handleSubRetailerSignIn(e) {
+      e.preventDefault();
+      const input = document.getElementById('sub-ret-signin-id').value.trim().toUpperCase();
+      const pin = document.getElementById('sub-ret-signin-pin').value.trim();
+      const errBox = document.getElementById('sub-ret-auth-error');
+      const errText = document.getElementById('sub-ret-auth-error-text');
+
+      const matched = registeredSubRetailers.find(r =>
+        (r.id.toUpperCase() === input || r.phone === input) && r.pin === pin
+      );
+
+      if (!matched) {
+        errText.innerText = "Invalid Store ID / Mobile Number or PIN.";
+        errBox.classList.remove('hidden');
+        return;
+      }
+
+      errBox.classList.add('hidden');
+      applySubRetailerSession(matched);
+    }
+
+    function handleSubRetailerSignUp(e) {
+      e.preventDefault();
+      const shop = document.getElementById('sub-ret-reg-shop').value.trim();
+      const owner = document.getElementById('sub-ret-reg-owner').value.trim();
+      const phone = document.getElementById('sub-ret-reg-phone').value.trim();
+      const gst = document.getElementById('sub-ret-reg-gst').value.trim().toUpperCase();
+      const pin = document.getElementById('sub-ret-reg-pin').value.trim();
+      const hub = document.getElementById('sub-ret-reg-hub').value;
+
+      const newRet = {
+        id: `RET-WB-${Math.floor(100 + Math.random() * 900)}`,
+        phone,
+        pin,
+        shop,
+        owner,
+        hub,
+        limit: 30000,
+        available: 30000
+      };
+      registeredSubRetailers.unshift(newRet);
+
+      kycApplications.unshift({
+        id: `KYC-WB-${Math.floor(905 + Math.random() * 90)}`,
+        shopName: shop,
+        owner: owner,
+        phone: phone.startsWith('+91') ? phone : `+91 ${phone}`,
+        address: hub,
+        gstin: gst || "Applied (New Shop)",
+        fssai: "Pending Verification",
+        appliedDate: "Just now (Kirana App)",
+        docs: ["Self-Registered KYC", "Mobile OTP Verified"]
+      });
+
+      saveEcosystemState();
+      refreshAllLiveViews();
+      e.target.reset();
+      applySubRetailerSession(newRet);
+    }
+
+    function handleSubRetailerLogout() {
+      try {
+        localStorage.removeItem(RETAILER_SESSION_STORAGE_KEY);
+      } catch (e) {}
+      document.getElementById('sub-ret-signin-pin').value = '';
+      document.getElementById('sub-ret-auth-error').classList.add('hidden');
+      document.getElementById('sub-retailer-auth-screen').classList.remove('hidden');
+      showToast("Signed out of Kirana Retailer App");
+    }
+
+    function filterSubKiranaCategory(cat) {
+      subKiranaActiveCat = cat;
+      document.querySelectorAll('.sub-cat-btn').forEach(b => {
+        b.className = b.dataset.cat === cat
+          ? "sub-cat-btn px-3 py-1 rounded-full bg-slate-900 text-white shrink-0"
+          : "sub-cat-btn px-3 py-1 rounded-full bg-slate-100 text-slate-700 shrink-0";
+      });
+      renderKiranaCatalogCards();
+    }
+
+    function searchSubKiranaCatalog(val) {
+      subKiranaSearchTerm = val;
+      renderKiranaCatalogCards();
+    }
+
+    function getSubKiranaSlabPrice(sku, qty) {
+      const q = qty > 0 ? qty : (sku.moq || 1);
+      if (q >= 16) return sku.t3;
+      if (q >= 6) return sku.t2;
+      return sku.t1;
+    }
+
+    function renderKiranaCatalogCards() {
+      const grid = document.getElementById('kirana-catalog-grid');
+      if (!grid) return;
+
+      const filtered = inventoryCatalog.filter(sku => {
+        const c = (sku.category || '').toLowerCase();
+        const catMatch = subKiranaActiveCat === 'all' ||
+          (subKiranaActiveCat === 'staples' && c.includes('staple')) ||
+          (subKiranaActiveCat === 'oils' && c.includes('oil')) ||
+          (subKiranaActiveCat === 'pulses' && c.includes('pulse')) ||
+          (subKiranaActiveCat === 'fmcg' && c.includes('fmcg'));
+        const termMatch = !subKiranaSearchTerm || sku.name.toLowerCase().includes(subKiranaSearchTerm.toLowerCase());
+        return catMatch && termMatch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<p class="text-center text-slate-400 py-8 text-xs font-bold">No wholesale products found.</p>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(sku => {
+        const q = subKiranaCart[sku.id] || 0;
+        const unitPrice = getSubKiranaSlabPrice(sku, q);
+        const moq = sku.moq || 1;
+        const fallbackImg = `https://placehold.co/120x120/1e293b/f97316?text=${encodeURIComponent(sku.name.slice(0, 6))}`;
+        return `
+          <div class="bg-white border border-slate-200 rounded-2xl p-3 space-y-2.5 shadow-xs">
+            <div class="flex items-start gap-3">
+              <img src="${sku.image || fallbackImg}" alt="${sku.name}" class="w-16 h-16 rounded-xl object-cover border border-slate-200 shrink-0">
+              <div class="flex-1 min-w-0">
+                <span class="text-[9px] font-bold text-slate-400 uppercase">${sku.category} • MOQ: ${moq}</span>
+                <h4 class="text-xs font-black text-slate-900 leading-tight">${sku.name}</h4>
+                <div class="flex items-baseline gap-1.5 mt-1">
+                  <span class="text-sm font-black text-brand-600">₹${unitPrice}</span>
+                  <span class="text-[10px] text-slate-400">/ pack</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-1 text-[9px] text-center font-bold">
+              <div class="p-1 rounded ${q > 0 && q <= 5 ? 'bg-amber-50 border border-amber-400 text-amber-900' : 'bg-slate-50 text-slate-600 border border-slate-200'}">2-5: ₹${sku.t1}</div>
+              <div class="p-1 rounded ${q >= 6 && q <= 15 ? 'bg-amber-50 border border-amber-400 text-amber-900' : 'bg-slate-50 text-slate-600 border border-slate-200'}">6-15: ₹${sku.t2}</div>
+              <div class="p-1 rounded ${q >= 16 ? 'bg-amber-50 border border-amber-400 text-amber-900' : 'bg-slate-50 text-slate-600 border border-slate-200'}">16+: ₹${sku.t3}</div>
+            </div>
+
+            <div class="flex items-center justify-between pt-0.5">
+              <span class="text-[10px] text-slate-500">
+                ${q > 0 ? `Line Total: <strong class="text-slate-900">₹${(unitPrice * q).toLocaleString('en-IN')}</strong>` : `Stock: ${sku.stockUnits} packs`}
+              </span>
+              ${q === 0 ? `
+                <button onclick="updateSubKiranaQty('${sku.id}', ${moq})" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-1.5 rounded-xl text-[11px] font-black transition">
+                  + Add ${moq}
+                </button>
+              ` : `
+                <div class="flex items-center gap-1.5 bg-slate-100 border border-slate-300 rounded-xl p-0.5">
+                  <button onclick="stepSubKiranaQty('${sku.id}', -1)" class="w-6 h-6 rounded-lg bg-white text-slate-800 font-bold">-</button>
+                  <span class="w-6 text-center text-xs font-black text-slate-900">${q}</span>
+                  <button onclick="stepSubKiranaQty('${sku.id}', 1)" class="w-6 h-6 rounded-lg bg-brand-600 text-white font-black">+</button>
+                </div>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateSubKiranaQty(id, qty) {
+      subKiranaCart[id] = qty;
+      renderKiranaCatalogCards();
+      updateSubKiranaTotals();
+      showToast("Added to wholesale cart");
+    }
+
+    function stepSubKiranaQty(id, delta) {
+      const sku = inventoryCatalog.find(s => s.id === id);
+      if (!sku) return;
+      const moq = sku.moq || 1;
+      const next = (subKiranaCart[id] || 0) + delta;
+      if (next < moq) {
+        delete subKiranaCart[id];
+        showToast("Removed (below MOQ)");
+      } else {
+        subKiranaCart[id] = next;
+      }
+      renderKiranaCatalogCards();
+      updateSubKiranaTotals();
+    }
+
+    function updateSubKiranaTotals() {
+      let count = 0, base = 0, gst = 0;
+      Object.keys(subKiranaCart).forEach(id => {
+        const s = inventoryCatalog.find(x => x.id === id);
+        const q = subKiranaCart[id];
+        if (s && q > 0) {
+          const line = getSubKiranaSlabPrice(s, q) * q;
+          const gstRate = s.category === 'FMCG Packaged' ? 0.18 : 0.05;
+          count += q;
+          base += line;
+          gst += line * gstRate;
+        }
+      });
+      const grand = Math.round(base + gst);
+      const navBadge = document.getElementById('sub-nav-badge');
+      if (navBadge) navBadge.innerText = count;
+
+      const bar = document.getElementById('sub-floating-cart');
+      if (bar) {
+        if (count > 0) {
+          bar.classList.remove('hidden');
+          document.getElementById('sub-float-qty').innerText = count;
+          document.getElementById('sub-float-total').innerText = `₹${grand.toLocaleString('en-IN')}`;
+        } else {
+          bar.classList.add('hidden');
+        }
+      }
+
+      const pct = Math.min(100, (grand / 8000) * 100);
+      const fBar = document.getElementById('sub-freight-bar');
+      const fRatio = document.getElementById('sub-freight-ratio');
+      const fMsg = document.getElementById('sub-freight-msg');
+      if (fBar) fBar.style.width = `${pct}%`;
+      if (fRatio) fRatio.innerText = `₹${grand.toLocaleString('en-IN')} / 8k`;
+      if (fMsg) fMsg.innerText = grand >= 8000 ? "FREE Mini-Truck Unloading Unlocked!" : `Add ₹${(8000 - grand).toLocaleString('en-IN')} for FREE mini-truck freight`;
+
+      const bBase = document.getElementById('sub-bill-base');
+      const bGst = document.getElementById('sub-bill-gst');
+      const bTot = document.getElementById('sub-bill-total');
+      if (bBase) bBase.innerText = `₹${base.toLocaleString('en-IN')}`;
+      if (bGst) bGst.innerText = `+ ₹${Math.round(gst).toLocaleString('en-IN')}`;
+      if (bTot) bTot.innerText = `₹${grand.toLocaleString('en-IN')}`;
+      return grand;
+    }
+
+    function openSubCartSheet() {
+      const box = document.getElementById('sub-cart-items-box');
+      const keys = Object.keys(subKiranaCart);
+      box.innerHTML = keys.length === 0
+        ? `<p class="text-center text-slate-400 py-8 text-xs font-bold">Wholesale Cart is Empty</p>`
+        : keys.map(id => {
+            const s = inventoryCatalog.find(x => x.id === id);
+            const q = subKiranaCart[id];
+            const p = getSubKiranaSlabPrice(s, q);
+            return `<div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+              <div><strong class="block text-slate-900">${s.name}</strong><span class="text-[10px] text-slate-500">₹${p} × ${q} packs</span></div>
+              <strong class="text-slate-900">₹${(p * q).toLocaleString('en-IN')}</strong>
+            </div>`;
+          }).join('');
+      document.getElementById('sub-cart-sheet').classList.remove('hidden');
+    }
+
+    function placeSubWholesaleOrder() {
+      const total = updateSubKiranaTotals();
+      if (total === 0) return showToast("Add wholesale items first!");
+      const modeEl = document.querySelector('input[name="subRetPayType"]:checked');
+      const mode = modeEl ? modeEl.value : 'khata';
+
+      if (mode === 'khata') {
+        if (total > activeSubRetailer.available) return showToast("Exceeds available Khata credit limit!");
+        activeSubRetailer.available -= total;
+        refreshSubKhataUI();
+
+        let khataEntry = retailerKhataList.find(k => k.name === activeSubRetailer.shop);
+        if (!khataEntry) {
+          khataEntry = {
+            name: activeSubRetailer.shop,
+            owner: activeSubRetailer.owner,
+            location: activeSubRetailer.hub,
+            phone: activeSubRetailer.phone,
+            limit: activeSubRetailer.limit,
+            outstanding: 0,
+            cycle: "14 Days",
+            isOverdue: false,
+            daysOverdue: 0
+          };
+          retailerKhataList.unshift(khataEntry);
+        }
+        khataEntry.outstanding += total;
+      }
+
+      const lineItems = [];
+      const summary = Object.keys(subKiranaCart).map(id => {
+        const s = inventoryCatalog.find(x => x.id === id);
+        const q = subKiranaCart[id];
+        lineItems.push({ skuId: s.id, name: s.name, qty: q, bay: s.bay, image: s.image });
+        return `${q}x ${s.name}`;
+      }).join(', ');
+      const packs = Object.values(subKiranaCart).reduce((a, b) => a + b, 0);
+      const invId = `WB-INV-${Math.floor(4925 + Math.random() * 900)}`;
+      const otpCode = `${Math.floor(1000 + Math.random() * 9000)}`;
+
+      subRetailerOrders.unshift({
+        id: invId,
+        date: "Tomorrow, 5:00 AM",
+        items: summary,
+        packs,
+        total,
+        payMode: mode === 'khata' ? "Khata BNPL (14d)" : "Instant UPI",
+        status: "DISPATCH 5:00 AM",
+        otp: otpCode,
+        driver: "Egra Hub Mini-Truck (Assigning)"
+      });
+
+      wholesaleOrders.unshift({
+        id: invId,
+        shopName: activeSubRetailer.shop,
+        owner: activeSubRetailer.owner,
+        gstin: "19KIRANA7409R1ZV",
+        location: activeSubRetailer.hub,
+        itemsSummary: summary,
+        lineItems: lineItems,
+        totalUnits: packs,
+        totalWeight: `${packs * 20} kg`,
+        orderValue: total,
+        paymentMode: mode === 'khata' ? "Khata (14-Day)" : "Instant UPI",
+        route: "Egra Town Route 1",
+        status: "NEW",
+        slot: "05:00 AM - 07:30 AM",
+        assignedDriver: "Unassigned"
+      });
+
+      deductInventoryStock(summary, lineItems);
+      subKiranaCart = {};
+      saveEcosystemState();
+      refreshAllLiveViews();
+      updateSubKiranaTotals();
+      closeSubSheet('sub-cart-sheet');
+      showToast(`Order ${invId} Confirmed! Synced to Admin Dispatch.`);
+    }
+
+    function openSubKhataSheet() {
+      refreshSubKhataUI();
+      document.getElementById('sub-khata-sheet').classList.remove('hidden');
+    }
+
+    function repaySubKhata() {
+      activeSubRetailer.available = activeSubRetailer.limit;
+      const khataEntry = retailerKhataList.find(k => k.name === activeSubRetailer.shop);
+      if (khataEntry) {
+        khataEntry.outstanding = 0;
+        khataEntry.isOverdue = false;
+        khataEntry.daysOverdue = 0;
+      }
+      saveEcosystemState();
+      refreshAllLiveViews();
+      closeSubSheet('sub-khata-sheet');
+      showToast(`Khata Settled! ₹${activeSubRetailer.limit.toLocaleString('en-IN')} Limit Restored.`);
+    }
+
+    function refreshSubKhataUI() {
+      if (!activeSubRetailer) return;
+      const avail = activeSubRetailer.available;
+      const limit = activeSubRetailer.limit;
+      const used = Math.max(0, limit - avail);
+      const bTxt = document.getElementById('sub-khata-balance-text');
+      const sLim = document.getElementById('sub-sheet-khata-limit');
+      const sAvail = document.getElementById('sub-sheet-khata-avail');
+      const sUsed = document.getElementById('sub-sheet-khata-used');
+      const meter = document.getElementById('sub-khata-meter');
+      if (bTxt) bTxt.innerText = `₹${avail.toLocaleString('en-IN')}`;
+      if (sLim) sLim.innerText = `₹${limit.toLocaleString('en-IN')}`;
+      if (sAvail) sAvail.innerText = `₹${avail.toLocaleString('en-IN')}`;
+      if (sUsed) sUsed.innerText = `₹${used.toLocaleString('en-IN')}`;
+      if (meter) meter.style.width = `${Math.round((avail / limit) * 100)}%`;
+    }
+
+    function switchSubRetailerTab(tab) {
+      const ordersView = document.getElementById('sub-retailer-orders-view');
+      const btnMandi = document.getElementById('sub-rtab-mandi');
+      const btnOrders = document.getElementById('sub-rtab-orders');
+      if (tab === 'orders') {
+        renderSubRetailerOrders();
+        ordersView.classList.remove('hidden');
+        btnOrders.className = "flex flex-col items-center gap-0.5 text-brand-600 font-bold text-[10px]";
+        btnMandi.className = "flex flex-col items-center gap-0.5 text-slate-500 font-semibold text-[10px]";
+      } else {
+        ordersView.classList.add('hidden');
+        btnMandi.className = "flex flex-col items-center gap-0.5 text-brand-600 font-bold text-[10px]";
+        btnOrders.className = "flex flex-col items-center gap-0.5 text-slate-500 font-semibold text-[10px]";
+      }
+    }
+
+    function renderSubRetailerOrders() {
+      const list = document.getElementById('sub-retailer-orders-list');
+      const activeCountEl = document.getElementById('sub-ret-active-orders-count');
+      if (!list) return;
+
+      const activeCnt = subRetailerOrders.filter(o => o.status !== 'DELIVERED').length;
+      if (activeCountEl) activeCountEl.innerText = `${activeCnt} Scheduled (5 AM)`;
+
+      if (subRetailerOrders.length === 0) {
+        list.innerHTML = `<p class="text-center text-slate-400 py-8 text-xs font-bold">No wholesale orders placed yet.</p>`;
+        return;
+      }
+
+      list.innerHTML = subRetailerOrders.map(o => {
+        const isDelivered = o.status === 'DELIVERED';
+        return `
+          <div class="bg-white border ${isDelivered ? 'border-slate-200' : 'border-brand-400'} rounded-2xl p-3 space-y-2 shadow-xs">
+            <div class="flex items-start justify-between">
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] font-mono font-black text-brand-600">${o.id}</span>
+                  <span class="text-[9px] text-slate-400">• ${o.date}</span>
+                </div>
+                <p class="text-[10px] text-slate-500 mt-0.5">Fleet: <strong class="text-slate-700">${o.driver}</strong></p>
+              </div>
+              <span class="text-[9px] font-black px-2 py-0.5 rounded ${isDelivered ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-800 border border-amber-200'}">${o.status}</span>
+            </div>
+
+            <p class="text-[10px] text-slate-700 bg-slate-50 p-2 rounded-xl border border-slate-100 leading-relaxed">${o.items}</p>
+
+            ${!isDelivered ? `
+              <div class="bg-emerald-50 border border-emerald-200 rounded-xl px-2.5 py-1.5 flex items-center justify-between text-[10px]">
+                <span class="text-emerald-900 font-bold">Share Delivery OTP at Unloading:</span>
+                <span class="font-mono font-black text-emerald-800 text-xs tracking-widest bg-white px-2 py-0.5 rounded border border-emerald-300">${o.otp}</span>
+              </div>
+            ` : ''}
+
+            <div class="flex items-center justify-between text-[11px] pt-0.5">
+              <div>
+                <span class="text-slate-500 text-[10px]">Total (${o.packs} packs): </span>
+                <strong class="text-slate-900 font-black">₹${o.total.toLocaleString('en-IN')}</strong>
+                <span class="text-[9px] text-slate-400 ml-1">(${o.payMode})</span>
+              </div>
+              <button onclick="showToast('Downloading GST Tax Invoice ${o.id} PDF...')" class="text-brand-600 hover:text-brand-700 font-black text-[10px] flex items-center gap-1 bg-brand-50 px-2 py-1 rounded-lg border border-brand-200">
+                <i class="ph-bold ph-file-pdf"></i> GST Bill
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function closeSubSheet(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+    }
+
+    // ============================================
+    // SIDEBAR, TABS & ADMIN TABLES
+    // ============================================
+    function toggleMobileSidebar() {
+      const sidebar = document.getElementById('ops-sidebar');
+      const backdrop = document.getElementById('sidebar-backdrop');
+      if (!sidebar || !backdrop) return;
+      const isClosed = sidebar.classList.contains('-translate-x-full');
+      if (isClosed) {
+        sidebar.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      }
+    }
+
+    function switchTab(tabId) {
+      const tabs = ['dashboard', 'orders', 'fleet', 'marketing', 'inventory', 'khata', 'kyc'];
+      tabs.forEach(t => {
+        const sec = document.getElementById(`tab-${t}`);
+        const nav = document.getElementById(`nav-${t}`);
+        if (sec && nav) {
+          if (t === tabId) {
+            sec.classList.remove('hidden');
+            sec.classList.add('fade-in');
+            nav.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition bg-brand-600 text-white shadow-sm";
+          } else {
+            sec.classList.add('hidden');
+            nav.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition text-slate-600 hover:bg-slate-100 hover:text-slate-900";
+          }
+        }
+      });
+
+      const sidebar = document.getElementById('ops-sidebar');
+      const backdrop = document.getElementById('sidebar-backdrop');
+      if (window.innerWidth < 1024 && sidebar && !sidebar.classList.contains('-translate-x-full')) {
+        sidebar.classList.add('-translate-x-full');
+        if (backdrop) backdrop.classList.add('hidden');
+      }
     }
 
     // ============================================
@@ -4735,7 +5019,7 @@
         card.innerHTML = `
           <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-600 to-amber-500 text-white font-black text-sm flex items-center justify-center shadow-md shadow-rose-600/20 shrink-0">
+              <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-600 to-amber-500 text-white font-black text-sm flex items-center justify-center shadow-md shrink-0">
                 ${initials}
               </div>
               <div>
@@ -4767,7 +5051,7 @@
           <div class="space-y-1">
             <div class="flex justify-between items-center text-xs">
               <span class="text-[10px] font-bold text-slate-500 uppercase">Monthly Kirana Onboarding</span>
-              <span class="font-black text-slate-900 text-xs">${agent.achieved} <span class="text-slate-500 font-normal">/ ${agent.monthlyTarget} Shops (${targetPct}%)</span></span>
+              <span class="font-black text-slate-900 text-xs">${agent.achieved} <span class="text-slate-400 font-normal">/ ${agent.monthlyTarget} Shops (${targetPct}%)</span></span>
             </div>
             <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
               <div class="h-full rounded-full ${targetPct >= 80 ? 'bg-emerald-500' : targetPct >= 50 ? 'bg-amber-400' : 'bg-rose-500'}" style="width: ${targetPct}%"></div>
@@ -4781,7 +5065,7 @@
             </div>
             <div>
               <span class="text-slate-500 text-[9px] block uppercase font-bold">Commission Earned</span>
-              <span class="font-black text-emerald-600 text-xs">${agent.commissionEarned} <span class="text-[9px] text-slate-500 font-normal">(${agent.commissionRate})</span></span>
+              <span class="font-black text-emerald-600 text-xs">${agent.commissionEarned} <span class="text-[9px] text-slate-400 font-normal">(${agent.commissionRate})</span></span>
             </div>
           </div>
 
@@ -4796,19 +5080,19 @@
             </button>
           </div>
 
-          <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-200 text-xs">
-            <span class="text-[10px] text-slate-500 font-mono">${agent.phone}</span>
-            <div class="flex flex-wrap items-center justify-end gap-1.5">
-              <button onclick="viewSpecificAgentOrders('${agent.id}')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-amber-800 border border-slate-300 font-bold text-[11px] transition flex items-center gap-1" title="Filter orders taken by ${agent.name}">
-                <i class="ph-bold ph-list-checks"></i> View Orders
+          <div class="flex items-center justify-between pt-1 border-t border-slate-200 text-xs gap-1.5">
+            <span class="text-[10px] text-slate-500 font-mono truncate">${agent.phone}</span>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button onclick="viewSpecificAgentOrders('${agent.id}')" class="px-2 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-[11px] transition flex items-center gap-1" title="Filter orders taken by ${agent.name}">
+                <i class="ph-bold ph-list-checks"></i> Orders
               </button>
               <a href="tel:${agent.phone}" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition" title="Call Agent">
                 <i class="ph-bold ph-phone-call text-xs"></i>
               </a>
-              <button onclick="sendAgentWhatsAppTargets('${agent.name}', '${agent.beat}', '${agent.monthlyTarget - agent.achieved}')" class="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-[11px] transition flex items-center gap-1">
-                <i class="ph-bold ph-whatsapp-logo"></i> Send Scheme
+              <button onclick="sendAgentWhatsAppTargets('${agent.name}', '${agent.beat}', '${agent.monthlyTarget - agent.achieved}')" class="px-2 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-[11px] transition flex items-center gap-1">
+                <i class="ph-bold ph-whatsapp-logo"></i> Scheme
               </button>
-              <button onclick="openRemoveMarketingModal('${agent.id}')" class="px-2.5 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-bold text-[11px] transition flex items-center gap-1" title="Remove Marketing Executive">
+              <button onclick="openRemoveMarketingModal('${agent.id}')" class="px-2 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-bold text-[11px] transition flex items-center gap-1" title="Remove Marketing Executive">
                 <i class="ph-bold ph-trash"></i> Remove
               </button>
             </div>
@@ -4827,14 +5111,12 @@
       if (badgeMarketingEl) badgeMarketingEl.innerText = `${marketingAgents.length} Active`;
     }
 
-    let pendingRemoveMarketingId = null;
-
     function openRemoveMarketingModal(agentId) {
       const agent = marketingAgents.find(a => a.id === agentId);
       if (!agent) return;
       pendingRemoveMarketingId = agentId;
       document.getElementById('remove-marketing-summary').innerText = `${agent.name} • ${agent.beat}`;
-      document.getElementById('remove-marketing-login-info').innerText = `Login ID: ${agent.loginId || agent.id} • Hub: ${agent.hub}`;
+      document.getElementById('remove-marketing-login-info').innerText = `Agent ID: ${agent.loginId || agent.id} • Hub: ${agent.hub}`;
       document.getElementById('remove-marketing-modal').classList.remove('hidden');
     }
 
@@ -4844,16 +5126,9 @@
       if (idx !== -1) {
         const removed = marketingAgents[idx];
         marketingAgents.splice(idx, 1);
-
-        if (loggedInSubAgent && loggedInSubAgent.id === removed.id) {
-          logoutFieldAgentApp();
-        }
-
         saveEcosystemState();
-        renderMarketingAgents();
-        populateAgentOrderDropdowns();
-        renderMarketingBookedOrders('ALL');
-        showToast(`Removed Marketing Executive ${removed.name} (${removed.loginId || removed.id}) from Sales Force`);
+        refreshAllLiveViews();
+        showToast(`Removed Marketing Executive ${removed.name} (${removed.loginId || removed.id})`);
       }
       pendingRemoveMarketingId = null;
       closeModal('remove-marketing-modal');
@@ -4896,7 +5171,7 @@
         tr.innerHTML = `
           <td class="py-3 px-4">
             <span class="font-mono text-rose-600 font-extrabold text-[11px] block">${ord.orderId}</span>
-            <span class="text-[10px] text-slate-500">${ord.time}</span>
+            <span class="text-[10px] text-slate-400">${ord.time}</span>
           </td>
           <td class="py-3 px-4">
             <span class="font-bold text-slate-900 text-xs block">${ord.agentName}</span>
@@ -4904,7 +5179,7 @@
           </td>
           <td class="py-3 px-4">
             <span class="font-bold text-slate-800 text-xs block">${ord.shopName}</span>
-            <span class="text-[10px] text-amber-700 font-semibold">${ord.beat}</span>
+            <span class="text-[10px] text-amber-700">${ord.beat}</span>
           </td>
           <td class="py-3 px-4">
             <span class="text-xs text-slate-800 block max-w-xs truncate">${ord.itemsSummary}</span>
@@ -4922,7 +5197,7 @@
           </td>
           <td class="py-3 px-4 text-right whitespace-nowrap">
             ${ord.pushedToDispatch
-              ? `<button onclick="switchTab('orders')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold text-[11px] transition">Track in Orders</button>`
+              ? `<button onclick="switchTab('orders')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-[11px] transition">Track in Orders</button>`
               : `<button onclick="pushAgentOrderToDispatch('${ord.orderId}')" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px] transition">Approve & Dispatch</button>`
             }
           </td>
@@ -4965,10 +5240,9 @@
         assignedDriver: "Unassigned"
       });
 
-      renderOrdersTable(wholesaleOrders);
-      const currentFilter = document.getElementById('agent-order-filter')?.value || 'ALL';
-      renderMarketingBookedOrders(currentFilter);
+      deductInventoryStock(ord.itemsSummary, null);
       saveEcosystemState();
+      refreshAllLiveViews();
       showToast(`Approved ${ord.orderId} (${ord.shopName}) & sent to Wholesale Dispatch Queue!`);
     }
 
@@ -5006,11 +5280,10 @@
       };
 
       marketingBookedOrders.unshift(newFieldOrder);
-      const currentFilter = document.getElementById('agent-order-filter')?.value || 'ALL';
-      renderMarketingBookedOrders(currentFilter);
+      saveEcosystemState();
+      refreshAllLiveViews();
       closeModal('agent-order-modal');
       document.getElementById('agent-order-form').reset();
-      saveEcosystemState();
       showToast(`Recorded field order ${newFieldOrder.orderId} booked by ${newFieldOrder.agentName}!`);
     }
 
@@ -5029,7 +5302,7 @@
       if (!input || !eye) return;
       if (input.type === 'password') {
         input.type = 'text';
-        eye.className = 'ph-bold ph-eye-slash text-sm text-rose-400';
+        eye.className = 'ph-bold ph-eye-slash text-sm text-rose-600';
       } else {
         input.type = 'password';
         eye.className = 'ph-bold ph-eye text-sm';
@@ -5087,11 +5360,10 @@
       };
 
       marketingAgents.unshift(newAgent);
-      renderMarketingAgents();
-      populateAgentOrderDropdowns();
+      saveEcosystemState();
+      refreshAllLiveViews();
       closeModal('add-marketing-modal');
       document.getElementById('add-marketing-form').reset();
-      saveEcosystemState();
       showToast(`Added ${name} | Login ID: ${loginId} & Password saved and sent via SMS!`);
     }
 
@@ -5118,7 +5390,7 @@
         } else if (driver.status === 'AT_STOP') {
           statusTag = '<span class="bg-amber-50 text-amber-800 border border-amber-200 text-[9px] font-black px-1.5 py-0.5 rounded">Unloading at Shop</span>';
         } else {
-          statusTag = '<span class="bg-slate-200 text-slate-700 border border-slate-300 text-[9px] font-black px-1.5 py-0.5 rounded">Idle at Bay</span>';
+          statusTag = '<span class="bg-slate-100 text-slate-700 border border-slate-200 text-[9px] font-black px-1.5 py-0.5 rounded">Idle at Bay</span>';
         }
 
         const card = document.createElement('div');
@@ -5161,11 +5433,11 @@
             </button>
           </div>
 
-          <div class="flex items-center justify-between text-[10px] pt-1">
-            <span class="text-slate-500 flex items-center gap-1">
+          <div class="flex items-center justify-between text-[10px] pt-1 gap-1.5">
+            <span class="text-slate-500 flex items-center gap-1 truncate">
               <i class="ph-bold ph-battery-high text-emerald-600"></i> ${driver.battery} GPS
             </span>
-            <div class="flex items-center gap-1.5">
+            <div class="flex items-center gap-1.5 shrink-0">
               <a href="tel:${driver.phone}" class="p-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 transition" title="Call Driver">
                 <i class="ph-bold ph-phone-call text-xs"></i>
               </a>
@@ -5189,14 +5461,12 @@
       if (sidebarStat) sidebarStat.innerText = `${onRouteCount} On Route`;
     }
 
-    let pendingRemoveDriverId = null;
-
     function openRemoveDriverModal(driverId) {
-      const driver = fleetDrivers.find(d => d.id === driverId);
-      if (!driver) return;
+      const drv = fleetDrivers.find(d => d.id === driverId);
+      if (!drv) return;
       pendingRemoveDriverId = driverId;
-      document.getElementById('remove-driver-summary').innerText = `${driver.name} • ${driver.plate} (${driver.vehicle})`;
-      document.getElementById('remove-driver-login-info').innerText = `Login ID: ${driver.loginId || driver.id} • Hub: ${driver.hub}`;
+      document.getElementById('remove-driver-summary').innerText = `${drv.name} • ${drv.plate} (${drv.vehicle})`;
+      document.getElementById('remove-driver-login-info').innerText = `Partner ID: ${drv.loginId || drv.id} • Hub: ${drv.hub}`;
       document.getElementById('remove-driver-modal').classList.remove('hidden');
     }
 
@@ -5206,17 +5476,9 @@
       if (idx !== -1) {
         const removed = fleetDrivers[idx];
         fleetDrivers.splice(idx, 1);
-
-        // Also sync removal if onboarded via Marketing Agent App
-        const subIdx = subAgentOnboardedDrivers.findIndex(d => d.loginId === removed.loginId);
-        if (subIdx !== -1) {
-          subAgentOnboardedDrivers.splice(subIdx, 1);
-          renderSubAgentOnboardedDrivers();
-        }
-
         saveEcosystemState();
-        renderFleetDrivers();
-        showToast(`Removed Delivery Partner ${removed.name} (${removed.plate}) from Depot Roster`);
+        refreshAllLiveViews();
+        showToast(`Removed Delivery Partner ${removed.name} (${removed.plate})`);
       }
       pendingRemoveDriverId = null;
       closeModal('remove-driver-modal');
@@ -5237,7 +5499,7 @@
       if (!input || !eye) return;
       if (input.type === 'password') {
         input.type = 'text';
-        eye.className = 'ph-bold ph-eye-slash text-sm text-brand-400';
+        eye.className = 'ph-bold ph-eye-slash text-sm text-brand-600';
       } else {
         input.type = 'password';
         eye.className = 'ph-bold ph-eye text-sm';
@@ -5292,10 +5554,10 @@
       };
 
       fleetDrivers.unshift(newDriver);
-      renderFleetDrivers();
+      saveEcosystemState();
+      refreshAllLiveViews();
       closeModal('add-driver-modal');
       document.getElementById('add-driver-form').reset();
-      saveEcosystemState();
       showToast(`Added ${name} (${plate}) | Login ID: ${loginId} & Password sent via SMS!`);
     }
 
@@ -5331,7 +5593,9 @@
       showToast(`Wholesale dispatch manifest & Kirana pin drop route sent to ${driverName} (${plate}) via WhatsApp`);
     }
 
-    // Orders Rendering & Interactions
+    // ============================================
+    // ORDERS RENDERING & INTERACTIONS
+    // ============================================
     function resolveOrderProductItems(order) {
       if (Array.isArray(order.lineItems) && order.lineItems.length > 0) {
         return order.lineItems.map(li => {
@@ -5402,6 +5666,13 @@
       if (!tbody) return;
       tbody.innerHTML = '';
 
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400 text-xs font-bold">No wholesale orders in dispatch queue yet. Orders from Kirana Store or Marketing Agent App appear here automatically.</td></tr>`;
+        const badgeOrders = document.getElementById('badge-orders-count');
+        if (badgeOrders) badgeOrders.innerText = '0';
+        return;
+      }
+
       list.forEach(order => {
         let statusBadge = "";
         if (order.status === 'NEW') {
@@ -5409,7 +5680,7 @@
         } else if (order.status === 'PACKING') {
           statusBadge = `<span class="bg-sky-50 text-sky-700 border border-sky-200 px-2 py-0.5 rounded text-[10px] font-black">PICKING IN BAY</span>`;
         } else if (order.status === 'DISPATCHED') {
-          statusBadge = `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded text-[10px] font-black">TRUCK DISPATCHED</span>`;
+          statusBadge = `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded text-[10px] font-black">DELIVERED</span>`;
         }
 
         const resolvedItems = resolveOrderProductItems(order);
@@ -5418,7 +5689,7 @@
             <img src="${item.image}" alt="${item.name}" class="w-9 h-9 rounded-lg object-cover border border-slate-300 bg-white shrink-0">
             <div class="min-w-0 flex-1">
               <span class="text-[11px] font-extrabold text-slate-900 block truncate max-w-[190px]" title="${item.name}">${item.name}</span>
-              <span class="text-[10px] font-bold text-amber-700">${item.qty} Packs <span class="text-slate-500 font-normal">• ${item.bay}</span></span>
+              <span class="text-[10px] font-bold text-amber-700">${item.qty} Packs <span class="text-slate-400 font-normal">• ${item.bay}</span></span>
             </div>
           </div>
         `).join('');
@@ -5459,7 +5730,7 @@
                 Assign Vehicle
               </button>
             ` : `
-              <button onclick="generateTaxInvoicePreview('${order.id}')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold text-[11px] transition">
+              <button onclick="generateTaxInvoicePreview('${order.id}')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-[11px] transition">
                 <i class="ph-bold ph-printer"></i> E-Way Bill
               </button>
             `}
@@ -5490,6 +5761,12 @@
     function openAssignModal(orderId) {
       currentAssignOrderId = orderId;
       document.getElementById('assign-order-id').value = orderId;
+      const sel = document.getElementById('assign-vehicle-select');
+      if (sel && fleetDrivers.length > 0) {
+        sel.innerHTML = fleetDrivers.map(d =>
+          `<option value="${d.name} (${d.vehicle} ${d.plate})">${d.vehicle} (${d.plate}) • Driver: ${d.name}</option>`
+        ).join('');
+      }
       document.getElementById('assign-driver-modal').classList.remove('hidden');
     }
 
@@ -5499,9 +5776,24 @@
       if (order) {
         order.status = 'PACKING';
         order.assignedDriver = selectedVehicle;
-        renderOrdersTable(wholesaleOrders);
+
+        const retOrd = subRetailerOrders.find(o => o.id === order.id);
+        if (retOrd) {
+          retOrd.driver = selectedVehicle;
+        }
+
+        const drv = fleetDrivers.find(d => selectedVehicle.includes(d.plate));
+        if (drv) {
+          drv.status = 'ON_ROUTE';
+          drv.totalDrops = (drv.totalDrops || 0) + 1;
+          drv.currentRoute = `Route #${order.route}`;
+          drv.activeOrder = order.id;
+        }
+
+        syncWholesaleOrdersIntoDriverStops();
         saveEcosystemState();
-        showToast(`Assigned ${selectedVehicle} for invoice ${currentAssignOrderId}`);
+        refreshAllLiveViews();
+        showToast(`Assigned ${selectedVehicle} for invoice ${currentAssignOrderId} & synced to Driver App!`);
       }
       closeModal('assign-driver-modal');
     }
@@ -5510,7 +5802,9 @@
       showToast(`Generating GST Tax Invoice & E-Way Bill for ${orderId}...`);
     }
 
-    // Inventory & Slab Management
+    // ============================================
+    // INVENTORY & SLAB MANAGEMENT
+    // ============================================
     function renderInventoryTable() {
       const tbody = document.getElementById('inventory-tbody');
       if (!tbody) return;
@@ -5546,9 +5840,9 @@
               <span class="font-black text-xs ${isCritical ? 'text-red-600' : 'text-emerald-600'}">
                 ${item.stockUnits} Packs
               </span>
-              ${isCritical ? '<span class="text-[9px] bg-red-50 text-red-700 border border-red-200 px-1 py-0.2 rounded font-black">CRITICAL</span>' : ''}
+              ${isCritical ? '<span class="text-[9px] bg-red-50 text-red-600 border border-red-200 px-1 py-0.2 rounded font-black">CRITICAL</span>' : ''}
             </div>
-            <span class="text-[10px] text-slate-500">MOQ: ${item.moq}</span>
+            <span class="text-[10px] text-slate-400">MOQ: ${item.moq}</span>
           </td>
           <td class="py-3 px-4">
             <span class="font-black text-slate-900">₹${item.t1}</span>
@@ -5562,14 +5856,42 @@
             <span class="font-black text-brand-600">₹${item.t3}</span>
             <span class="text-[9px] text-slate-500 block">16+ Packs</span>
           </td>
-          <td class="py-3 px-4 text-right">
+          <td class="py-3 px-4 text-right whitespace-nowrap space-x-1">
             <button onclick="openSlabModal('${item.id}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 text-[11px] font-bold transition">
               <i class="ph-bold ph-pencil-simple"></i> Edit Slab / Img
+            </button>
+            <button onclick="openRemoveSkuModal('${item.id}')" class="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-[11px] font-bold transition" title="Remove Product SKU">
+              <i class="ph-bold ph-trash"></i> Remove
             </button>
           </td>
         `;
         tbody.appendChild(tr);
       });
+    }
+
+    function openRemoveSkuModal(skuId) {
+      const sku = inventoryCatalog.find(i => i.id === skuId);
+      if (!sku) return;
+      pendingRemoveSkuId = skuId;
+      document.getElementById('remove-sku-summary').innerText = `${sku.name} (${sku.id})`;
+      document.getElementById('remove-sku-meta').innerText = `${sku.bay} • Stock: ${sku.stockUnits} Packs • Category: ${sku.category}`;
+      document.getElementById('remove-sku-modal').classList.remove('hidden');
+    }
+
+    function confirmRemoveSku() {
+      if (!pendingRemoveSkuId) return;
+      const idx = inventoryCatalog.findIndex(i => i.id === pendingRemoveSkuId);
+      if (idx !== -1) {
+        const removed = inventoryCatalog[idx];
+        inventoryCatalog.splice(idx, 1);
+        delete subKiranaCart[removed.id];
+        delete subAgentCart[removed.id];
+        saveEcosystemState();
+        refreshAllLiveViews();
+        showToast(`Removed product ${removed.name} (${removed.id}) from Depot Inventory!`);
+      }
+      pendingRemoveSkuId = null;
+      closeModal('remove-sku-modal');
     }
 
     function previewSkuFileUpload(event, mode) {
@@ -5649,68 +5971,27 @@
         currentEditingSku.image = pendingEditSkuImageData;
       }
 
-      renderInventoryTable();
-      renderOrdersTable(wholesaleOrders);
-      closeModal('slab-edit-modal');
       saveEcosystemState();
+      refreshAllLiveViews();
+      closeModal('slab-edit-modal');
       showToast(`Updated image & pricing slabs for ${currentEditingSku.name}`);
     }
 
-    // Khata & Credit Risk Management
-    const retailerKhataList = [
-      {
-        name: "Maa Sarada Traders",
-        owner: "Ramesh Giri",
-        location: "Egra Central Market",
-        phone: "+91 9832049182",
-        limit: 50000,
-        outstanding: 18400,
-        cycle: "14 Days",
-        isOverdue: false,
-        daysOverdue: 0
-      },
-      {
-        name: "Tara Maa Bhandar",
-        owner: "Subhash Barik",
-        location: "Contai Super Market",
-        phone: "+91 9732109844",
-        limit: 75000,
-        outstanding: 72800,
-        cycle: "14 Days",
-        isOverdue: true,
-        daysOverdue: 8
-      },
-      {
-        name: "Shree Krishna Grocery",
-        owner: "Aloke Patra",
-        location: "Ramnagar Main Road",
-        phone: "+91 9434827110",
-        limit: 30000,
-        outstanding: 4200,
-        cycle: "7 Days",
-        isOverdue: false,
-        daysOverdue: 0
-      },
-      {
-        name: "Bishnu Stores Kirana",
-        owner: "Bishnupada Manna",
-        location: "Contai Coastal",
-        phone: "+91 9832108873",
-        limit: 40000,
-        outstanding: 38900,
-        cycle: "15 Days",
-        isOverdue: true,
-        daysOverdue: 16
-      }
-    ];
-
+    // ============================================
+    // KHATA & CREDIT RISK MANAGEMENT
+    // ============================================
     function renderKhataTable() {
       const tbody = document.getElementById('khata-tbody');
       if (!tbody) return;
       tbody.innerHTML = '';
 
+      if (retailerKhataList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400 text-xs font-bold">No Kirana Khata accounts active yet. Approve KYC or place a Khata order to populate ledger.</td></tr>`;
+        return;
+      }
+
       retailerKhataList.forEach(k => {
-        const utilPct = Math.round((k.outstanding / k.limit) * 100);
+        const utilPct = k.limit > 0 ? Math.round((k.outstanding / k.limit) * 100) : 0;
         const tr = document.createElement('tr');
         tr.className = "hover:bg-slate-50 transition";
 
@@ -5720,7 +6001,7 @@
             <span class="text-[10px] text-slate-500">${k.owner} • ${k.location}</span>
           </td>
           <td class="py-3 px-4">
-            <span class="font-black text-slate-900 text-xs">₹${k.limit.toLocaleString('en-IN')}</span>
+            <span class="font-black text-slate-800 text-xs">₹${k.limit.toLocaleString('en-IN')}</span>
           </td>
           <td class="py-3 px-4">
             <div class="flex items-center gap-2">
@@ -5749,7 +6030,7 @@
             <button onclick="sendWhatsAppPaymentReminder('${k.name}', '${k.outstanding}')" class="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold text-[11px] transition">
               <i class="ph-bold ph-whatsapp-logo"></i> Remind
             </button>
-            <button onclick="adjustCreditLimit('${k.name}')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold text-[11px] transition">
+            <button onclick="adjustCreditLimit('${k.name}')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-[11px] transition">
               Adjust Limit
             </button>
           </td>
@@ -5766,47 +6047,20 @@
       showToast(`Credit limit editor opened for ${shop}`);
     }
 
-    // KYC Applications
-    const kycApplications = [
-      {
-        id: "KYC-WB-901",
-        shopName: "Joy Guru Grocery & Wholesale",
-        owner: "Debashis Panda",
-        phone: "+91 9832981100",
-        address: "Belda Road, Egra Municipality Ward 4",
-        gstin: "19AADCD9012F1Z1",
-        fssai: "12822019000142",
-        appliedDate: "Yesterday, 04:30 PM",
-        docs: ["GST Certificate (Active)", "FSSAI Food License", "Storefront Photo"]
-      },
-      {
-        id: "KYC-WB-902",
-        shopName: "New Annapurna Bhandar",
-        owner: "Kamalendu Bhowmik",
-        phone: "+91 9434190288",
-        address: "Hospital More, Contai Town",
-        gstin: "19BHKPB4412L1Z8",
-        fssai: "12821014000319",
-        appliedDate: "Today, 08:15 AM",
-        docs: ["Udyam MSME Certificate", "Shop Trade License"]
-      },
-      {
-        id: "KYC-WB-903",
-        shopName: "Maa Manasa Enterprise",
-        owner: "Sukumar Sen",
-        phone: "+91 9123894411",
-        address: "Digha Old Bus Stand",
-        gstin: "Applied (Pending)",
-        fssai: "12823011000882",
-        appliedDate: "Today, 09:40 AM",
-        docs: ["Aadhaar of Proprietor", "Trade License"]
-      }
-    ];
-
+    // ============================================
+    // KYC APPLICATIONS
+    // ============================================
     function renderKycCards() {
       const container = document.getElementById('kyc-cards-container');
       if (!container) return;
       container.innerHTML = '';
+
+      if (kycApplications.length === 0) {
+        container.innerHTML = `<div class="col-span-full bg-slate-50 border border-slate-200 rounded-2xl p-8 text-center text-slate-400 text-xs font-bold">No pending Kirana KYC applications. New registrations from Kirana Store App or Field Agents will appear here.</div>`;
+        const badgeKyc = document.getElementById('badge-kyc-count');
+        if (badgeKyc) badgeKyc.innerText = '0 New';
+        return;
+      }
 
       kycApplications.forEach((app, idx) => {
         const card = document.createElement('div');
@@ -5851,18 +6105,36 @@
     }
 
     function approveKyc(kycId, idx) {
+      const app = kycApplications[idx];
+      if (app) {
+        retailerKhataList.unshift({
+          name: app.shopName,
+          owner: app.owner,
+          location: app.address,
+          phone: app.phone,
+          limit: 30000,
+          outstanding: 0,
+          cycle: "14 Days",
+          isOverdue: false,
+          daysOverdue: 0
+        });
+      }
       kycApplications.splice(idx, 1);
-      renderKycCards();
-      showToast(`Approved ${kycId}! Created standard ₹30,000 credit line.`);
+      saveEcosystemState();
+      refreshAllLiveViews();
+      showToast(`Approved ${kycId}! Opened ₹30,000 Khata credit line & activated Kirana Store.`);
     }
 
     function rejectKyc(kycId, idx) {
       kycApplications.splice(idx, 1);
-      renderKycCards();
+      saveEcosystemState();
+      refreshAllLiveViews();
       showToast(`Rejected ${kycId} due to document discrepancy.`);
     }
 
-    // Modal & Depot Helpers
+    // ============================================
+    // MODAL & DEPOT HELPERS
+    // ============================================
     function closeModal(id) {
       const el = document.getElementById(id);
       if (el) el.classList.add('hidden');
@@ -5914,10 +6186,11 @@
         assignedDriver: "Unassigned"
       });
 
-      renderOrdersTable(wholesaleOrders);
+      deductInventoryStock(items, null);
+      saveEcosystemState();
+      refreshAllLiveViews();
       closeModal('create-order-modal');
       document.getElementById('create-order-form').reset();
-      saveEcosystemState();
       showToast(`Created wholesale order ${newId} for ${shop}`);
     }
 
@@ -5950,11 +6223,11 @@
         image: pendingNewSkuImageData || defaultThumb
       });
 
-      renderInventoryTable();
+      saveEcosystemState();
+      refreshAllLiveViews();
       closeModal('add-sku-modal');
       document.getElementById('add-sku-form').reset();
       resetSkuImagePreview('new');
-      saveEcosystemState();
       showToast(`Published ${name} with product image to ApnaMart24 B2B catalog!`);
     }
 
@@ -5966,6 +6239,35 @@
         toast.classList.add('hidden');
       }, 3200);
     }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        const overlay = document.getElementById('connected-app-overlay');
+        if (overlay && !overlay.classList.contains('hidden')) {
+          closeConnectedAppOverlay();
+        }
+      }
+    });
+
+    window.onload = function() {
+      loadEcosystemState(false);
+      refreshAllLiveViews();
+      restorePersistentFieldAgentSession();
+      restorePersistentDriverSession();
+      restorePersistentRetailerSession();
+
+      try {
+        if (sessionStorage.getItem(ADMIN_SESSION_KEY) === '1') {
+          isAdminAuthenticated = true;
+          document.getElementById('admin-login-gate').classList.add('hidden');
+        }
+      } catch (e) {}
+
+      const hash = (window.location.hash || '').replace('#', '').toLowerCase();
+      if (hash === 'agent' || hash === 'driver' || hash === 'kirana') {
+        openConnectedApp(hash);
+      }
+    };
   </script>
 </body>
 </html>
