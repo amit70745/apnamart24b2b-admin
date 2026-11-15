@@ -1,0 +1,22 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "ApnaMart24 B2B",
+  "orientation": "portrait",
+  "scope": "/",
+  "short_name": "ApnaMart24",
+  "start_url": "/",
+  "theme_color": "#ea580c",
+  "id": "apnamart24-b2b",
+  "description": "ApnaMart24 B2B Wholesale Operations, Fleet & Kirana Portal",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
