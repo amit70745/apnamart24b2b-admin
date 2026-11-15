@@ -200,6 +200,12 @@
 
     <!-- Right Controls: Quick Search, Early Morning Dispatch Timer & Admin Profile -->
     <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Live Order Sound Alert Toggle -->
+      <button id="admin-sound-toggle-btn" onclick="toggleAdminOrderSound()" title="Toggle Live Order Sound Alert" class="flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 px-2.5 py-1.5 rounded-xl text-xs font-black transition active:scale-95">
+        <i id="admin-sound-icon" class="ph-fill ph-bell-ringing text-emerald-600 text-sm"></i>
+        <span id="admin-sound-label" class="hidden md:inline">Sound ON</span>
+      </button>
+
       <!-- Live Sync Refresh Button -->
       <button onclick="manualAdminRefresh()" title="Sync & Refresh Live Data" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-black transition active:scale-95">
         <i id="admin-global-refresh-icon" class="ph-bold ph-arrows-clockwise text-emerald-600 text-sm"></i>
@@ -419,8 +425,8 @@
         <!-- Welcome & Fast Metrics Ribbon -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <div>
-            <label class="text-slate-700 font-bold block mb-1">Driving License Number <span class="text-slate-400 font-normal">(Optional)</span></label>
-            <input type="text" id="driver-dl" placeholder="e.g. WB34 20190018291" class="w-full bg-slate-50 text-slate-900 font-mono uppercase font-semibold px-3 py-2 rounded-xl border border-slate-300 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500">
+            <h1 class="text-xl font-black text-slate-900">Hub Operations & Fulfillment Overview</h1>
+            <p class="text-xs text-slate-500">Live wholesale GMV, morning 5:00 AM dispatch tonnage, active Kirana network & Khata metrics.</p>
           </div>
         </div>
 
@@ -1119,12 +1125,16 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 class="text-xl font-black text-slate-900">Kirana Credit Ledger (Khata)</h2>
-            <p class="text-xs text-slate-500">Monitor merchant credit limits, 14-day payment cycles, and overdue collection risks.</p>
+            <p class="text-xs text-slate-500">Set custom merchant credit limits (hidden from Kirana App), monitor 14-day payment cycles, and manage dues.</p>
           </div>
           <div class="flex items-center gap-2">
+            <button onclick="openSetKhataLimitModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 transition shadow-xs">
+              <i class="ph-bold ph-sliders-horizontal text-base"></i>
+              <span>Set Partner Credit Limit</span>
+            </button>
             <button onclick="showToast('Initiating automated WhatsApp balance reminder cycle...')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
               <i class="ph-bold ph-whatsapp-logo text-base"></i>
-              <span>Remind All Overdue (2)</span>
+              <span>Remind All Overdue</span>
             </button>
           </div>
         </div>
@@ -1135,7 +1145,7 @@
               <thead class="bg-slate-50 text-[10px] uppercase font-black tracking-wider text-slate-500 border-b border-slate-200">
                 <tr>
                   <th class="py-3 px-4">Kirana Partner</th>
-                  <th class="py-3 px-4">Credit Limit</th>
+                  <th class="py-3 px-4">Admin Credit Limit (Private)</th>
                   <th class="py-3 px-4">Current Outstanding</th>
                   <th class="py-3 px-4">Payment Cycle</th>
                   <th class="py-3 px-4">Health Status</th>
@@ -1878,6 +1888,61 @@
     </div>
   </div>
 
+  <!-- MODAL: SET / EDIT KIRANA PARTNER CREDIT LIMIT (ADMIN PRIVATE CONTROL) -->
+  <div id="set-khata-limit-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 border border-sky-200 flex items-center justify-center text-lg">
+            <i class="ph-bold ph-wallet"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-black text-slate-900">Set Kirana Partner Credit Limit</h3>
+            <p class="text-[10px] text-slate-500">Private Admin limit • Hidden from Kirana Store App</p>
+          </div>
+        </div>
+        <button onclick="closeModal('set-khata-limit-modal')" class="text-slate-400 hover:text-slate-700">
+          <i class="ph-bold ph-x text-base"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleSaveKhataLimit(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="text-slate-700 font-bold block mb-1">Select Kirana Partner *</label>
+          <select id="khata-limit-shop-select" onchange="onKhataLimitShopChange(this.value)" required class="w-full bg-slate-50 text-slate-900 font-bold px-3 py-2.5 rounded-xl border border-slate-300 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-slate-700 font-bold block mb-1">Assigned Credit Limit (₹) *</label>
+            <input type="number" id="khata-limit-amount-input" required min="0" step="500" placeholder="e.g. 25000" class="w-full bg-slate-50 text-slate-900 font-black px-3 py-2 rounded-xl border border-slate-300 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="text-slate-700 font-bold block mb-1">Repayment Cycle *</label>
+            <select id="khata-limit-cycle-select" class="w-full bg-slate-50 text-slate-900 font-bold px-3 py-2 rounded-xl border border-slate-300 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500">
+              <option value="7-Day Weekly">7-Day Weekly</option>
+              <option value="14-Day Standard" selected>14-Day Standard</option>
+              <option value="21-Day Trusted">21-Day Trusted</option>
+              <option value="Cash / UPI Only (₹0)">Cash / UPI Only (₹0)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-2.5 text-[11px] text-amber-900 flex items-start gap-2">
+          <i class="ph-bold ph-eye-slash text-amber-700 text-sm shrink-0 mt-0.5"></i>
+          <span>This Credit Limit is strictly private to Admin & automatically enforces whether the store can place Khata BNPL orders.</span>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-200">
+          <button type="button" onclick="closeModal('set-khata-limit-modal')" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black transition">Save Credit Limit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- MODAL: CHANGE ADMIN PASSWORD (ONLY ACCESSIBLE AFTER LOGIN) -->
   <div id="change-admin-pass-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
     <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
@@ -2114,7 +2179,7 @@
                   <i class="ph-bold ph-storefront"></i>
                 </div>
                 <div class="text-xs font-black text-slate-900">Onboard Kirana KYC</div>
-                <div class="text-[10px] text-slate-500 leading-tight">Verify GSTIN & unlock ₹30,000 credit</div>
+                <div class="text-[10px] text-slate-500 leading-tight">Submit GSTIN & owner KYC for Admin approval</div>
               </button>
 
               <button onclick="openSubAssistedCatalogModal()" class="bg-white hover:bg-amber-50/40 border border-slate-200 p-3 rounded-2xl text-left space-y-1.5 transition shadow-xs">
@@ -2290,11 +2355,11 @@
                     <input type="text" id="sub-inp-gstin" required placeholder="19AADCD9012F1Z1" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-900 uppercase font-mono focus:outline-none focus:border-rose-500">
                   </div>
                 </div>
-                <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl flex justify-between items-center text-[10px]">
-                  <span class="text-emerald-800 font-bold">Auto-Approved Credit:</span>
-                  <span class="font-black text-emerald-700 text-xs">₹30,000 Khata</span>
+                <div class="bg-amber-50 border border-amber-200 p-2.5 rounded-xl flex justify-between items-center text-[10px]">
+                  <span class="text-amber-900 font-bold">Credit Limit Approval:</span>
+                  <span class="font-black text-amber-800 text-xs">Set by Central Admin</span>
                 </div>
-                <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white py-2.5 rounded-xl font-black text-xs shadow">Verify & Activate Store</button>
+                <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white py-2.5 rounded-xl font-black text-xs shadow">Submit for Admin KYC</button>
               </form>
             </div>
           </div>
@@ -2351,8 +2416,8 @@
               <div>
                 <label class="text-[10px] font-bold text-slate-600 block mb-1">Ordering For Kirana Store *</label>
                 <select id="sub-ord-shop-select" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-bold focus:outline-none focus:border-amber-500">
-                  <option value="Maa Sarada Traders">Maa Sarada Traders (Kasba Mandi) • ₹31.6k Khata</option>
-                  <option value="Joy Guru Enterprise">Joy Guru Enterprise (Belda More) • ₹30k Khata</option>
+                  <option value="Maa Sarada Traders">Maa Sarada Traders (Kasba Mandi)</option>
+                  <option value="Joy Guru Enterprise">Joy Guru Enterprise (Belda More)</option>
                   <option value="New Annapurna Bhandar">New Annapurna Bhandar (Contai Rd) • COD/UPI</option>
                 </select>
               </div>
@@ -2631,6 +2696,39 @@
 
           </main>
 
+          <!-- LIVE DELIVERY HANDOVER ALERT POPUP CARD (DRIVER APP) -->
+          <div id="driver-handover-alert-card" class="absolute top-14 inset-x-3 z-40 bg-white border-2 border-emerald-500 rounded-2xl shadow-2xl p-3.5 space-y-2 hidden fade-in">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-base shrink-0 animate-bounce">
+                  <i class="ph-fill ph-truck"></i>
+                </div>
+                <div>
+                  <span class="text-[9px] font-black uppercase tracking-wider text-emerald-700 block">Admin Order Handover</span>
+                  <h4 class="text-xs font-black text-slate-900" id="drv-handover-shop">Shop Name • WB-INV-0000</h4>
+                </div>
+              </div>
+              <button type="button" onclick="dismissDriverHandoverAlert()" class="text-slate-400 hover:text-slate-700 p-1">
+                <i class="ph-bold ph-x text-sm"></i>
+              </button>
+            </div>
+            <div class="bg-emerald-50/80 border border-emerald-200 rounded-xl p-2 text-[11px] space-y-1">
+              <div class="font-bold text-slate-800 line-clamp-2" id="drv-handover-items">Items summary</div>
+              <div class="flex items-center justify-between pt-1 border-t border-emerald-200/70">
+                <span class="font-black text-emerald-800 text-xs" id="drv-handover-amount">₹0</span>
+                <span class="text-[10px] font-mono font-black text-brand-700" id="drv-handover-route">Route</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="dismissDriverHandoverAlert()" class="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px] transition shadow-xs">
+                Accept & Load Route
+              </button>
+              <button type="button" onclick="playDriverHandoverChime()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs" title="Replay Chime">
+                <i class="ph-bold ph-speaker-high"></i>
+              </button>
+            </div>
+          </div>
+
           <!-- Bottom Driver Navigation -->
           <nav class="bg-white border-t border-slate-200 px-3 py-2 flex items-center justify-around shrink-0 z-30 text-[10px] shadow-md">
             <button class="flex flex-col items-center gap-0.5 text-emerald-700 font-bold">
@@ -2767,9 +2865,9 @@
                   <option value="Digha Express">Digha Express Bay</option>
                 </select>
               </div>
-              <div class="bg-emerald-50 border border-emerald-200 p-2 rounded-xl flex justify-between items-center text-[10px]">
-                <span class="text-emerald-900 font-bold">Welcome Khata Credit Line:</span>
-                <span class="font-black text-emerald-700 text-xs">₹30,000 Instant</span>
+              <div class="bg-amber-50 border border-amber-200 p-2 rounded-xl flex justify-between items-center text-[10px]">
+                <span class="text-amber-900 font-bold">Wholesale Account Verification:</span>
+                <span class="font-black text-amber-800 text-xs">Admin KYC Review</span>
               </div>
               <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-black text-xs shadow-md">
                 Create Store Account & Enter Mandi
@@ -2816,12 +2914,12 @@
               </svg>
             </div>
 
-            <!-- Khata Credit Pill -->
-            <button onclick="openSubKhataSheet()" class="flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 px-2.5 py-1 rounded-xl text-left active:scale-95 transition">
-              <div class="w-5 h-5 rounded-md bg-emerald-600 text-white flex items-center justify-center font-black text-[10px]">₹</div>
+            <!-- Khata Due Pill (Credit Limit Hidden from Kirana Store App) -->
+            <button onclick="openSubKhataSheet()" class="flex items-center gap-1.5 bg-amber-50 hover:bg-amber-100 border border-amber-300 px-2.5 py-1 rounded-xl text-left active:scale-95 transition">
+              <div class="w-5 h-5 rounded-md bg-amber-600 text-white flex items-center justify-center font-black text-[10px]">₹</div>
               <div>
-                <span class="text-[8px] font-bold text-emerald-800 uppercase block leading-none">Khata Limit</span>
-                <span class="text-[11px] font-black text-emerald-950" id="sub-khata-balance-text">₹31,600</span>
+                <span class="text-[8px] font-bold text-amber-800 uppercase block leading-none">Khata Due</span>
+                <span class="text-[11px] font-black text-slate-950" id="sub-khata-balance-text">₹0</span>
               </div>
             </button>
           </div>
@@ -2980,10 +3078,74 @@
         <div id="sub-khata-sheet" class="absolute inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex flex-col justify-end hidden">
           <div class="bg-white rounded-t-3xl shadow-2xl max-h-[85%] flex flex-col overflow-hidden">
             <div class="p-3.5 bg-slate-900 text-white flex items-center justify-between">
+        <!-- Bottom Sheet: Kirana Khata Ledger (Credit Limit Hidden from Retailer) -->
+        <div id="sub-khata-sheet" class="absolute inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex flex-col justify-end hidden">
+          <div class="bg-white rounded-t-3xl shadow-2xl max-h-[85%] flex flex-col overflow-hidden">
+            <div class="p-3.5 bg-slate-900 text-white flex items-center justify-between">
               <h3 class="text-xs font-black">Kirana Khata Ledger (14-Day Cycle)</h3>
               <button onclick="closeSubSheet('sub-khata-sheet')" class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center"><i class="ph-bold ph-x text-xs"></i></button>
             </div>
             <div class="p-4 space-y-3 text-xs">
+              <div class="grid grid-cols-2 gap-2 text-center bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                <div>
+                  <span class="text-[9px] text-slate-500 uppercase font-bold block">Khata Status</span>
+                  <span class="font-black text-emerald-700" id="sub-sheet-khata-status">Active (Admin Controlled)</span>
+                </div>
+                <div>
+                  <span class="text-[9px] text-slate-500 uppercase font-bold block">Current Due</span>
+                  <span class="font-black text-amber-700" id="sub-sheet-khata-used">₹0</span>
+                </div>
+              </div>
+              <button onclick="repaySubKhata()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-black text-xs shadow-md">
+                Settle Khata Balance via UPI
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FLOATING OPERATIONS TOAST NOTIFICATION -->
+  <div id="admin-toast" class="fixed bottom-4 right-4 z-[60] bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-2xl border border-slate-700 text-xs font-bold flex items-center gap-2 hidden">
+    <i class="ph-fill ph-check-circle text-emerald-400 text-base"></i>
+    <span id="admin-toast-msg">Synced</span>
+  </div>
+
+  <!-- LIVE INCOMING ORDER ALERT POPUP CARD (ADMIN) -->
+  <div id="admin-incoming-order-alert" class="fixed top-16 right-4 z-[65] w-80 sm:w-96 bg-white border-2 border-brand-500 rounded-2xl shadow-2xl p-4 space-y-2.5 hidden fade-in">
+    <div class="flex items-start justify-between gap-2">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-brand-600 text-white flex items-center justify-center text-lg shrink-0 animate-bounce">
+          <i class="ph-fill ph-bell-ringing"></i>
+        </div>
+        <div>
+          <span class="text-[10px] font-black uppercase tracking-wider text-brand-600 block" id="incoming-alert-source">New Wholesale Order</span>
+          <h4 class="text-xs font-black text-slate-900" id="incoming-alert-shop">Shop Name • WB-INV-0000</h4>
+        </div>
+      </div>
+      <button onclick="dismissIncomingOrderAlert()" class="text-slate-400 hover:text-slate-700 p-1">
+        <i class="ph-bold ph-x text-sm"></i>
+      </button>
+    </div>
+    <div class="bg-amber-50/80 border border-amber-200 rounded-xl p-2.5 text-[11px] space-y-1">
+      <div class="font-bold text-slate-800 line-clamp-2" id="incoming-alert-items">Items summary</div>
+      <div class="flex items-center justify-between pt-1 border-t border-amber-200/70">
+        <span class="font-black text-brand-700 text-xs" id="incoming-alert-amount">₹0</span>
+        <span class="text-[10px] font-bold text-emerald-700" id="incoming-alert-pay">Khata / UPI</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="viewIncomingOrderInAdmin()" class="flex-1 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black text-xs transition shadow-xs">
+        Open & Assign Vehicle
+      </button>
+      <button onclick="playAdminOrderChime()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs" title="Replay Chime">
+        <i class="ph-bold ph-speaker-high"></i>
+      </button>
+    </div>
+  </div>
+
   <!-- CLOUD REAL-TIME ENGINE (FIREBASE REALTIME DB + FIRESTORE + CROSS-TAB SYNC) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -3103,12 +3265,21 @@
     const STORAGE_KEY_AGENT_SESSION = 'APNAMART24_AGENT_SESSION_V1';
     const STORAGE_KEY_DRIVER_SESSION = 'APNAMART24_DRIVER_SESSION_V1';
     const STORAGE_KEY_RETAILER_SESSION = 'APNAMART24_RETAILER_SESSION_V1';
+    const STORAGE_KEY_ADMIN_SOUND = 'APNAMART24_ADMIN_SOUND_V1';
 
     const FIXED_ADMIN_LOGIN_ID = 'amit7074b2b';
     const DEFAULT_ADMIN_PASS = '@Amit7074';
     const syncChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('apnamart24_realtime_bus') : null;
 
     let isApplyingRemoteState = false;
+    let adminSoundEnabled = localStorage.getItem(STORAGE_KEY_ADMIN_SOUND) !== 'false';
+    let sharedAudioCtx = null;
+    let incomingAlertTimer = null;
+    let incomingRingInterval = null;
+    let driverHandoverAlertTimer = null;
+    let driverHandoverRingInterval = null;
+    let titleFlashInterval = null;
+    const BASE_DOCUMENT_TITLE = 'ApnaMart24 B2B - Central Admin & Logistics Hub';
     let activeConnectedApp = null;
     let currentEditingSkuId = null;
     let pendingRemoveDriverId = null;
@@ -3366,6 +3537,8 @@
       try {
         const incoming = typeof rawJson === 'string' ? JSON.parse(rawJson) : rawJson;
         if (!incoming || typeof incoming !== 'object') return;
+        const prevIds = new Set((appState.wholesaleOrders || []).map(o => o.id));
+        const prevStopIds = new Set((appState.driverStops || []).map(s => s.orderId));
         isApplyingRemoteState = true;
         appState = {
           ...JSON.parse(JSON.stringify(defaultState)),
@@ -3373,12 +3546,270 @@
         };
         localStorage.setItem(STORAGE_KEY_STATE, JSON.stringify(appState));
         refreshAllViews();
+
+        // Detect newly arrived orders from Agent App or Kirana App and alert Admin with sound
+        const incomingOrders = appState.wholesaleOrders || [];
+        const brandNewOrders = incomingOrders.filter(o => !prevIds.has(o.id));
+        if (brandNewOrders.length > 0) {
+          triggerAdminNewOrderNotification(brandNewOrders[0]);
+        }
+
+        // Detect newly handed-over stops assigned to the logged-in Delivery Partner
+        const loggedInDriverId = localStorage.getItem(STORAGE_KEY_DRIVER_SESSION);
+        if (loggedInDriverId) {
+          const newStopsForDriver = (appState.driverStops || []).filter(
+            s => !s.delivered && !prevStopIds.has(s.orderId) && (!s.driverId || s.driverId === loggedInDriverId)
+          );
+          if (newStopsForDriver.length > 0) {
+            triggerDriverHandoverNotification(newStopsForDriver[0]);
+          }
+        }
       } catch (err) {
         console.warn('Incoming state sync error:', err);
       } finally {
         isApplyingRemoteState = false;
       }
     };
+
+    // =========================================================================
+    // ADMIN LIVE ORDER SOUND & POPUP NOTIFICATION ENGINE (WEB AUDIO API)
+    // =========================================================================
+    function unlockAdminAudioContext() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return null;
+        if (!sharedAudioCtx) sharedAudioCtx = new AudioCtx();
+        if (sharedAudioCtx.state === 'suspended') sharedAudioCtx.resume();
+        if ('Notification' in window && Notification.permission === 'default') {
+          Notification.requestPermission().catch(() => {});
+        }
+        return sharedAudioCtx;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    document.addEventListener('pointerdown', unlockAdminAudioContext, { passive: true });
+    document.addEventListener('keydown', unlockAdminAudioContext, { passive: true });
+
+    function playAdminOrderChime() {
+      if (!adminSoundEnabled) return;
+      const ctx = unlockAdminAudioContext();
+      if (!ctx) return;
+      try {
+        const now = ctx.currentTime;
+        // Clear 4-note retail order bell chime (C5 -> E5 -> G5 -> C6)
+        const notes = [
+          { freq: 523.25, start: 0, dur: 0.16 },
+          { freq: 659.25, start: 0.13, dur: 0.16 },
+          { freq: 783.99, start: 0.26, dur: 0.18 },
+          { freq: 1046.50, start: 0.40, dur: 0.36 }
+        ];
+        notes.forEach(n => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(n.freq, now + n.start);
+          gain.gain.setValueAtTime(0.001, now + n.start);
+          gain.gain.exponentialRampToValueAtTime(0.35, now + n.start + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + n.start + n.dur);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + n.start);
+          osc.stop(now + n.start + n.dur + 0.02);
+        });
+      } catch (err) {
+        console.warn('Audio chime skipped:', err);
+      }
+    }
+
+    function stopAdminOrderRingLoop() {
+      clearInterval(incomingRingInterval);
+      incomingRingInterval = null;
+      clearInterval(titleFlashInterval);
+      titleFlashInterval = null;
+      document.title = BASE_DOCUMENT_TITLE;
+    }
+
+    function updateAdminSoundToggleUi() {
+      const btn = document.getElementById('admin-sound-toggle-btn');
+      const icon = document.getElementById('admin-sound-icon');
+      const label = document.getElementById('admin-sound-label');
+      if (!btn || !icon || !label) return;
+      if (adminSoundEnabled) {
+        btn.className = 'flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 px-2.5 py-1.5 rounded-xl text-xs font-black transition active:scale-95';
+        icon.className = 'ph-fill ph-bell-ringing text-emerald-600 text-sm';
+        label.textContent = 'Sound ON';
+      } else {
+        btn.className = 'flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-500 border border-slate-300 px-2.5 py-1.5 rounded-xl text-xs font-black transition active:scale-95';
+        icon.className = 'ph-bold ph-bell-slash text-slate-500 text-sm';
+        label.textContent = 'Muted';
+      }
+    }
+
+    function toggleAdminOrderSound() {
+      adminSoundEnabled = !adminSoundEnabled;
+      localStorage.setItem(STORAGE_KEY_ADMIN_SOUND, String(adminSoundEnabled));
+      updateAdminSoundToggleUi();
+      if (adminSoundEnabled) {
+        playAdminOrderChime();
+        showToast('Live order sound alert enabled');
+      } else {
+        stopAdminOrderRingLoop();
+        showToast('Live order sound muted');
+      }
+    }
+
+    function triggerAdminNewOrderNotification(order) {
+      if (!order) return;
+      stopAdminOrderRingLoop();
+      playAdminOrderChime();
+
+      // Repeat chime up to 3 times so Admin doesn't miss incoming Agent/Kirana orders
+      let ringCount = 1;
+      incomingRingInterval = setInterval(() => {
+        if (!adminSoundEnabled || ringCount >= 3) {
+          clearInterval(incomingRingInterval);
+          incomingRingInterval = null;
+          return;
+        }
+        ringCount += 1;
+        playAdminOrderChime();
+      }, 2800);
+
+      // Flash browser tab title so incoming orders are visible even from another tab
+      let flashToggle = false;
+      titleFlashInterval = setInterval(() => {
+        flashToggle = !flashToggle;
+        document.title = flashToggle
+          ? `🔔 NEW ORDER ₹${Number(order.amount || 0).toLocaleString('en-IN')} • ${order.shopName}`
+          : BASE_DOCUMENT_TITLE;
+      }, 1000);
+
+      // Native browser push notification if permitted
+      if ('Notification' in window && Notification.permission === 'granted') {
+        try {
+          new Notification(`New Order • ${order.shopName}`, {
+            body: `${order.itemsSummary} • ₹${Number(order.amount || 0).toLocaleString('en-IN')} (${order.source || 'App'})`
+          });
+        } catch (e) {}
+      }
+
+      const card = document.getElementById('admin-incoming-order-alert');
+      if (!card) return;
+      document.getElementById('incoming-alert-source').textContent = `NEW ORDER • ${order.source || 'Connected App'}`;
+      document.getElementById('incoming-alert-shop').textContent = `${order.shopName} (${order.id})`;
+      document.getElementById('incoming-alert-items').textContent = `${order.itemsSummary} (${order.units} packs)`;
+      document.getElementById('incoming-alert-amount').textContent = `₹${Number(order.amount || 0).toLocaleString('en-IN')}`;
+      document.getElementById('incoming-alert-pay').textContent = order.paymentMode || 'Wholesale';
+      card.classList.remove('hidden');
+
+      clearTimeout(incomingAlertTimer);
+      incomingAlertTimer = setTimeout(() => {
+        dismissIncomingOrderAlert();
+      }, 20000);
+    }
+
+    function dismissIncomingOrderAlert() {
+      stopAdminOrderRingLoop();
+      const card = document.getElementById('admin-incoming-order-alert');
+      if (card) card.classList.add('hidden');
+    }
+
+    function viewIncomingOrderInAdmin() {
+      dismissIncomingOrderAlert();
+      closeConnectedAppOverlay();
+      switchTab('orders');
+    }
+
+    // =========================================================================
+    // DRIVER APP HANDOVER SOUND & POPUP NOTIFICATION ENGINE
+    // =========================================================================
+    function playDriverHandoverChime() {
+      const ctx = unlockAdminAudioContext();
+      if (!ctx) return;
+      try {
+        const now = ctx.currentTime;
+        // Distinct upbeat dispatch horn/chime (G4 -> B4 -> D5 -> G5)
+        const notes = [
+          { freq: 392.00, start: 0, dur: 0.14 },
+          { freq: 493.88, start: 0.12, dur: 0.14 },
+          { freq: 587.33, start: 0.24, dur: 0.16 },
+          { freq: 783.99, start: 0.38, dur: 0.34 }
+        ];
+        notes.forEach(n => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(n.freq, now + n.start);
+          gain.gain.setValueAtTime(0.001, now + n.start);
+          gain.gain.exponentialRampToValueAtTime(0.38, now + n.start + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + n.start + n.dur);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + n.start);
+          osc.stop(now + n.start + n.dur + 0.02);
+        });
+      } catch (err) {
+        console.warn('Driver audio chime skipped:', err);
+      }
+    }
+
+    function stopDriverHandoverRingLoop() {
+      clearInterval(driverHandoverRingInterval);
+      driverHandoverRingInterval = null;
+    }
+
+    function triggerDriverHandoverNotification(stop) {
+      if (!stop) return;
+      const loggedInDriverId = localStorage.getItem(STORAGE_KEY_DRIVER_SESSION);
+      if (!loggedInDriverId) return;
+      if (stop.driverId && stop.driverId !== loggedInDriverId) return;
+
+      stopDriverHandoverRingLoop();
+      playDriverHandoverChime();
+
+      if (navigator.vibrate) {
+        try { navigator.vibrate([250, 120, 250, 120, 350]); } catch (e) {}
+      }
+
+      let ringCount = 1;
+      driverHandoverRingInterval = setInterval(() => {
+        if (ringCount >= 3) {
+          stopDriverHandoverRingLoop();
+          return;
+        }
+        ringCount += 1;
+        playDriverHandoverChime();
+      }, 2600);
+
+      if ('Notification' in window && Notification.permission === 'granted') {
+        try {
+          new Notification(`New Delivery Handover • ${stop.shopName}`, {
+            body: `${stop.itemsSummary} • ₹${Number(stop.amount || 0).toLocaleString('en-IN')} (${stop.orderId})`
+          });
+        } catch (e) {}
+      }
+
+      const card = document.getElementById('driver-handover-alert-card');
+      if (!card) return;
+      document.getElementById('drv-handover-shop').textContent = `${stop.shopName} • ${stop.orderId}`;
+      document.getElementById('drv-handover-items').textContent = `📦 ${stop.itemsSummary}`;
+      document.getElementById('drv-handover-amount').textContent = `₹${Number(stop.amount || 0).toLocaleString('en-IN')} (${stop.paymentMode || 'Wholesale'})`;
+      document.getElementById('drv-handover-route').textContent = stop.address || 'Morning Route';
+      card.classList.remove('hidden');
+
+      clearTimeout(driverHandoverAlertTimer);
+      driverHandoverAlertTimer = setTimeout(() => {
+        dismissDriverHandoverAlert();
+      }, 20000);
+    }
+
+    function dismissDriverHandoverAlert() {
+      stopDriverHandoverRingLoop();
+      const card = document.getElementById('driver-handover-alert-card');
+      if (card) card.classList.add('hidden');
+    }
 
     function persistAndBroadcastState(silent = false) {
       if (isApplyingRemoteState) return;
@@ -3857,6 +4288,10 @@
 
       closeModal('assign-driver-modal');
       persistAndBroadcastState();
+      if (ord) {
+        const assignedStop = (appState.driverStops || []).find(s => s.orderId === ord.id);
+        if (assignedStop) triggerDriverHandoverNotification(assignedStop);
+      }
       showToast('Vehicle assigned & live stop pushed to Driver App (OTP: ' + (ord?.otp || '7412') + ')');
     }
 
@@ -4427,12 +4862,13 @@
     // 9. KHATA CREDIT LEDGER & RETAILER KYC
     // =========================================================================
     function creditKhataCharge(shopName, amount) {
+      const ret = (appState.retailerAccounts || []).find(r => r.shopName.toLowerCase() === shopName.toLowerCase());
       let acc = (appState.khataAccounts || []).find(k => k.shopName.toLowerCase() === shopName.toLowerCase());
       if (!acc) {
         acc = {
           id: 'KHT-' + Math.floor(1000 + Math.random() * 9000),
           shopName,
-          limit: 50000,
+          limit: ret && typeof ret.khataLimit === 'number' ? ret.khataLimit : 0,
           used: 0,
           cycle: '14-Day Standard'
         };
@@ -4440,7 +4876,6 @@
       }
       acc.used = (Number(acc.used) || 0) + (Number(amount) || 0);
 
-      const ret = (appState.retailerAccounts || []).find(r => r.shopName.toLowerCase() === shopName.toLowerCase());
       if (ret) {
         ret.khataUsed = (Number(ret.khataUsed) || 0) + (Number(amount) || 0);
       }
@@ -4450,38 +4885,121 @@
       const tbody = document.getElementById('khata-tbody');
       if (!tbody) return;
       const list = appState.khataAccounts || [];
-      if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400 font-semibold">No active Khata credit dues. When Kirana stores order on Khata BNPL, balances update here in real time.</td></tr>`;
+      const shops = appState.retailerAccounts || [];
+
+      // Merge any registered retailer accounts so Admin can set Credit Limit for every Kirana Partner
+      const merged = [...list];
+      shops.forEach(s => {
+        if (!merged.some(k => k.shopName.toLowerCase() === s.shopName.toLowerCase())) {
+          merged.push({
+            id: 'KHT-' + s.id,
+            shopName: s.shopName,
+            limit: Number(s.khataLimit) || 0,
+            used: Number(s.khataUsed) || 0,
+            cycle: s.khataCycle || '14-Day Standard'
+          });
+        }
+      });
+
+      if (merged.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400 font-semibold">No Kirana partners available yet. Add or approve a Kirana store to assign a private Credit Limit.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = list.map(k => `
+      tbody.innerHTML = merged.map(k => `
         <tr class="hover:bg-slate-50">
           <td class="py-3 px-4 font-extrabold text-slate-900">${k.shopName}</td>
-          <td class="py-3 px-4 font-bold text-slate-700">₹${Number(k.limit).toLocaleString('en-IN')}</td>
-          <td class="py-3 px-4 font-black text-amber-700">₹${Number(k.used).toLocaleString('en-IN')}</td>
-          <td class="py-3 px-4 text-slate-600">${k.cycle}</td>
+          <td class="py-3 px-4">
+            <span class="font-black text-brand-600">₹${Number(k.limit || 0).toLocaleString('en-IN')}</span>
+            <span class="block text-[9px] text-slate-400 font-semibold">Hidden from Kirana App</span>
+          </td>
+          <td class="py-3 px-4 font-black text-amber-700">₹${Number(k.used || 0).toLocaleString('en-IN')}</td>
+          <td class="py-3 px-4 text-slate-600">${k.cycle || '14-Day Standard'}</td>
           <td class="py-3 px-4">
             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black ${k.used > 0 ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}">
               ${k.used > 0 ? 'ACTIVE DUE' : 'SETTLED'}
             </span>
           </td>
-          <td class="py-3 px-4 text-right">
-            <button onclick="settleAdminKhataRow('${k.id}')" class="px-3 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold">
-              Mark Settled
+          <td class="py-3 px-4 text-right space-x-1.5">
+            <button onclick="openSetKhataLimitModal('${k.shopName.replace(/'/g, "\\'")}')" class="px-2.5 py-1 rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-700 border border-brand-200 text-[11px] font-black">
+              Set Limit
             </button>
+            ${k.used > 0 ? `
+              <button onclick="settleAdminKhataByShop('${k.shopName.replace(/'/g, "\\'")}')" class="px-2.5 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold">
+                Mark Settled
+              </button>` : ''}
           </td>
         </tr>`).join('');
+    }
+
+    function openSetKhataLimitModal(preselectShop = '') {
+      const sel = document.getElementById('khata-limit-shop-select');
+      const shops = appState.retailerAccounts || [];
+      if (!sel) return;
+      if (shops.length === 0) {
+        showToast('No Kirana partners registered yet');
+        return;
+      }
+      sel.innerHTML = shops.map(s => `<option value="${s.shopName}">${s.shopName} (${s.phone})</option>`).join('');
+      if (preselectShop) sel.value = preselectShop;
+      onKhataLimitShopChange(sel.value);
+      document.getElementById('set-khata-limit-modal').classList.remove('hidden');
+    }
+
+    function onKhataLimitShopChange(shopName) {
+      const ret = (appState.retailerAccounts || []).find(r => r.shopName === shopName);
+      const acc = (appState.khataAccounts || []).find(k => k.shopName.toLowerCase() === shopName.toLowerCase());
+      const limitVal = acc ? Number(acc.limit) : (ret ? Number(ret.khataLimit) : 0);
+      const cycleVal = (acc && acc.cycle) || (ret && ret.khataCycle) || '14-Day Standard';
+      document.getElementById('khata-limit-amount-input').value = isNaN(limitVal) ? 0 : limitVal;
+      document.getElementById('khata-limit-cycle-select').value = cycleVal;
+    }
+
+    function handleSaveKhataLimit(e) {
+      e.preventDefault();
+      const shopName = document.getElementById('khata-limit-shop-select').value;
+      const newLimit = Math.max(0, parseFloat(document.getElementById('khata-limit-amount-input').value) || 0);
+      const cycle = document.getElementById('khata-limit-cycle-select').value;
+
+      const ret = (appState.retailerAccounts || []).find(r => r.shopName === shopName);
+      if (ret) {
+        ret.khataLimit = newLimit;
+        ret.khataCycle = cycle;
+      }
+
+      let acc = (appState.khataAccounts || []).find(k => k.shopName.toLowerCase() === shopName.toLowerCase());
+      if (!acc) {
+        acc = {
+          id: 'KHT-' + Math.floor(1000 + Math.random() * 9000),
+          shopName,
+          limit: newLimit,
+          used: ret ? Number(ret.khataUsed || 0) : 0,
+          cycle
+        };
+        appState.khataAccounts.unshift(acc);
+      } else {
+        acc.limit = newLimit;
+        acc.cycle = cycle;
+      }
+
+      closeModal('set-khata-limit-modal');
+      persistAndBroadcastState();
+      showToast(`Private Credit Limit set to ₹${newLimit.toLocaleString('en-IN')} for ${shopName}`);
+    }
+
+    function settleAdminKhataByShop(shopName) {
+      const acc = (appState.khataAccounts || []).find(k => k.shopName.toLowerCase() === shopName.toLowerCase());
+      if (acc) acc.used = 0;
+      const ret = (appState.retailerAccounts || []).find(r => r.shopName.toLowerCase() === shopName.toLowerCase());
+      if (ret) ret.khataUsed = 0;
+      persistAndBroadcastState();
+      showToast('Khata dues settled for ' + shopName);
     }
 
     function settleAdminKhataRow(khataId) {
       const acc = (appState.khataAccounts || []).find(k => k.id === khataId);
       if (!acc) return;
-      acc.used = 0;
-      const ret = (appState.retailerAccounts || []).find(r => r.shopName.toLowerCase() === acc.shopName.toLowerCase());
-      if (ret) ret.khataUsed = 0;
-      persistAndBroadcastState();
-      showToast('Khata dues settled for ' + acc.shopName);
+      settleAdminKhataByShop(acc.shopName);
     }
 
     function renderKycCards() {
@@ -4489,7 +5007,7 @@
       if (!container) return;
       const list = appState.kycQueue || [];
       if (list.length === 0) {
-        container.innerHTML = `<div class="col-span-full text-center text-xs text-slate-400 py-8 bg-slate-50 rounded-2xl border border-slate-200">No pending Kirana KYC applications. Shops onboarded via the Marketing Agent App or Kirana Register appear here live.</div>`;
+        container.innerHTML = `<div class="col-span-full text-center text-xs text-slate-400 py-8 bg-slate-50 rounded-2xl border border-slate-200">No pending Kirana KYC applications. Shops onboarded via the Marketing Agent App or Kirana Register appear here live for Admin approval.</div>`;
         return;
       }
 
@@ -4501,39 +5019,94 @@
               <h4 class="text-sm font-black text-slate-900">${k.shopName}</h4>
               <p class="text-xs text-slate-500">Owner: ${k.ownerName} • 📞 ${k.phone}</p>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black ${k.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-800 border border-amber-200'}">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black ${
+              k.status === 'APPROVED'
+                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                : k.status === 'REJECTED'
+                ? 'bg-red-50 text-red-700 border border-red-200'
+                : 'bg-amber-50 text-amber-800 border border-amber-200'
+            }">
               ${k.status}
             </span>
           </div>
           <div class="text-[11px] bg-slate-50 p-2.5 rounded-xl border border-slate-200 font-mono">
-            GSTIN: <strong>${k.gstin || 'PROVISIONAL'}</strong> • Agent: ${k.onboardedBy || 'Self'}
+            GSTIN: <strong>${k.gstin || 'PROVISIONAL'}</strong> • Hub: ${k.hub || 'Egra Hub'} • By: ${k.onboardedBy || 'Self'}
           </div>
-          ${k.status !== 'APPROVED' ? `
-            <button onclick="approveKycApplication('${k.id}')" class="w-full py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs">
-              Approve KYC & Unlock ₹30,000 Khata
-            </button>` : `<div class="text-[11px] text-emerald-700 font-bold text-center">✓ ₹30,000 Khata Credit Line Active</div>`}
+          ${k.status === 'PENDING' ? `
+            <div class="space-y-2">
+              <div class="flex items-center justify-between gap-2 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-[11px]">
+                <label for="kyc-credit-limit-${k.id}" class="font-bold text-slate-700">Assign Credit Limit (₹):</label>
+                <input type="number" id="kyc-credit-limit-${k.id}" value="30000" min="0" step="500" class="w-28 bg-white text-slate-900 font-black px-2.5 py-1 rounded-lg border border-slate-300 text-right focus:outline-none focus:ring-1 focus:ring-emerald-500">
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="approveKycApplication('${k.id}')" class="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs transition">
+                  Approve KYC & Set Limit
+                </button>
+                <button onclick="rejectKycApplication('${k.id}')" class="px-3 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-black text-xs transition">
+                  Reject
+                </button>
+              </div>
+            </div>` : k.status === 'APPROVED'
+              ? `<div class="text-[11px] text-emerald-700 font-bold text-center">✓ Verified by Admin • Limit: ₹${Number(k.assignedLimit || 0).toLocaleString('en-IN')} (Private)</div>`
+              : `<div class="text-[11px] text-red-600 font-bold text-center">✕ KYC Rejected by Admin</div>`}
         </div>`).join('');
     }
 
     function approveKycApplication(kycId) {
       const k = (appState.kycQueue || []).find(item => item.id === kycId);
       if (!k) return;
+      const limitInput = document.getElementById('kyc-credit-limit-' + kycId);
+      const assignedLimit = limitInput ? Math.max(0, parseFloat(limitInput.value) || 0) : 0;
+
       k.status = 'APPROVED';
-      if (!(appState.retailerAccounts || []).some(r => r.phone === k.phone)) {
+      k.assignedLimit = assignedLimit;
+      if (k.onboardedAgentId) {
+        const ag = (appState.marketingAgents || []).find(a => a.id === k.onboardedAgentId);
+        if (ag) ag.onboarded = (Number(ag.onboarded) || 0) + 1;
+      }
+      const existingRet = (appState.retailerAccounts || []).find(r => r.phone === k.phone);
+      if (existingRet) {
+        existingRet.kycStatus = 'APPROVED';
+        existingRet.khataLimit = assignedLimit;
+      } else {
         appState.retailerAccounts.unshift({
           id: 'RET-' + Math.floor(1000 + Math.random() * 9000),
           shopName: k.shopName,
           ownerName: k.ownerName,
           phone: k.phone,
-          pin: '1234',
+          pin: k.pin || '1234',
           gstin: k.gstin,
           hub: k.hub || 'Egra Hub',
-          khataLimit: 30000,
+          kycStatus: 'APPROVED',
+          khataLimit: assignedLimit,
           khataUsed: 0
         });
       }
+
+      let acc = (appState.khataAccounts || []).find(a => a.shopName.toLowerCase() === k.shopName.toLowerCase());
+      if (!acc) {
+        appState.khataAccounts.unshift({
+          id: 'KHT-' + Math.floor(1000 + Math.random() * 9000),
+          shopName: k.shopName,
+          limit: assignedLimit,
+          used: 0,
+          cycle: '14-Day Standard'
+        });
+      } else {
+        acc.limit = assignedLimit;
+      }
+
       persistAndBroadcastState();
-      showToast('KYC Approved for ' + k.shopName);
+      showToast(`KYC Approved for ${k.shopName} (Private Limit: ₹${assignedLimit.toLocaleString('en-IN')})`);
+    }
+
+    function rejectKycApplication(kycId) {
+      const k = (appState.kycQueue || []).find(item => item.id === kycId);
+      if (!k) return;
+      k.status = 'REJECTED';
+      appState.retailerAccounts = (appState.retailerAccounts || []).filter(r => r.phone !== k.phone);
+      persistAndBroadcastState();
+      showToast('KYC Rejected for ' + k.shopName);
     }
 
     // =========================================================================
@@ -4667,7 +5240,13 @@
               <div>
                 <div class="flex items-center gap-1.5">
                   <span class="font-black text-xs text-slate-900">${k.shopName}</span>
-                  <span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9px] font-black">₹30k Khata</span>
+                  <span class="px-1.5 py-0.5 rounded text-[9px] font-black ${
+                    k.status === 'APPROVED'
+                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                      : k.status === 'REJECTED'
+                      ? 'bg-red-50 text-red-700 border border-red-200'
+                      : 'bg-amber-50 text-amber-800 border border-amber-200'
+                  }">${k.status === 'APPROVED' ? 'KYC Verified ✓' : k.status === 'REJECTED' ? 'KYC Rejected' : 'Pending Admin KYC'}</span>
                 </div>
                 <div class="text-[10px] text-slate-500 mt-0.5">${k.ownerName} • 📞 ${k.phone}</div>
                 <div class="text-[9px] font-mono text-slate-400">KYC: ${k.id} • GST: ${k.gstin}</div>
@@ -4709,7 +5288,7 @@
         <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between gap-2 shadow-xs">
           <div>
             <div class="text-xs font-black text-slate-900">${s.shopName}</div>
-            <div class="text-[10px] text-slate-500">${s.ownerName} • ${s.hub} • Khata ₹${(Number(s.khataLimit) - Number(s.khataUsed || 0)).toLocaleString('en-IN')}</div>
+            <div class="text-[10px] text-slate-500">${s.ownerName} • ${s.hub} • ${s.kycStatus === 'PENDING' ? 'KYC Pending' : 'Verified Partner'}</div>
           </div>
           <button onclick="openSubAssistedCatalogModal('${s.shopName.replace(/'/g, "\\'")}')" class="px-3 py-1.5 rounded-xl bg-slate-900 text-white text-[10px] font-black shrink-0">
             Book Order
@@ -4732,6 +5311,24 @@
       if (el) el.classList.add('hidden');
     }
 
+    function normalizeKiranaMobile(rawPhone) {
+      const digits = String(rawPhone || '').replace(/\D/g, '');
+      return digits.length > 10 ? digits.slice(-10) : digits;
+    }
+
+    function findExistingStoreByMobile(rawPhone) {
+      const norm = normalizeKiranaMobile(rawPhone);
+      if (!norm) return null;
+      const existingRet = (appState.retailerAccounts || []).find(
+        r => normalizeKiranaMobile(r.phone) === norm
+      );
+      if (existingRet) return existingRet;
+      const existingKyc = (appState.kycQueue || []).find(
+        k => k.status !== 'REJECTED' && normalizeKiranaMobile(k.phone) === norm
+      );
+      return existingKyc || null;
+    }
+
     function submitSubKiranaOnboarding(e) {
       e.preventDefault();
       const savedAgentId = localStorage.getItem(STORAGE_KEY_AGENT_SESSION);
@@ -4739,8 +5336,20 @@
 
       const shopName = document.getElementById('sub-inp-shop').value.trim();
       const ownerName = document.getElementById('sub-inp-owner').value.trim();
-      const phone = document.getElementById('sub-inp-phone').value.trim();
+      const rawPhone = document.getElementById('sub-inp-phone').value.trim();
+      const phone = normalizeKiranaMobile(rawPhone);
       const gstin = document.getElementById('sub-inp-gstin').value.trim().toUpperCase();
+
+      if (phone.length < 10) {
+        showToast('Enter a valid 10-digit mobile number');
+        return;
+      }
+
+      const duplicateStore = findExistingStoreByMobile(phone);
+      if (duplicateStore) {
+        showToast(`Mobile ${phone} already registered with "${duplicateStore.shopName}"! Only 1 store per mobile allowed.`);
+        return;
+      }
 
       const kycId = 'KYC-' + Math.floor(1000 + Math.random() * 9000);
       appState.kycQueue.unshift({
@@ -4748,33 +5357,18 @@
         shopName,
         ownerName,
         phone,
+        pin: '1234',
         gstin,
         hub: agent ? agent.hub : 'Egra Hub',
         onboardedBy: agent ? agent.name : 'Field Agent',
         onboardedAgentId: agent ? agent.id : null,
-        status: 'APPROVED'
+        status: 'PENDING'
       });
-
-      appState.retailerAccounts.unshift({
-        id: 'RET-' + Math.floor(1000 + Math.random() * 9000),
-        shopName,
-        ownerName,
-        phone,
-        pin: '1234',
-        gstin,
-        hub: agent ? agent.hub : 'Egra Hub',
-        khataLimit: 30000,
-        khataUsed: 0
-      });
-
-      if (agent) {
-        agent.onboarded = (Number(agent.onboarded) || 0) + 1;
-      }
 
       e.target.reset();
       closeSubAgentModal('sub-ag-onboard-modal');
       persistAndBroadcastState();
-      showToast('Kirana "' + shopName + '" onboarded & synced to Admin');
+      showToast('KYC submitted for "' + shopName + '" — awaiting Admin approval');
     }
 
     function promptRemoveSubAgentKirana(kycId) {
@@ -4792,7 +5386,7 @@
       if (k) {
         appState.kycQueue = (appState.kycQueue || []).filter(item => item.id !== pendingRemoveSubKiranaId);
         appState.retailerAccounts = (appState.retailerAccounts || []).filter(r => r.phone !== k.phone);
-        if (k.onboardedAgentId) {
+        if (k.status === 'APPROVED' && k.onboardedAgentId) {
           const ag = (appState.marketingAgents || []).find(a => a.id === k.onboardedAgentId);
           if (ag && ag.onboarded > 0) ag.onboarded -= 1;
         }
@@ -4967,9 +5561,11 @@
       if (agent) agent.gmv = (Number(agent.gmv) || 0) + total;
       if (payMode.toLowerCase().includes('khata')) creditKhataCharge(shopName, total);
 
+      const createdAgentOrder = appState.wholesaleOrders[0];
       subAgentCart = {};
       closeSubAgentModal('sub-ag-order-drawer');
       persistAndBroadcastState();
+      triggerAdminNewOrderNotification(createdAgentOrder);
       showToast('Order ' + ordId + ' pushed live to Central Admin');
     }
 
@@ -5045,7 +5641,7 @@
           : 'bg-slate-400 text-white px-3 py-1.5 rounded-xl text-[10px] font-black transition';
       }
 
-      const stops = appState.driverStops || [];
+      const stops = (appState.driverStops || []).filter(s => !s.driverId || s.driverId === drv.id);
       const done = stops.filter(s => s.delivered).length;
       document.getElementById('sub-drops-counter').textContent = `${done} / ${stops.length} Done`;
       document.getElementById('sub-cod-collected').textContent = '₹' + Number(appState.driverCodCollected || 0).toLocaleString('en-IN');
@@ -5152,14 +5748,17 @@
     function handleSubRetailerSignIn(e) {
       e.preventDefault();
       const idInp = (document.getElementById('sub-ret-signin-id').value || '').trim().toUpperCase();
+      const normPhoneInp = normalizeKiranaMobile(idInp);
       const pinInp = (document.getElementById('sub-ret-signin-pin').value || '').trim();
       const errBox = document.getElementById('sub-ret-auth-error');
+      const errText = document.getElementById('sub-ret-auth-error-text');
 
       const ret = (appState.retailerAccounts || []).find(
-        r => (r.phone === idInp || r.id.toUpperCase() === idInp) && r.pin === pinInp
+        r => ((normPhoneInp && normalizeKiranaMobile(r.phone) === normPhoneInp) || r.id.toUpperCase() === idInp) && r.pin === pinInp
       );
 
       if (!ret) {
+        if (errText) errText.textContent = 'Invalid Store ID/Mobile or PIN.';
         errBox.classList.remove('hidden');
         return;
       }
@@ -5174,11 +5773,31 @@
       e.preventDefault();
       const shopName = document.getElementById('sub-ret-reg-shop').value.trim();
       const ownerName = document.getElementById('sub-ret-reg-owner').value.trim();
-      const phone = document.getElementById('sub-ret-reg-phone').value.trim();
+      const rawPhone = document.getElementById('sub-ret-reg-phone').value.trim();
+      const phone = normalizeKiranaMobile(rawPhone);
       const gstin = (document.getElementById('sub-ret-reg-gst').value || '').trim().toUpperCase();
       const pin = document.getElementById('sub-ret-reg-pin').value.trim();
       const hub = document.getElementById('sub-ret-reg-hub').value;
+      const errBox = document.getElementById('sub-ret-auth-error');
+      const errText = document.getElementById('sub-ret-auth-error-text');
 
+      if (phone.length < 10) {
+        if (errText) errText.textContent = 'Please enter a valid 10-digit mobile number.';
+        errBox.classList.remove('hidden');
+        return;
+      }
+
+      const duplicateStore = findExistingStoreByMobile(phone);
+      if (duplicateStore) {
+        if (errText) {
+          errText.textContent = `Mobile ${phone} is already registered with "${duplicateStore.shopName}". Only 1 store can be opened per mobile number.`;
+        }
+        errBox.classList.remove('hidden');
+        showToast('Mobile number already registered with another store!');
+        return;
+      }
+
+      errBox.classList.add('hidden');
       const newRet = {
         id: 'RET-' + Math.floor(1000 + Math.random() * 9000),
         shopName,
@@ -5187,7 +5806,8 @@
         pin,
         gstin,
         hub,
-        khataLimit: 30000,
+        kycStatus: 'PENDING',
+        khataLimit: 0,
         khataUsed: 0
       };
 
@@ -5197,16 +5817,17 @@
         shopName,
         ownerName,
         phone,
+        pin,
         gstin,
         hub,
         onboardedBy: 'Self Registration',
-        status: 'APPROVED'
+        status: 'PENDING'
       });
 
       localStorage.setItem(STORAGE_KEY_RETAILER_SESSION, newRet.id);
       persistAndBroadcastState();
       restoreRetailerPersistentSession();
-      showToast('Store created & ₹30,000 Khata activated');
+      showToast('Account created! KYC sent to Admin for ₹30,000 Khata approval');
     }
 
     function handleSubRetailerLogout() {
@@ -5235,12 +5856,16 @@
       const savedRetId = localStorage.getItem(STORAGE_KEY_RETAILER_SESSION);
       const ret = (appState.retailerAccounts || []).find(r => r.id === savedRetId);
       if (ret) {
-        const avail = Math.max(0, (Number(ret.khataLimit) || 30000) - (Number(ret.khataUsed) || 0));
-        document.getElementById('sub-khata-balance-text').textContent = '₹' + avail.toLocaleString('en-IN');
+        const used = Number(ret.khataUsed) || 0;
+        const limit = Number(ret.khataLimit) || 0;
+        document.getElementById('sub-khata-balance-text').textContent = '₹' + used.toLocaleString('en-IN');
         document.getElementById('sub-ret-header-shop-label').textContent = `${ret.shopName} • ${ret.hub}`;
-        document.getElementById('sub-sheet-khata-limit').textContent = '₹' + Number(ret.khataLimit).toLocaleString('en-IN');
-        document.getElementById('sub-sheet-khata-avail').textContent = '₹' + avail.toLocaleString('en-IN');
-        document.getElementById('sub-sheet-khata-used').textContent = '₹' + Number(ret.khataUsed || 0).toLocaleString('en-IN');
+        const statusEl = document.getElementById('sub-sheet-khata-status');
+        if (statusEl) {
+          statusEl.textContent = limit > 0 ? 'Active (Admin Approved)' : 'Pending / UPI Only';
+          statusEl.className = limit > 0 ? 'font-black text-emerald-700' : 'font-black text-amber-700';
+        }
+        document.getElementById('sub-sheet-khata-used').textContent = '₹' + used.toLocaleString('en-IN');
       }
       renderKiranaCatalog();
       renderSubRetailerOrders();
@@ -5388,6 +6013,15 @@
       const shopName = ret ? ret.shopName : 'Kirana Partner';
       const payLabel = payType === 'khata' ? 'Khata (14-Day)' : 'Instant UPI';
 
+      if (payType === 'khata' && ret) {
+        const limit = Number(ret.khataLimit) || 0;
+        const used = Number(ret.khataUsed) || 0;
+        if (limit <= 0 || used + grandTotal > limit) {
+          showToast('Khata order exceeds your approved credit facility. Please pay via Instant UPI or contact Admin.');
+          return;
+        }
+      }
+
       deductInventoryStock(lineItems);
       appState.wholesaleOrders.unshift({
         id: ordId,
@@ -5409,9 +6043,11 @@
         creditKhataCharge(shopName, grandTotal);
       }
 
+      const createdKiranaOrder = appState.wholesaleOrders[0];
       subKiranaCart = {};
       closeSubSheet('sub-cart-sheet');
       persistAndBroadcastState();
+      triggerAdminNewOrderNotification(createdKiranaOrder);
       switchSubRetailerTab('orders');
       showToast('Order ' + ordId + ' placed! Synced live with Admin');
     }
@@ -5487,6 +6123,7 @@
     // =========================================================================
     window.addEventListener('DOMContentLoaded', () => {
       checkAdminSession();
+      updateAdminSoundToggleUi();
       refreshAllViews();
 
       const hash = (window.location.hash || '').replace('#', '').toLowerCase();
