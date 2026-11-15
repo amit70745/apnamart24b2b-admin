@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.vercel.apnamart24b2b_admin.twa",
+        "sha256_cert_fingerprints": ["14:49:B2:0D:49:A5:21:8F:A4:4D:F5:9B:43:E3:86:6F:CE:1D:F9:8B:92:E1:C2:96:7E:7F:67:AA:96:31:5A:36"]
+      }
+    }]
