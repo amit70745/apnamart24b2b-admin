@@ -2557,13 +2557,16 @@
 
   <!-- CLOUD REAL-TIME ENGINE (FIREBASE REALTIME DB + FIRESTORE + CROSS-TAB SYNC) -->
   <script type="module">
+    // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAnalytics, isSupported as isAnalyticsSupported } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
     import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
     import { getDatabase, ref, set as rtdbSet, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
-    const USER_FIREBASE_CONFIG = {
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
       apiKey: "AIzaSyAjU83LJqN3S4xA-RCUK_8NDWgvxhf45io",
       authDomain: "apnamart24-b2b.firebaseapp.com",
       databaseURL: "https://apnamart24-b2b-default-rtdb.firebaseio.com",
@@ -2574,8 +2577,16 @@
       measurementId: "G-J78D8VK9YE"
     };
 
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    let analytics = null;
+    try {
+      analytics = getAnalytics(app);
+    } catch (err) {
+      console.warn('Analytics skipped in sandboxed iframe:', err);
+    }
+
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'apnamart24-b2b';
-    const rawConfig = USER_FIREBASE_CONFIG;
 
     function updateCloudSyncBadge(state, labelText) {
       const pill = document.getElementById('cloud-sync-status-pill');
@@ -2607,12 +2618,6 @@
 
     async function bootCloudRealtimeSync() {
       try {
-        const firebaseConfig = USER_FIREBASE_CONFIG;
-        const app = initializeApp(firebaseConfig);
-        isAnalyticsSupported().then((supported) => {
-          if (supported) getAnalytics(app);
-        }).catch(() => {});
-
         const auth = getAuth(app);
         const db = getFirestore(app);
         const rtdb = getDatabase(app);
@@ -3832,8 +3837,18 @@
               <span class="px-2 py-0.5 rounded-full text-[9px] font-black ${d.status === 'ON_ROUTE' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-200 text-slate-700'}">${d.status === 'ON_ROUTE' ? 'On Route' : 'At Hub'}</span>
             </div>
             <div class="text-[10px] font-mono font-bold text-brand-700">${d.plate} • ${d.vehicleType}</div>
+            <div class="grid grid-cols-2 gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 text-[10px]">
+              <div>
+                <span class="text-slate-400 font-bold block text-[9px] uppercase">Driver ID</span>
+                <span class="font-mono font-black text-emerald-700">${d.loginId}</span>
+              </div>
+              <div>
+                <span class="text-slate-400 font-bold block text-[9px] uppercase">Password</span>
+                <span class="font-mono font-black text-slate-900">${d.password || 'Apna@1234'}</span>
+              </div>
+            </div>
             <div class="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-200">
-              <span class="font-mono">ID: ${d.loginId}</span>
+              <span>${d.phone || ''}</span>
               <button onclick="openRemoveDriverModal('${d.id}')" class="text-red-600 font-bold hover:underline">Remove</button>
             </div>
           </div>
@@ -3891,11 +3906,16 @@
               <div>
                 <h4 class="font-black text-slate-900 text-sm">${a.name}</h4>
                 <p class="text-[11px] text-slate-500">${a.role} • <span class="text-rose-700 font-bold">${a.beat}</span></p>
+                <a href="tel:${a.phone}" class="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-slate-700 hover:text-rose-600 mt-1">
+                  <i class="ph-bold ph-phone-call text-emerald-600"></i>
+                  <span>${a.phone || 'N/A'}</span>
+                </a>
               </div>
               <button onclick="openRemoveMarketingModal('${a.id}')" class="text-[10px] font-bold text-red-600 hover:underline">Remove</button>
             </div>
-            <div class="grid grid-cols-3 gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-center">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-center">
               <div><span class="text-[9px] text-slate-400 uppercase font-bold block">Login ID</span><span class="font-mono font-black text-emerald-700 text-[10px]">${a.loginId}</span></div>
+              <div><span class="text-[9px] text-slate-400 uppercase font-bold block">Password</span><span class="font-mono font-black text-slate-900 text-[10px]">${a.password || 'Apna@1234'}</span></div>
               <div><span class="text-[9px] text-slate-400 uppercase font-bold block">Target</span><span class="font-black text-slate-900">${a.onboarded || 0}/${a.target}</span></div>
               <div><span class="text-[9px] text-slate-400 uppercase font-bold block">Comm.</span><span class="font-black text-amber-700">${a.commissionRate}%</span></div>
             </div>
@@ -4341,13 +4361,25 @@
           <td class="py-3.5 px-4">
             <input type="number" id="kyc-limit-${k.id}" value="25000" step="1000" class="w-28 bg-slate-50 border border-slate-300 rounded-lg px-2 py-1 font-black text-xs">
           </td>
-          <td class="py-3.5 px-4 text-right space-x-1.5">
-            <button onclick="approveKycApplication('${k.id}')" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px]">
-              Approve KYC
+          <td class="py-3.5 px-4 text-right space-x-1.5 whitespace-nowrap">
+            <button onclick="approveKycApplication('${k.id}')" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px] transition">
+              Approve
+            </button>
+            <button onclick="rejectKycApplication('${k.id}')" class="px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-black text-[11px] transition">
+              Reject
             </button>
           </td>
         </tr>
       `).join('');
+    }
+
+    function rejectKycApplication(kycId) {
+      const idx = (appState.kycQueue || []).findIndex(k => k.id === kycId);
+      if (idx === -1) return;
+      const item = appState.kycQueue[idx];
+      appState.kycQueue.splice(idx, 1);
+      persistAndBroadcastState();
+      showToast(`Rejected KYC application for ${item.shopName}`);
     }
 
     function approveKycApplication(kycId) {
