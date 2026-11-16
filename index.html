@@ -3,7 +3,12 @@
 <head>
   <link rel="manifest" href="manifest.json">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#ea580c">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <title>ApnaMart24 B2B - Central Admin & Logistics Hub</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -1904,11 +1909,11 @@
   <!-- ================================================================== -->
   <!-- CONNECTED APPS HUB OVERLAY (AGENT APP / DRIVER APP / KIRANA STORE) -->
   <!-- ================================================================== -->
-  <div id="connected-app-overlay" onclick="if(event.target === this || event.target.id === 'connected-app-viewport') closeConnectedAppOverlay()" class="fixed inset-0 z-50 bg-white sm:bg-slate-100 flex flex-col hidden overflow-hidden">
-    <div id="connected-app-viewport" class="flex-1 w-full h-full overflow-hidden p-0 sm:p-4 flex items-stretch sm:items-center justify-center">
+  <div id="connected-app-overlay" onclick="if(event.target === this || event.target.id === 'connected-app-viewport') closeConnectedAppOverlay()" class="fixed inset-0 z-50 bg-white lg:bg-slate-100 flex flex-col hidden overflow-hidden">
+    <div id="connected-app-viewport" class="flex-1 w-full h-full overflow-hidden p-0 lg:p-4 flex items-stretch lg:items-center justify-center">
 
       <!-- 1. MARKETING MAN / FIELD SALES EXECUTIVE APP -->
-      <div id="subapp-agent" class="hidden w-full h-[100dvh] sm:h-[92dvh] sm:max-w-[460px] bg-white text-slate-900 rounded-none sm:rounded-2xl border-0 sm:border sm:border-slate-200 shadow-none sm:shadow-xl overflow-hidden flex flex-col relative">
+      <div id="subapp-agent" class="hidden w-full h-[100dvh] lg:h-[92dvh] lg:max-w-[460px] bg-white text-slate-900 rounded-none lg:rounded-3xl border-0 lg:border lg:border-slate-200 shadow-none lg:shadow-xl overflow-hidden flex flex-col relative">
         <!-- LOGIN SCREEN OVERLAY -->
         <div id="agent-app-login-box" class="absolute inset-0 top-0 z-40 bg-white flex flex-col justify-between p-5 sm:p-6 overflow-y-auto">
           <div class="space-y-5">
@@ -2170,7 +2175,7 @@
       </div>
 
       <!-- 2. DELIVERY PARTNER / DRIVER APP -->
-      <div id="subapp-driver" class="hidden w-full h-[100dvh] sm:h-[92dvh] sm:max-w-[460px] bg-white text-slate-900 rounded-none sm:rounded-2xl border-0 sm:border sm:border-slate-200 shadow-none sm:shadow-xl overflow-hidden flex flex-col relative">
+      <div id="subapp-driver" class="hidden w-full h-[100dvh] lg:h-[92dvh] lg:max-w-[460px] bg-white text-slate-900 rounded-none lg:rounded-3xl border-0 lg:border lg:border-slate-200 shadow-none lg:shadow-xl overflow-hidden flex flex-col relative">
         <div id="driver-app-login-box" class="absolute inset-0 top-0 z-40 bg-white flex flex-col justify-between p-5 sm:p-6 overflow-y-auto">
           <div class="space-y-5">
             <div class="flex justify-end">
@@ -2323,7 +2328,7 @@
       </div>
 
       <!-- 3. KIRANA RETAILER B2B STOREFRONT APP -->
-      <div id="subapp-kirana" class="hidden w-full h-[100dvh] sm:h-[92dvh] sm:max-w-[460px] bg-white text-slate-900 rounded-none sm:rounded-2xl border-0 sm:border sm:border-slate-200 shadow-none sm:shadow-xl overflow-hidden flex flex-col relative">
+      <div id="subapp-kirana" class="hidden w-full h-[100dvh] lg:h-[92dvh] lg:max-w-[460px] bg-white text-slate-900 rounded-none lg:rounded-3xl border-0 lg:border lg:border-slate-200 shadow-none lg:shadow-xl overflow-hidden flex flex-col relative">
         <div id="sub-retailer-auth-screen" class="absolute inset-0 top-0 z-40 bg-white flex flex-col justify-between p-5 overflow-y-auto no-scrollbar">
           <div class="space-y-4">
             <div class="flex justify-end">
@@ -2558,15 +2563,12 @@
 
   <!-- CLOUD REAL-TIME ENGINE (FIREBASE REALTIME DB + FIRESTORE + CROSS-TAB SYNC) -->
   <script type="module">
-    // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
     import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
     import { getDatabase, ref, set as rtdbSet, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
-    // Your web app's Firebase configuration
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
       apiKey: "AIzaSyAjU83LJqN3S4xA-RCUK_8NDWgvxhf45io",
       authDomain: "apnamart24-b2b.firebaseapp.com",
@@ -2578,7 +2580,6 @@
       measurementId: "G-J78D8VK9YE"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     let analytics = null;
     try {
