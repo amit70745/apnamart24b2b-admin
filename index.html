@@ -6,10 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="theme-color" content="#ea580c">
-  <link rel="icon" type="image/png" href="icon-192.png">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <title>ApnaMart24 B2B - Central Admin & Logistics Hub</title>
+  <title>ApnaMart24 B2B - Central Admin & Field Agent Hub</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Phosphor Icons -->
@@ -55,6 +54,58 @@
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+    /* Strict Mobile App Shell when Agent App is active (keeps compact mobile-card look on desktop & full-screen on phones) */
+    body.agent-mobile-locked {
+      overflow: hidden !important;
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100vw !important;
+      height: 100dvh !important;
+      background-color: #f8fafc !important;
+      touch-action: manipulation;
+    }
+    body.agent-mobile-locked > header,
+    body.agent-mobile-locked > #admin-layout-wrapper,
+    body.agent-mobile-locked > #admin-login-gate {
+      display: none !important;
+    }
+    body.agent-mobile-locked #connected-app-overlay {
+      background-color: #f8fafc !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    body.agent-mobile-locked #connected-app-viewport {
+      width: 100vw !important;
+      height: 100dvh !important;
+      padding: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    body.agent-mobile-locked #subapp-agent {
+      width: 100% !important;
+      max-width: 430px !important;
+      height: 100dvh !important;
+      background-color: #ffffff !important;
+      border-radius: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    @media (min-width: 640px) {
+      body.agent-mobile-locked #connected-app-viewport {
+        padding: 1.5rem !important;
+      }
+      body.agent-mobile-locked #subapp-agent {
+        height: 90dvh !important;
+        max-height: 820px !important;
+        border-radius: 1.75rem !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 20px 45px -15px rgba(15, 23, 42, 0.12) !important;
+      }
     }
     @media (min-width: 768px) {
       #admin-layout-wrapper {
@@ -117,7 +168,7 @@
         <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 border border-brand-200 text-brand-700 text-[10px] font-black uppercase tracking-widest">
           <i class="ph-bold ph-shield-lock"></i> Restricted Admin Access
         </div>
-        <h2 class="text-lg font-black text-slate-900">Central Admin & Logistics Login</h2>
+        <h2 class="text-lg font-black text-slate-900">Central Admin & Operations Login</h2>
         <p class="text-xs text-slate-500">Enter authorized Admin Login ID & Password to unlock Ops Console</p>
       </div>
 
@@ -154,23 +205,13 @@
         </button>
       </form>
 
-      <!-- Direct Launchers for Connected Field Apps -->
+      <!-- Direct Launcher for Marketing Agent App -->
       <div class="border-t border-slate-200 pt-4 space-y-2">
-        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block text-center">Or Launch Connected Field & Store Apps</span>
-        <div class="grid grid-cols-3 gap-2 text-[10px] font-bold">
-          <button type="button" onclick="openConnectedApp('agent')" class="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 flex flex-col items-center gap-1 transition">
-            <i class="ph-bold ph-megaphone-simple text-base text-rose-600"></i>
-            <span>Agent App</span>
-          </button>
-          <button type="button" onclick="openConnectedApp('driver')" class="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 flex flex-col items-center gap-1 transition">
-            <i class="ph-bold ph-truck text-base text-emerald-600"></i>
-            <span>Driver App</span>
-          </button>
-          <button type="button" onclick="openConnectedApp('kirana')" class="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 flex flex-col items-center gap-1 transition">
-            <i class="ph-bold ph-storefront text-base text-amber-600"></i>
-            <span>Kirana Store</span>
-          </button>
-        </div>
+        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block text-center">Or Launch Field Marketing Executive Portal</span>
+        <button type="button" onclick="openConnectedApp('agent')" class="w-full p-3 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 flex items-center justify-center gap-2 text-xs font-black transition">
+          <i class="ph-bold ph-megaphone-simple text-base text-rose-600"></i>
+          <span>Launch Marketing & Field Agent App</span>
+        </button>
       </div>
 
       <div class="text-center text-[10px] text-slate-400 border-t border-slate-200 pt-3">
@@ -227,12 +268,12 @@
       </div>
     </div>
 
-    <!-- Right Controls: Quick Search, Early Morning Dispatch Timer & Admin Profile -->
+    <!-- Right Controls: Live Sync, Sound Toggle, Agent App Switcher & Admin Profile -->
     <div class="flex items-center gap-2 sm:gap-3">
-      <!-- Live Cloud Sync Status Indicator -->
-      <div id="cloud-sync-status-pill" title="Real-Time Cloud Sync Status" class="flex items-center gap-1.5 bg-slate-100 text-slate-700 border border-slate-300 px-2.5 py-1.5 rounded-xl text-[11px] font-black transition">
-        <span id="cloud-sync-dot" class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-        <span id="cloud-sync-label" class="hidden xl:inline">Connecting...</span>
+      <!-- Live Sync Status Indicator -->
+      <div id="cloud-sync-status-pill" title="Real-Time Local & Cross-Tab Sync Active" class="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1.5 rounded-xl text-[11px] font-black transition">
+        <span id="cloud-sync-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+        <span id="cloud-sync-label" class="hidden xl:inline">Live Sync</span>
       </div>
 
       <!-- Live Order Sound Alert Toggle -->
@@ -247,53 +288,19 @@
         <span class="hidden md:inline">Refresh</span>
       </button>
 
-      <!-- Connected Apps Switcher Dropdown -->
-      <div class="relative">
-        <button onclick="toggleAppSwitcherMenu()" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-black transition">
-          <i class="ph-bold ph-squares-four text-brand-600 text-sm"></i>
-          <span class="hidden sm:inline">Connected Apps</span>
-          <span class="sm:hidden">Apps</span>
-          <i class="ph-bold ph-caret-down text-[10px]"></i>
-        </button>
-        <div id="app-switcher-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white border border-slate-200 rounded-2xl shadow-2xl p-2 z-50 space-y-1 text-xs">
-          <div class="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-slate-400">Live Synced Ecosystem</div>
-          <button onclick="openConnectedApp('admin')" class="w-full flex items-center gap-2.5 p-2 rounded-xl bg-brand-50 text-brand-900 border border-brand-200 text-left">
-            <i class="ph-bold ph-shield-check text-brand-600 text-base"></i>
-            <div>
-              <span class="font-black block text-[11px]">Admin Ops Console</span>
-              <span class="text-[9px] text-slate-500">Central Hub & Dispatch</span>
-            </div>
-          </button>
-          <button onclick="openConnectedApp('agent')" class="w-full flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-50 text-slate-700 text-left transition">
-            <i class="ph-bold ph-megaphone-simple text-rose-600 text-base"></i>
-            <div>
-              <span class="font-bold block text-[11px]">Marketing Agent App</span>
-              <span class="text-[9px] text-slate-500">Field Booking & Beat Check-in</span>
-            </div>
-          </button>
-          <button onclick="openConnectedApp('driver')" class="w-full flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-50 text-slate-700 text-left transition">
-            <i class="ph-bold ph-truck text-emerald-600 text-base"></i>
-            <div>
-              <span class="font-bold block text-[11px]">Delivery Driver App</span>
-              <span class="text-[9px] text-slate-500">Route Manifest & POD Drop</span>
-            </div>
-          </button>
-          <button onclick="openConnectedApp('kirana')" class="w-full flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-50 text-slate-700 text-left transition">
-            <i class="ph-bold ph-storefront text-amber-600 text-base"></i>
-            <div>
-              <span class="font-bold block text-[11px]">Kirana B2B Store App</span>
-              <span class="text-[9px] text-slate-500">Retailer Direct Wholesale Order</span>
-            </div>
-          </button>
-        </div>
-      </div>
+      <!-- Direct Launch Agent App Button -->
+      <button onclick="openConnectedApp('agent')" class="flex items-center gap-1.5 bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-xl text-xs font-black transition shadow-sm">
+        <i class="ph-bold ph-megaphone-simple text-sm"></i>
+        <span class="hidden sm:inline">Open Agent App</span>
+        <span class="sm:hidden">Agent</span>
+      </button>
 
       <!-- Live 5:00 AM Dispatch Countdown Pill -->
       <div class="hidden lg:flex items-center gap-2 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-xl">
         <div class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
         <div class="text-[11px] leading-tight">
           <span class="text-slate-500 text-[9px] block font-bold">NEXT DISPATCH WAVE</span>
-          <span class="font-extrabold text-amber-800">05:00 AM Slot (7 Mini-Trucks)</span>
+          <span class="font-extrabold text-amber-800">05:00 AM Slot (Morning Wave)</span>
         </div>
       </div>
 
@@ -323,7 +330,7 @@
     <aside id="ops-sidebar" class="fixed md:sticky md:top-[61px] inset-y-0 left-0 z-30 w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out pt-16 md:pt-0 min-h-[calc(100vh-61px)]">
       <div class="p-3.5 space-y-1.5">
         <div class="px-3 py-1 text-[10px] font-black uppercase tracking-wider text-slate-400">
-          Hub Control & Logistics
+          Hub Control & Field Sales
         </div>
 
         <!-- Nav Item: Executive Dashboard -->
@@ -342,17 +349,6 @@
             <span>Wholesale Orders</span>
           </div>
           <span class="px-1.5 py-0.5 rounded-md text-[10px] bg-brand-50 text-brand-700 border border-brand-200 font-extrabold" id="badge-orders-count">0</span>
-        </button>
-
-        <!-- Nav Item: Live Delivery Fleet & Tracking -->
-        <button onclick="switchTab('fleet')" id="nav-fleet" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition text-slate-600 hover:bg-slate-100 hover:text-slate-900">
-          <div class="flex items-center gap-3">
-            <i class="ph-bold ph-navigation-arrow text-lg text-emerald-600"></i>
-            <span>Live Fleet & Delivery</span>
-          </div>
-          <span class="px-1.5 py-0.5 rounded-md text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-extrabold flex items-center gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Live
-          </span>
         </button>
 
         <!-- Nav Item: Marketing & Field Sales Agents -->
@@ -414,38 +410,13 @@
         </button>
 
         <div class="px-3 pt-3 pb-1 text-[10px] font-black uppercase tracking-wider text-slate-400">
-          Connected Field Apps
+          Field Marketing App
         </div>
-        <div class="grid grid-cols-3 gap-1.5 px-1">
-          <button onclick="openConnectedApp('agent')" class="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-[10px] font-bold flex flex-col items-center gap-1 transition" title="Open Marketing Agent App">
-            <i class="ph-bold ph-megaphone-simple text-sm text-rose-600"></i>
-            <span>Agent</span>
+        <div class="px-1">
+          <button onclick="openConnectedApp('agent')" class="w-full p-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-black flex items-center justify-center gap-2 transition" title="Open Marketing Agent App">
+            <i class="ph-bold ph-megaphone-simple text-base text-rose-600"></i>
+            <span>Open Agent App</span>
           </button>
-          <button onclick="openConnectedApp('driver')" class="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-[10px] font-bold flex flex-col items-center gap-1 transition" title="Open Delivery Driver App">
-            <i class="ph-bold ph-truck text-sm text-emerald-600"></i>
-            <span>Driver</span>
-          </button>
-          <button onclick="openConnectedApp('kirana')" class="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-[10px] font-bold flex flex-col items-center gap-1 transition" title="Open Kirana B2B Store App">
-            <i class="ph-bold ph-storefront text-sm text-amber-600"></i>
-            <span>Kirana</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Fleet Dispatch Snapshot in Sidebar (Visible only on Live Fleet & Delivery page) -->
-      <div id="sidebar-fleet-snapshot" class="mt-auto p-4 border-t border-slate-200 bg-slate-50 space-y-2 hidden">
-        <div class="flex items-center justify-between text-[11px] font-bold text-slate-700">
-          <span class="flex items-center gap-1.5">
-            <i class="ph-bold ph-van text-brand-600"></i> Active Fleet (Tata Ace)
-          </span>
-          <span class="text-emerald-600" id="sidebar-fleet-stat">2 On Route</span>
-        </div>
-        <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
-          <div class="bg-brand-600 h-full w-[75%] rounded-full"></div>
-        </div>
-        <div class="text-[10px] text-slate-500 flex justify-between">
-          <span>Egra-Digha Route 1</span>
-          <span class="text-slate-800 font-semibold">Departs 04:45 AM</span>
         </div>
       </div>
     </aside>
@@ -479,7 +450,7 @@
               <div class="text-2xl font-black text-slate-900" id="kpi-gmv">₹0</div>
               <div class="flex items-center gap-1.5 text-[11px] text-slate-500 font-bold mt-2" id="kpi-gmv-sub">
                 <i class="ph-bold ph-minus"></i>
-                <span>0% vs yesterday • 0 orders</span>
+                <span>Live sync • 0 orders today</span>
               </div>
             </div>
 
@@ -493,7 +464,7 @@
               </div>
               <div class="text-2xl font-black text-slate-900" id="kpi-tonnage">0.0 MT</div>
               <div class="flex items-center gap-1.5 text-[11px] text-slate-500 font-semibold mt-2" id="kpi-tonnage-sub">
-                <span>0 sacks Miniket • 0 Oil tins</span>
+                <span>0 total packs scheduled for 05:00 AM</span>
               </div>
             </div>
 
@@ -507,7 +478,7 @@
               </div>
               <div class="text-2xl font-black text-slate-900" id="kpi-shops">0 Shops</div>
               <div class="flex items-center gap-1.5 text-[11px] text-slate-500 font-semibold mt-2" id="kpi-shops-sub">
-                <span>Egra (0), Contai (0), Ramnagar (0)</span>
+                <span>Verified B2B Kirana stores across hubs</span>
               </div>
             </div>
 
@@ -522,7 +493,7 @@
               <div class="text-2xl font-black text-slate-900" id="kpi-khata">₹0</div>
               <div class="flex items-center gap-1.5 text-[11px] text-slate-500 font-bold mt-2" id="kpi-khata-sub">
                 <i class="ph-bold ph-check-circle"></i>
-                <span>0% on-time repayment cycle</span>
+                <span>14-day repayment cycle</span>
               </div>
             </div>
           </div>
@@ -547,7 +518,7 @@
 
           <!-- Two Column Logistics & Live Route Grid -->
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Column 1 & 2: Active Dispatch Route Batches (100% Real-Time) -->
+            <!-- Column 1 & 2: Active Dispatch Route Batches -->
             <div class="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-4 space-y-4 shadow-xs">
               <div class="flex items-center justify-between">
                 <div>
@@ -555,9 +526,9 @@
                     <i class="ph-bold ph-path text-brand-600 text-base"></i>
                     <span>Morning 5:00 AM Dispatch Schedule</span>
                   </h3>
-                  <p class="text-[11px] text-slate-500">Live auto-grouped by driver & delivery cluster from real-time orders</p>
+                  <p class="text-[11px] text-slate-500">Live auto-grouped by delivery cluster from real-time Field Agent & Hub orders</p>
                 </div>
-                <span id="dashboard-active-routes-badge" class="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">0 Active Routes</span>
+                <span id="dashboard-active-routes-badge" class="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">0 Dispatched</span>
               </div>
 
               <div id="dashboard-dispatch-routes-list" class="space-y-3">
@@ -627,7 +598,7 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h2 class="text-xl font-black text-slate-900">Wholesale Dispatch Queue</h2>
-              <p class="text-xs text-slate-500">Approve bulk Kirana orders, allocate trucks, and preview GST e-invoices.</p>
+              <p class="text-xs text-slate-500">Approve bulk Kirana orders booked by Field Agents or Hub Desk, update dispatch status, and preview GST e-invoices.</p>
             </div>
             <!-- Filter Controls -->
             <div class="flex flex-wrap items-center gap-2">
@@ -635,7 +606,7 @@
                 <option value="ALL">All Statuses</option>
                 <option value="NEW">New Awaiting Approval</option>
                 <option value="PACKING">Picking in Bay</option>
-                <option value="DISPATCHED">Out for Morning Delivery</option>
+                <option value="DISPATCHED">Dispatched (5:00 AM Wave)</option>
               </select>
               <input type="text" placeholder="Search Shop / GSTIN..." oninput="searchOrdersTable(this.value)" class="bg-white text-xs px-3 py-2 rounded-xl border border-slate-300 text-slate-800 focus:outline-none focus:ring-1 focus:ring-brand-500 w-48">
               <button onclick="openCreateOrderModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-2 rounded-xl text-xs font-black flex items-center gap-1 transition">
@@ -651,10 +622,10 @@
                 <thead class="bg-slate-50 text-[10px] uppercase font-black tracking-wider text-slate-500 border-b border-slate-200">
                   <tr>
                     <th class="py-3 px-4">Invoice / Shop</th>
-                    <th class="py-3 px-4">Ordered Products (Image & Name)</th>
+                    <th class="py-3 px-4">Ordered Products</th>
                     <th class="py-3 px-4">Weight & Packs</th>
                     <th class="py-3 px-4">Order Value & Mode</th>
-                    <th class="py-3 px-4">Delivery Route</th>
+                    <th class="py-3 px-4">Delivery Route / Source</th>
                     <th class="py-3 px-4">Status</th>
                     <th class="py-3 px-4 text-right">Actions</th>
                   </tr>
@@ -667,237 +638,8 @@
           </div>
         </section>
 
-        <!-- ============================================== -->
-        <!-- TAB 3: LIVE FLEET TRACKING & DELIVERY MAN -->
-        <!-- ============================================== -->
-        <section id="tab-fleet" class="space-y-6 hidden">
-          <!-- Header & Action Ribbon -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <h2 class="text-xl font-black text-slate-900 flex flex-wrap items-center gap-2">
-                <i class="ph-bold ph-truck text-brand-600"></i>
-                <span>Live Delivery Fleet & Route Tracking</span>
-                <span class="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">
-                  GPS Active
-                </span>
-              </h2>
-              <p class="text-xs text-slate-500">Track morning 5:00 AM mini-truck dispatches, monitor drops, speed, and onboard new delivery partners.</p>
-            </div>
-            <div class="flex items-center gap-2.5">
-              <button onclick="refreshFleetLocations()" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-xs">
-                <i class="ph-bold ph-arrows-clockwise text-emerald-600" id="refresh-fleet-icon"></i>
-                <span>Refresh Telematics</span>
-              </button>
-              <button onclick="openAddDriverModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 transition shadow-md shadow-brand-600/20">
-                <i class="ph-bold ph-user-plus text-base"></i>
-                <span>Add Delivery Partner</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Fleet Metric Cards -->
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 lg:gap-4">
-            <div class="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-xs">
-              <span class="text-[10px] font-bold text-slate-500 uppercase block">Active Delivery Drivers</span>
-              <div class="text-xl font-black text-slate-900 mt-1" id="stat-total-drivers">4 Drivers</div>
-              <span class="text-[10px] text-emerald-600 font-semibold flex items-center gap-1 mt-1">
-                <i class="ph-bold ph-check-circle"></i> Ready at Hub Bay
-              </span>
-            </div>
-
-            <div class="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-xs">
-              <span class="text-[10px] font-bold text-slate-500 uppercase block">Wholesale Drops Today</span>
-              <div class="text-xl font-black text-slate-900 mt-1" id="stat-fleet-drops">0 / 0 Done</div>
-              <span class="text-[10px] text-slate-500 font-semibold flex items-center gap-1 mt-1">
-                <i class="ph-bold ph-clock"></i> 0 remaining before 07:30 AM
-              </span>
-            </div>
-
-            <div class="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-xs">
-              <span class="text-[10px] font-bold text-slate-500 uppercase block">Total Freight In Transit</span>
-              <div class="text-xl font-black text-slate-900 mt-1" id="stat-fleet-tonnage">0.00 MT</div>
-              <span class="text-[10px] text-slate-500 font-semibold block mt-1">Rice, Mustard Oil, Dal</span>
-            </div>
-
-            <div class="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-xs">
-              <span class="text-[10px] font-bold text-slate-500 uppercase block">Fleet On-Time SLA</span>
-              <div class="text-xl font-black text-slate-900 mt-1" id="stat-fleet-sla">100%</div>
-              <span class="text-[10px] text-slate-500 font-semibold block mt-1">0 min unloading/store</span>
-            </div>
-          </div>
-
-          <!-- Live Route Tracking & Driver Monitor Split View -->
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Left 2 Cols: Interactive Map & Route Live Status -->
-            <div class="lg:col-span-2 space-y-4">
-              <!-- Map Simulation Screen -->
-              <div class="bg-white border border-slate-200 rounded-2xl p-4 overflow-hidden relative shadow-xs">
-                <div class="flex items-center justify-between mb-3">
-                  <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <h3 class="text-xs font-black text-slate-900 uppercase tracking-wider">Live GPS Radar • Egra & Contai Corridor</h3>
-                  </div>
-                  <div class="flex items-center gap-2 text-[11px]">
-                    <span class="bg-slate-100 border border-slate-300 text-slate-700 px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold">
-                      <span id="map-active-vehicle">WB 34 AD 8219 (Tata Ace)</span>
-                    </span>
-                  </div>
-                </div>
-
-                <!-- Interactive Simulated Vector Map -->
-                <div class="relative w-full h-72 sm:h-80 bg-gradient-to-b from-slate-900 to-slate-800 rounded-xl border border-slate-300 p-4 overflow-hidden">
-                  <!-- Grid Overlay Background -->
-                  <svg class="absolute inset-0 w-full h-full opacity-20 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                      <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
-                        <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#475569" stroke-width="0.8"/>
-                      </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#grid)" />
-                  </svg>
-
-                  <!-- Major Highways / Road Vector Lines -->
-                  <svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M 40 50 Q 150 140 280 120 T 460 210 T 680 190" fill="none" stroke="#334155" stroke-width="6" stroke-linecap="round"/>
-                    <path d="M 40 50 Q 150 140 280 120 T 460 210" fill="none" stroke="#ea580c" stroke-width="4" stroke-dasharray="8 4" stroke-linecap="round" class="animate-pulse"/>
-                    <path d="M 280 120 Q 320 220 380 270" fill="none" stroke="#1e293b" stroke-width="4" stroke-dasharray="4 4"/>
-                  </svg>
-
-                  <!-- Depot Pin (Egra Central Hub) -->
-                  <div class="absolute left-8 top-10 flex items-center gap-2 z-10">
-                    <div class="w-8 h-8 rounded-xl bg-brand-600 text-white flex items-center justify-center font-black text-xs shadow-lg ring-4 ring-brand-500/20">
-                      <i class="ph-bold ph-warehouse"></i>
-                    </div>
-                    <div class="bg-slate-900/90 border border-slate-700 px-2 py-1 rounded-lg text-[10px] leading-tight">
-                      <span class="font-extrabold text-white block">Egra Depot</span>
-                      <span class="text-slate-400">Hub 01 • Loading Bay</span>
-                    </div>
-                  </div>
-
-                  <!-- Live Vehicle 1 Marker (Tata Ace) -->
-                  <div id="truck-marker-1" class="absolute left-[44%] top-[38%] transition-all duration-1000 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center cursor-pointer" onclick="selectTrackedVehicle('WB-34-AD-8219')">
-                    <div class="bg-emerald-600 text-white font-black text-[9px] px-2 py-0.5 rounded-full shadow-lg flex items-center gap-1 mb-1">
-                      <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> <span id="truck-marker-1-speed">42 km/h</span>
-                    </div>
-                    <div class="w-9 h-9 rounded-2xl bg-slate-900 border-2 border-emerald-400 text-emerald-400 flex items-center justify-center text-lg shadow-2xl hover:scale-110 transition">
-                      <i class="ph-bold ph-truck"></i>
-                    </div>
-                    <span id="truck-marker-1-label" class="text-[9px] font-bold text-slate-200 mt-0.5 bg-slate-950/80 px-1.5 rounded">Bikas M.</span>
-                  </div>
-
-                  <!-- Live Vehicle 2 Marker (Bolero Maxi) -->
-                  <div id="truck-marker-2" class="absolute left-[70%] top-[65%] transition-all duration-1000 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center cursor-pointer" onclick="selectTrackedVehicle('WB-29-BF-1102')">
-                    <div class="bg-amber-600 text-white font-black text-[9px] px-2 py-0.5 rounded-full shadow-lg flex items-center gap-1 mb-1">
-                      <span id="truck-marker-2-speed">At Kirana Drop</span>
-                    </div>
-                    <div class="w-9 h-9 rounded-2xl bg-slate-900 border-2 border-amber-400 text-amber-400 flex items-center justify-center text-lg shadow-2xl hover:scale-110 transition">
-                      <i class="ph-bold ph-van"></i>
-                    </div>
-                    <span id="truck-marker-2-label" class="text-[9px] font-bold text-slate-200 mt-0.5 bg-slate-950/80 px-1.5 rounded">Tapan G.</span>
-                  </div>
-
-                  <!-- Destination Kirana Store Pin -->
-                  <div class="absolute right-12 bottom-12 flex items-center gap-2 z-10">
-                    <div class="w-8 h-8 rounded-xl bg-purple-600 text-white flex items-center justify-center font-black text-xs shadow-lg">
-                      <i class="ph-bold ph-storefront"></i>
-                    </div>
-                    <div class="bg-slate-900/90 border border-slate-700 px-2 py-1 rounded-lg text-[10px] leading-tight">
-                      <span class="font-extrabold text-white block" id="map-next-stop-shop">Awaiting Dispatch</span>
-                      <span class="text-emerald-400 font-semibold" id="map-next-stop-eta">Ready at Hub</span>
-                    </div>
-                  </div>
-
-                  <!-- Map Action Controls Overlay -->
-                  <div class="absolute bottom-3 left-3 bg-slate-900/90 border border-slate-800 rounded-xl p-2 text-[10px] flex items-center gap-3" id="map-fleet-status-legend">
-                    <div class="flex items-center gap-1.5 text-slate-300">
-                      <span class="w-2 h-2 rounded-full bg-emerald-400"></span> On Route (2)
-                    </div>
-                    <div class="flex items-center gap-1.5 text-slate-300">
-                      <span class="w-2 h-2 rounded-full bg-slate-500"></span> At Hub (2)
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Selected Active Delivery Timeline (100% Real-Time) -->
-                <div class="mt-4 p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
-                  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-2.5">
-                    <div>
-                      <span class="text-[10px] font-bold text-brand-600 uppercase tracking-wide">Live Trip Timeline</span>
-                      <h4 class="text-xs font-black text-slate-900" id="timeline-route-title">Awaiting Vehicle Dispatch • Assign Order to Track</h4>
-                    </div>
-                    <div class="flex items-center gap-2 text-xs">
-                      <span class="text-slate-500 text-[11px]">Live Progress:</span>
-                      <span class="font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200" id="timeline-eta">
-                        0 / 0 Stops Done
-                      </span>
-                    </div>
-                  </div>
-
-                  <!-- Real-Time Dynamic Route Progression Steps -->
-                  <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 text-[11px]" id="live-trip-timeline-steps">
-                    <!-- Dynamically populated in real time -->
-                  </div>
-
-                  <!-- Live Dispatch Activity Feed Strip -->
-                  <div class="flex flex-wrap items-center justify-between gap-2 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-[10px]">
-                    <span class="font-bold text-slate-600 flex items-center gap-1.5">
-                      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                      <span id="live-timeline-pulse-msg">Real-time GPS & POD telemetry active</span>
-                    </span>
-                    <span class="font-mono font-black text-slate-500" id="live-timeline-clock">--:--:--</span>
-                  </div>
-
-                  <!-- Driver Quick Contact Strip -->
-                  <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
-                    <div class="flex items-center gap-2">
-                      <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-xs">
-                        <i class="ph-bold ph-steering-wheel"></i>
-                      </div>
-                      <div>
-                        <span class="font-extrabold text-slate-900 text-[11px] block" id="current-driver-name">Bikas Maity</span>
-                        <span class="text-[10px] text-slate-500" id="current-driver-meta">+91 98320 49182 • Tata Ace Gold</span>
-                      </div>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                      <a id="current-driver-call-link" href="tel:+919832049182" class="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-[11px] font-bold flex items-center gap-1">
-                        <i class="ph-bold ph-phone-call text-emerald-600"></i> Call Driver
-                      </a>
-                      <button id="current-driver-wa-btn" onclick="sendDriverWhatsAppManifest('Bikas Maity', 'WB-34-AD-8219')" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-[11px] font-bold flex items-center gap-1">
-                        <i class="ph-bold ph-whatsapp-logo"></i> WhatsApp Route
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Right 1 Col: Fleet Partners & Driver Roster (Strictly inside Live Fleet & Delivery) -->
-            <div id="fleet-drivers-roster-panel" class="space-y-4">
-              <div class="bg-white border border-slate-200 rounded-2xl p-4 space-y-3 shadow-xs">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <h3 class="text-sm font-black text-slate-900 flex items-center gap-1.5">
-                      <i class="ph-bold ph-users-three text-brand-600"></i>
-                      <span>Depot Drivers Roster</span>
-                    </h3>
-                    <p class="text-[10px] text-slate-500">Egra & Contai Logistics Hubs</p>
-                  </div>
-                  <button onclick="openAddDriverModal()" class="text-brand-600 hover:text-brand-700 text-xs font-bold flex items-center gap-0.5">
-                    <i class="ph-bold ph-plus"></i> Add
-                  </button>
-                </div>
-
-                <!-- Driver List Container -->
-                <div class="space-y-2.5 max-h-[540px] overflow-y-auto no-scrollbar" id="fleet-drivers-list">
-                  <!-- Dynamically populated via JS -->
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <!-- ======================================================== -->
-        <!-- TAB 4: MARKETING & FIELD SALES AGENTS MANAGEMENT -->
+        <!-- TAB 3: MARKETING & FIELD SALES AGENTS MANAGEMENT -->
         <!-- ======================================================== -->
         <section id="tab-marketing" class="space-y-6 hidden">
           <!-- Header & Action Ribbon -->
@@ -930,15 +672,15 @@
               <span class="text-[10px] font-bold text-slate-500 uppercase block">Active Marketing Agents</span>
               <div class="text-xl font-black text-slate-900 mt-1" id="stat-total-marketing">4 Executives</div>
               <span class="text-[10px] text-emerald-600 font-semibold flex items-center gap-1 mt-1">
-                <i class="ph-bold ph-check-circle"></i> 4 Active on Mandi Beats
+                <i class="ph-bold ph-check-circle"></i> Active on Mandi Beats
               </span>
             </div>
 
             <div class="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-xs">
-              <span class="text-[10px] font-bold text-slate-500 uppercase block">Kirana Stores Onboarded (Nov)</span>
+              <span class="text-[10px] font-bold text-slate-500 uppercase block">Kirana Stores Onboarded</span>
               <div class="text-xl font-black text-rose-600 mt-1" id="stat-marketing-onboarded">0 Stores</div>
               <span class="text-[10px] text-slate-500 font-semibold block mt-1" id="stat-marketing-goal-sub">
-                Monthly Goal: 90 (0% achieved)
+                Monthly Goal: 90 Shops
               </span>
             </div>
 
@@ -946,7 +688,7 @@
               <span class="text-[10px] font-bold text-slate-500 uppercase block">Field GMV Generated</span>
               <div class="text-xl font-black text-slate-900 mt-1" id="stat-marketing-gmv">₹0</div>
               <span class="text-[10px] text-slate-500 font-semibold flex items-center gap-1 mt-1">
-                <i class="ph-bold ph-minus"></i> 0% vs last month
+                <i class="ph-bold ph-trend-up text-emerald-600"></i> Live Agent Bookings
               </span>
             </div>
 
@@ -1015,7 +757,7 @@
         </section>
 
         <!-- ============================================== -->
-        <!-- TAB 5: INVENTORY & SLAB PRICING MANAGER -->
+        <!-- TAB 4: INVENTORY & SLAB PRICING MANAGER -->
         <!-- ============================================== -->
         <section id="tab-inventory" class="space-y-4 pt-0 mt-0 hidden">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -1056,7 +798,7 @@
         </section>
 
         <!-- ============================================== -->
-        <!-- TAB 6: KIRANA KHATA & CREDIT RISK -->
+        <!-- TAB 5: KIRANA KHATA & CREDIT RISK -->
         <!-- ============================================== -->
         <section id="tab-khata" class="space-y-4 pt-0 mt-0 hidden">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -1098,18 +840,18 @@
         </section>
 
         <!-- ============================================== -->
-        <!-- TAB 7: RETAILER KYC & ONBOARDING -->
+        <!-- TAB 6: RETAILER KYC & ONBOARDING -->
         <!-- ============================================== -->
         <section id="tab-kyc" class="space-y-4 pt-0 mt-0 hidden">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h2 class="text-xl font-black text-slate-900">Retailer KYC & Verification</h2>
-              <p class="text-xs text-slate-500">Review GSTIN, FSSAI certificates, and approve Kirana wholesale accounts.</p>
+              <p class="text-xs text-slate-500">Review GSTIN, FSSAI certificates, and approve Kirana wholesale accounts submitted by Field Agents.</p>
             </div>
           </div>
 
           <div id="kyc-empty-banner" class="bg-slate-50 border border-slate-200 rounded-2xl p-8 text-center text-xs font-bold text-slate-500">
-            No pending Kirana KYC applications. New registrations from Kirana Store App or Field Agents will appear here.
+            No pending Kirana KYC applications. New registrations submitted from the Field Marketing Agent App will appear here.
           </div>
 
           <div id="kyc-table-wrapper" class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs hidden">
@@ -1119,7 +861,7 @@
                   <tr>
                     <th class="py-3.5 px-4">Shop & Proprietor</th>
                     <th class="py-3.5 px-4">GSTIN / Trade ID</th>
-                    <th class="py-3.5 px-4">Submitted Via</th>
+                    <th class="py-3.5 px-4">Submitted By</th>
                     <th class="py-3.5 px-4">Verification Status</th>
                     <th class="py-3.5 px-4">Assign Credit Limit (₹)</th>
                     <th class="py-3.5 px-4 text-right">Actions</th>
@@ -1135,139 +877,6 @@
 
       </div>
     </main>
-  </div>
-
-  <!-- MODAL: ADD DELIVERY PARTNER / DRIVER -->
-  <div id="add-driver-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-    <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-xl p-5 space-y-4 shadow-2xl overflow-y-auto max-h-[90vh]">
-      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-brand-50 text-brand-600 border border-brand-200 flex items-center justify-center text-lg">
-            <i class="ph-bold ph-user-plus"></i>
-          </div>
-          <div>
-            <h3 class="text-sm font-black text-slate-900">Onboard Delivery Partner / Driver</h3>
-            <p class="text-[10px] text-slate-500">Register new driver with vehicle assignment and license verification</p>
-          </div>
-        </div>
-        <button onclick="closeModal('add-driver-modal')" class="text-slate-400 hover:text-slate-700">
-          <i class="ph-bold ph-x text-base"></i>
-        </button>
-      </div>
-
-      <form id="add-driver-form" onsubmit="handleCreateDriver(event)" class="space-y-3.5 text-xs">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="text-slate-700 font-bold block mb-1">Driver Full Name *</label>
-            <input type="text" id="driver-name" required placeholder="e.g. Subrata Adhikary" class="w-full bg-slate-50 text-slate-900 font-medium px-3 py-2 rounded-xl border border-slate-300 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500">
-          </div>
-          <div>
-            <label class="text-slate-700 font-bold block mb-1">Mobile Number (WhatsApp) *</label>
-            <input type="tel" id="driver-phone" required placeholder="e.g. 9832044112" class="w-full bg-slate-50 text-slate-900 font-medium px-3 py-2 rounded-xl border border-slate-300 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500">
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="text-slate-700 font-bold block mb-1">Commercial Vehicle Type *</label>
-            <select id="driver-vehicle-type" class="w-full bg-slate-50 text-slate-900 font-semibold px-3 py-2 rounded-xl border border-slate-300 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500">
-              <option value="Tata Ace Gold (1.5 MT)">Tata Ace Gold (1.5 MT)</option>
-              <option value="Mahindra Bolero Maxi (2.5 MT)">Mahindra Bolero Maxi (2.5 MT)</option>
-              <option value="Ashok Leyland Bada Dost (3.0 MT)">Ashok Leyland Bada Dost (3.0 MT)</option>
-              <option value="Piaggio Ape Extra LDX (800 kg)">Piaggio Ape Extra LDX (800 kg)</option>
-            </select>
-          </div>
-          <div>
-            <label class="text-slate-700 font-bold block mb-1">Vehicle Registration Plate *</label>
-            <input type="text" id="driver-plate" required placeholder="e.g. WB 34 BE 7712" class="w-full bg-slate-50 text-slate-900 font-mono uppercase font-bold px-3 py-2 rounded-xl border border-slate-300 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500">
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="text-slate-700 font-bold block mb-1">Assigned Home Depot *</label>
-            <select id="driver-hub" class="w-full bg-slate-50 text-slate-900 font-semibold px-3 py-2 rounded-xl border border-slate-300 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500">
-              <option value="Egra Central Hub">Egra Central Hub (East Midnapore)</option>
-              <option value="Contai Coastal Depot">Contai Coastal Depot</option>
-              <option value="Midnapore Master Warehouse">Midnapore Master Warehouse</option>
-            </select>
-          </div>
-          <div>
-            <label class="text-slate-700 font-bold block mb-1">Driving License Number *</label>
-            <input type="text" id="driver-dl" required placeholder="e.g. WB34 20190018291" class="w-full bg-slate-50 text-slate-900 font-mono uppercase font-semibold px-3 py-2 rounded-xl border border-slate-300 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500">
-          </div>
-        </div>
-
-        <!-- Driver Mobile App Login ID & Password Credentials -->
-        <div class="p-3 bg-brand-50/60 rounded-xl border border-brand-200 space-y-2.5">
-          <div class="flex items-center justify-between">
-            <label class="text-[11px] font-black uppercase text-brand-700 tracking-wider flex items-center gap-1.5">
-              <i class="ph-bold ph-key text-sm"></i>
-              <span>Driver Mobile App Login Credentials *</span>
-            </label>
-            <button type="button" onclick="generateDriverCredentials()" class="text-[10px] font-bold text-amber-800 hover:text-amber-900 flex items-center gap-1 bg-white px-2 py-0.5 rounded-lg border border-slate-300">
-              <i class="ph-bold ph-arrows-clockwise"></i> Auto-Generate
-            </button>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="text-slate-700 font-bold block mb-1">Driver Login ID *</label>
-              <input type="text" id="driver-login-id" required placeholder="e.g. AM24-DRV-402" class="w-full bg-white text-emerald-700 font-mono font-bold px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-1 focus:ring-brand-500">
-            </div>
-            <div>
-              <label class="text-slate-700 font-bold block mb-1">App Password *</label>
-              <div class="relative">
-                <input type="password" id="driver-password" required placeholder="Min 6 chars" class="w-full bg-white text-slate-900 font-mono font-bold pl-3 pr-9 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-1 focus:ring-brand-500">
-                <button type="button" onclick="toggleDriverPasswordVisibility()" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700" title="Show/Hide Password">
-                  <i id="driver-pass-eye" class="ph-bold ph-eye text-sm"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex justify-end gap-2 pt-2 border-t border-slate-200">
-          <button type="button" onclick="closeModal('add-driver-modal')" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200">Cancel</button>
-          <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-black hover:bg-brand-700 shadow-md">
-            Save & Activate Driver GPS
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL: CONFIRM REMOVE DELIVERY PARTNER -->
-  <div id="remove-driver-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-    <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
-      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-red-50 text-red-600 border border-red-200 flex items-center justify-center text-lg">
-            <i class="ph-bold ph-trash"></i>
-          </div>
-          <div>
-            <h3 class="text-sm font-black text-slate-900">Remove Delivery Partner</h3>
-            <p class="text-[10px] text-slate-500">Revoke fleet access & delete driver from Depot Roster</p>
-          </div>
-        </div>
-        <button onclick="closeModal('remove-driver-modal')" class="text-slate-400 hover:text-slate-700">
-          <i class="ph-bold ph-x text-base"></i>
-        </button>
-      </div>
-
-      <div class="bg-red-50/70 border border-red-200 rounded-xl p-3 text-xs space-y-1">
-        <p class="text-slate-700">Are you sure you want to remove this Delivery Partner from active duty?</p>
-        <div class="font-black text-slate-900 pt-1" id="remove-driver-summary">Driver Name • Plate</div>
-        <div class="text-[10px] font-mono text-red-700 font-bold" id="remove-driver-login-info">ID: DRV-000</div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-2 border-t border-slate-200">
-        <button type="button" onclick="closeModal('remove-driver-modal')" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200 text-xs">Cancel</button>
-        <button type="button" onclick="confirmRemoveDriver()" class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-xs shadow-md flex items-center gap-1.5 transition">
-          <i class="ph-bold ph-trash"></i>
-          <span>Remove Partner</span>
-        </button>
-      </div>
-    </div>
   </div>
 
   <!-- MODAL: CONFIRM REMOVE MARKETING EXECUTIVE -->
@@ -1314,7 +923,7 @@
           </div>
           <div>
             <h3 class="text-sm font-black text-slate-900">Remove Product SKU</h3>
-            <p class="text-[10px] text-slate-500">Delete product from Depot Inventory & connected apps</p>
+            <p class="text-[10px] text-slate-500">Delete product from Depot Inventory & Agent App</p>
           </div>
         </div>
         <button onclick="closeModal('remove-sku-modal')" class="text-slate-400 hover:text-slate-700">
@@ -1663,51 +1272,9 @@
 
         <div class="flex justify-end gap-2 pt-2 border-t border-slate-200">
           <button type="button" onclick="closeModal('add-sku-modal')" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200">Cancel</button>
-          <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 text-white font-black hover:bg-emerald-700">Publish SKU to B2B App</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 text-white font-black hover:bg-emerald-700">Publish SKU to Agent App</button>
         </div>
       </form>
-    </div>
-  </div>
-
-  <!-- MODAL: ASSIGN DRIVER & VEHICLE -->
-  <div id="assign-driver-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-    <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
-      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
-        <h3 class="text-sm font-black text-slate-900 flex items-center gap-2">
-          <i class="ph-bold ph-steering-wheel text-brand-600 text-lg"></i>
-          <span>Assign Vehicle & Driver</span>
-        </h3>
-        <button onclick="closeModal('assign-driver-modal')" class="text-slate-400 hover:text-slate-700">
-          <i class="ph-bold ph-x text-base"></i>
-        </button>
-      </div>
-
-      <div class="space-y-3 text-xs">
-        <div>
-          <label class="text-slate-600 font-bold block mb-1">Selected Order Invoice</label>
-          <input type="text" id="assign-order-id" readonly class="w-full bg-slate-100 text-slate-800 font-mono font-bold px-3 py-2 rounded-xl border border-slate-300">
-        </div>
-
-        <div>
-          <label class="text-slate-600 font-bold block mb-1">Select Delivery Vehicle (Depot Fleet)</label>
-          <select id="assign-vehicle-select" class="w-full bg-slate-50 text-slate-900 font-bold px-3 py-2.5 rounded-xl border border-slate-300">
-            <option value="DRV-EGRA-01">Tata Ace (WB 34 AD 8219) • Driver: Bikas Maity</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="text-slate-600 font-bold block mb-1">Morning Dispatch Wave</label>
-          <select class="w-full bg-slate-50 text-slate-900 font-bold px-3 py-2.5 rounded-xl border border-slate-300">
-            <option>Early Wave: 05:00 AM - 07:30 AM (Pre-opening)</option>
-            <option>Midday Wave: 01:30 PM - 03:30 PM</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-2 border-t border-slate-200">
-        <button onclick="closeModal('assign-driver-modal')" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200">Cancel</button>
-        <button onclick="confirmDriverAssignment()" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-black hover:bg-brand-700">Confirm & Print Manifest</button>
-      </div>
     </div>
   </div>
 
@@ -1780,7 +1347,7 @@
 
       <div class="flex justify-end gap-2 pt-2 border-t border-slate-200">
         <button type="button" onclick="closeModal('slab-edit-modal')" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200">Cancel</button>
-        <button type="button" onclick="saveSlabPricing()" class="px-4 py-2 rounded-xl bg-emerald-600 text-white font-black hover:bg-emerald-700">Save & Sync to App</button>
+        <button type="button" onclick="saveSlabPricing()" class="px-4 py-2 rounded-xl bg-emerald-600 text-white font-black hover:bg-emerald-700">Save & Sync to Agent App</button>
       </div>
     </div>
   </div>
@@ -1814,7 +1381,7 @@
           </div>
           <div>
             <h3 class="text-sm font-black text-slate-900">Set Kirana Partner Credit Limit</h3>
-            <p class="text-[10px] text-slate-500">Private Admin limit • Hidden from Kirana Store App</p>
+            <p class="text-[10px] text-slate-500">Admin Khata Credit Controls</p>
           </div>
         </div>
         <button onclick="closeModal('set-khata-limit-modal')" class="text-slate-400 hover:text-slate-700">
@@ -1842,11 +1409,6 @@
               <option value="Cash / UPI Only (₹0)">Cash / UPI Only (₹0)</option>
             </select>
           </div>
-        </div>
-
-        <div class="bg-amber-50 border border-amber-200 rounded-xl p-2.5 text-[11px] text-amber-900 flex items-start gap-2">
-          <i class="ph-bold ph-eye-slash text-amber-700 text-sm shrink-0 mt-0.5"></i>
-          <span>This Credit Limit is strictly private to Admin & automatically enforces whether the store can place Khata BNPL orders.</span>
         </div>
 
         <div class="flex justify-end gap-2 pt-2 border-t border-slate-200">
@@ -1907,13 +1469,13 @@
   </div>
 
   <!-- ================================================================== -->
-  <!-- CONNECTED APPS HUB OVERLAY (AGENT APP / DRIVER APP / KIRANA STORE) -->
+  <!-- CONNECTED MARKETING & FIELD SALES AGENT APP OVERLAY                -->
   <!-- ================================================================== -->
-  <div id="connected-app-overlay" onclick="if(event.target === this || event.target.id === 'connected-app-viewport') closeConnectedAppOverlay()" class="fixed inset-0 z-50 bg-white lg:bg-slate-100 flex flex-col hidden overflow-hidden">
-    <div id="connected-app-viewport" class="flex-1 w-full h-full overflow-hidden p-0 lg:p-4 flex items-stretch lg:items-center justify-center">
+  <div id="connected-app-overlay" class="fixed inset-0 z-50 bg-slate-50 flex flex-col hidden overflow-hidden">
+    <div id="connected-app-viewport" class="flex-1 w-full h-[100dvh] overflow-hidden p-0 sm:p-6 flex items-stretch sm:items-center justify-center">
 
-      <!-- 1. MARKETING MAN / FIELD SALES EXECUTIVE APP -->
-      <div id="subapp-agent" class="hidden w-full h-[100dvh] lg:h-[92dvh] lg:max-w-[460px] bg-white text-slate-900 rounded-none lg:rounded-3xl border-0 lg:border lg:border-slate-200 shadow-none lg:shadow-xl overflow-hidden flex flex-col relative">
+      <!-- MARKETING MAN / FIELD SALES EXECUTIVE APP (CENTERED MOBILE APP SHELL) -->
+      <div id="subapp-agent" class="w-full max-w-[430px] h-[100dvh] sm:h-[90dvh] sm:max-h-[820px] bg-white text-slate-900 rounded-none sm:rounded-[28px] border-0 sm:border sm:border-slate-200 shadow-none sm:shadow-xl overflow-hidden flex flex-col relative">
         <!-- LOGIN SCREEN OVERLAY -->
         <div id="agent-app-login-box" class="absolute inset-0 top-0 z-40 bg-white flex flex-col justify-between p-5 sm:p-6 overflow-y-auto">
           <div class="space-y-5">
@@ -2016,7 +1578,7 @@
               </button>
             </div>
 
-            <div class="mt-3 p-2.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
+            <div class="mt-2.5 p-2.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
               <div class="flex items-center justify-between text-[11px]">
                 <span class="text-slate-500 text-[10px] uppercase font-bold">Monthly Kirana Target</span>
                 <span class="font-black text-slate-900" id="sub-ag-target-txt">0 / 25 Shops</span>
@@ -2043,29 +1605,28 @@
                   <i class="ph-bold ph-shopping-bag-open"></i>
                 </div>
                 <div class="text-xs font-black text-slate-900">Take Kirana Order</div>
-                <div class="text-[10px] text-slate-500 leading-tight">Select items, slabs & push to dispatch</div>
-              </button>
-
-              <button onclick="openSubAgentModal('sub-ag-driver-modal')" class="col-span-2 bg-white hover:bg-emerald-50/50 border border-slate-200 p-3 rounded-2xl flex items-center justify-between transition shadow-xs">
-                <div class="flex items-center gap-3 text-left">
-                  <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg shrink-0">
-                    <i class="ph-bold ph-truck"></i>
-                  </div>
-                  <div>
-                    <div class="text-xs font-black text-slate-900">Open Delivery Partner ID</div>
-                    <div class="text-[10px] text-slate-500 leading-tight">Onboard Tata Ace / Bolero drivers & issue Driver App ID</div>
-                  </div>
-                </div>
-                <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black px-2.5 py-1 rounded-xl shrink-0">+ Add Driver</span>
+                <div class="text-[10px] text-slate-500 leading-tight">Select items, slabs & push to Admin Hub</div>
               </button>
             </div>
 
+            <!-- My Added Kirana Stores Section -->
             <div id="sub-ag-kiranas-section" class="space-y-2">
               <div class="flex items-center justify-between px-1">
                 <span class="text-[10px] font-black uppercase tracking-wider text-rose-700">My Added Kirana Stores</span>
                 <span class="text-[10px] bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded-full font-black" id="sub-ag-kiranas-count">0 Stores</span>
               </div>
+              <input type="text" id="sub-ag-kirana-search" oninput="renderSubAgentWorkspace()" placeholder="Search added shop, owner or phone..." class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-[11px] font-semibold text-slate-800 focus:outline-none focus:border-rose-400">
               <div id="sub-ag-kiranas-list" class="space-y-2"></div>
+            </div>
+
+            <!-- My Booked Orders Section -->
+            <div id="sub-ag-orders-section" class="space-y-2 pt-1">
+              <div class="flex items-center justify-between px-1">
+                <span class="text-[10px] font-black uppercase tracking-wider text-amber-700">My Booked Orders History</span>
+                <span class="text-[10px] bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-full font-black" id="sub-ag-orders-count">0 Orders</span>
+              </div>
+              <input type="text" id="sub-ag-order-search" oninput="renderSubAgentWorkspace()" placeholder="Search order history by shop, item or ID..." class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-[11px] font-semibold text-slate-800 focus:outline-none focus:border-amber-400">
+              <div id="sub-ag-orders-list" class="space-y-2"></div>
             </div>
           </main>
 
@@ -2079,40 +1640,12 @@
             <button type="button" onclick="openSubAgentModal('sub-ag-onboard-modal')" class="flex flex-col items-center gap-0.5 text-slate-600 font-bold">
               <i class="ph-bold ph-user-plus text-lg"></i><span>Add Kirana</span>
             </button>
-            <button type="button" onclick="openSubAgentModal('sub-ag-driver-modal')" class="flex flex-col items-center gap-0.5 text-emerald-700 font-bold">
-              <i class="ph-bold ph-truck text-lg"></i><span>Add Driver</span>
+            <button type="button" onclick="scrollToSubAgentSection('sub-ag-orders-section')" class="flex flex-col items-center gap-0.5 text-emerald-700 font-bold">
+              <i class="ph-bold ph-receipt text-lg"></i><span>Orders</span>
             </button>
           </nav>
 
           <!-- Sub-App Modals -->
-          <div id="sub-ag-driver-modal" class="absolute inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-3.5 hidden">
-            <div class="bg-white border border-slate-200 rounded-3xl w-full p-4 space-y-3 shadow-2xl text-xs text-slate-900">
-              <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-                <h3 class="font-black text-slate-900 text-xs">Open Delivery Partner ID</h3>
-                <button onclick="closeSubAgentModal('sub-ag-driver-modal')" class="text-slate-400 hover:text-slate-700"><i class="ph-bold ph-x text-sm"></i></button>
-              </div>
-              <form onsubmit="submitSubAgentDriverOnboarding(event)" class="space-y-2.5">
-                <input type="text" id="sub-drv-inp-name" required placeholder="Driver Full Name *" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-semibold">
-                <div class="grid grid-cols-2 gap-2">
-                  <input type="tel" id="sub-drv-inp-phone" required placeholder="Mobile *" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-semibold">
-                  <input type="text" id="sub-drv-inp-plate" required placeholder="Plate No *" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 uppercase font-mono font-bold">
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                  <select id="sub-drv-inp-vehicle" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-2.5 py-2 font-semibold">
-                    <option value="Tata Ace Gold (1.5 MT)">Tata Ace Gold (1.5 MT)</option>
-                    <option value="Mahindra Bolero (2.5 MT)">Mahindra Bolero (2.5 MT)</option>
-                  </select>
-                  <select id="sub-drv-inp-hub" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-2.5 py-2 font-semibold">
-                    <option value="Egra Central Hub">Egra Central Hub</option>
-                    <option value="Contai Coastal Depot">Contai Coastal Depot</option>
-                  </select>
-                </div>
-                <input type="text" id="sub-drv-inp-dl" placeholder="DL No (Optional)" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 uppercase font-mono">
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-black text-xs">Generate Delivery Partner ID</button>
-              </form>
-            </div>
-          </div>
-
           <div id="sub-ag-onboard-modal" class="absolute inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-3.5 hidden">
             <div class="bg-white border border-slate-200 rounded-3xl w-full p-4 space-y-3 shadow-2xl text-xs text-slate-900">
               <div class="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -2171,349 +1704,63 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- 2. DELIVERY PARTNER / DRIVER APP -->
-      <div id="subapp-driver" class="hidden w-full h-[100dvh] lg:h-[92dvh] lg:max-w-[460px] bg-white text-slate-900 rounded-none lg:rounded-3xl border-0 lg:border lg:border-slate-200 shadow-none lg:shadow-xl overflow-hidden flex flex-col relative">
-        <div id="driver-app-login-box" class="absolute inset-0 top-0 z-40 bg-white flex flex-col justify-between p-5 sm:p-6 overflow-y-auto">
-          <div class="space-y-5">
-            <div class="flex justify-end">
-              <button type="button" onclick="closeConnectedAppOverlay()" class="text-[10px] font-bold text-slate-400 hover:text-slate-700 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-slate-100">
-                <i class="ph-bold ph-squares-four"></i> Admin
-              </button>
-            </div>
-            <div class="flex flex-col items-center text-center space-y-2">
-              <div class="inline-flex items-center justify-center">
-                <svg class="h-11 w-auto" viewBox="0 0 720 280" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <g>
-                    <text x="350" y="70" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="52" fill="#0f172a" letter-spacing="-1">apnamart</text>
-                    <rect x="585" y="38" width="68" height="38" rx="8" fill="url(#driverLoginGrad24)" />
-                    <text x="595" y="67" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="30" fill="#ffffff">24</text>
-                    <path d="M 470 82 L 655 82" stroke="#ea580c" stroke-width="4.5" stroke-linecap="round"/>
-                    <circle cx="495" cy="82" r="4.5" fill="#dc2626"/>
-                    <circle cx="530" cy="82" r="4.5" fill="#dc2626"/>
-                  </g>
-                  <g>
-                    <circle cx="185" cy="165" r="110" fill="#0f172a"/>
-                    <text x="130" y="222" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="165" fill="#ffffff">B</text>
-                    <text x="255" y="222" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="170" fill="#0f172a" letter-spacing="-3">2</text>
-                    <text x="385" y="222" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="170" fill="#0f172a" letter-spacing="-3">B</text>
-                  </g>
-                  <defs>
-                    <linearGradient id="driverLoginGrad24" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stop-color="#ea580c"/>
-                      <stop offset="100%" stop-color="#f59e0b"/>
-                    </linearGradient>
-                  </defs>
-                </svg>
+          <!-- Product Detail Showcase Modal (For showing large product photo & slab rates to shopkeepers) -->
+          <div id="sub-ag-product-detail-modal" class="absolute inset-0 z-[60] bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-3.5 hidden">
+            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl text-xs text-slate-900 flex flex-col max-h-[90%]">
+              <div class="relative bg-slate-100 h-56 flex items-center justify-center overflow-hidden border-b border-slate-200">
+                <img id="sub-prod-detail-img" src="" alt="Product Preview" class="w-full h-full object-contain p-3">
+                <button type="button" onclick="closeSubAgentModal('sub-ag-product-detail-modal')" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-900/80 text-white flex items-center justify-center shadow">
+                  <i class="ph-bold ph-x text-sm"></i>
+                </button>
+                <span id="sub-prod-detail-cat" class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-brand-600 text-white text-[10px] font-black uppercase shadow">Category</span>
               </div>
-              <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black px-3 py-1 rounded-full uppercase">Fleet & Delivery Partner Portal</span>
-              <h2 class="text-lg font-black text-slate-900 pt-1">Driver Partner Sign In</h2>
-            </div>
-            <form onsubmit="handleDriverAppLogin(event)" class="space-y-3.5 text-xs">
-              <div id="sub-drv-login-error" class="hidden bg-red-50 border border-red-200 text-red-700 px-3 py-2.5 rounded-2xl text-[11px] font-bold">
-                <span id="sub-drv-login-error-text">Invalid Driver ID or Password / PIN.</span>
-              </div>
-              <input type="text" id="sub-drv-id" required placeholder="e.g. DRV-EGRA-01 or AM24-BIKAS01" class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-3 py-3 font-mono font-bold uppercase">
-              <input type="password" id="sub-drv-pass" required placeholder="••••" class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-3 py-3 font-mono font-black tracking-widest">
-              <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-2xl font-black text-xs shadow-lg">Start Shift & Load Route</button>
-            </form>
-          </div>
-          <div class="text-center border-t border-slate-100 pt-3">
-            <p class="text-[9px] text-slate-400">ApnaMart24 B2B Logistics • East Midnapore Hubs</p>
-          </div>
-        </div>
 
-        <div id="driver-app-workspace" class="hidden flex-1 flex flex-col overflow-hidden">
-          <header class="bg-white border-b border-slate-200 p-3.5 shrink-0 shadow-xs">
-            <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
-              <span class="font-black text-xs text-slate-900">ApnaMart24 Delivery Partner</span>
-              <div class="flex items-center gap-1.5">
-                <button type="button" onclick="closeConnectedAppOverlay()" class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9px] font-black px-2 py-0.5 rounded-lg">ADMIN</button>
-                <button onclick="logoutDriverApp()" class="w-6 h-6 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center"><i class="ph-bold ph-sign-out text-xs"></i></button>
-              </div>
-            </div>
-            <div class="flex items-center justify-between gap-2">
-              <div class="flex items-center gap-2.5">
-                <div id="sub-drv-avatar" class="w-9 h-9 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-black text-xs">BM</div>
+              <div class="p-4 space-y-3 overflow-y-auto no-scrollbar">
                 <div>
-                  <div class="flex items-center gap-1.5">
-                    <h1 id="active-sub-drv-name" class="text-xs font-black text-slate-900">Bikas Maity</h1>
-                    <span id="active-sub-drv-code" class="text-[9px] font-mono font-black bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">DRV-EGRA-01</span>
+                  <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
+                    <span id="sub-prod-detail-sku">SKU-000</span>
+                    <span id="sub-prod-detail-stock" class="text-emerald-700 font-bold">In Stock</span>
                   </div>
-                  <p class="text-[10px] text-slate-500 mt-0.5"><span id="active-sub-drv-vehicle">Tata Ace Gold</span> • <span id="active-sub-drv-plate" class="font-mono text-amber-700 font-bold">WB 34 AD 8219</span></p>
+                  <h3 id="sub-prod-detail-name" class="text-base font-black text-slate-900 mt-0.5 leading-snug">Product Name</h3>
                 </div>
-              </div>
-              <button onclick="toggleSubDriverDutyStatus()" id="sub-duty-toggle" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-[10px] font-black">● On Duty</button>
-            </div>
-            <div class="grid grid-cols-3 gap-2 mt-3 bg-slate-50 p-2.5 rounded-2xl border border-slate-200 text-center">
-              <div><span class="text-[9px] text-slate-500 uppercase font-bold block">Drops</span><span class="text-xs font-black" id="sub-drops-counter">0 / 0 Done</span></div>
-              <div><span class="text-[9px] text-slate-500 uppercase font-bold block">Payload</span><span class="text-xs font-black text-amber-700" id="sub-drv-payload">0.00 MT</span></div>
-              <div><span class="text-[9px] text-slate-500 uppercase font-bold block">COD</span><span class="text-xs font-black text-emerald-700" id="sub-cod-collected">₹0</span></div>
-            </div>
-          </header>
 
-          <main class="flex-1 overflow-y-auto p-3.5 space-y-3.5 pb-20 no-scrollbar bg-slate-50">
-            <div id="sub-active-stop-card" class="bg-white border-2 border-emerald-500 rounded-3xl p-4 space-y-3 shadow-sm">
-              <div class="flex items-center justify-between">
-                <span class="text-[10px] font-black uppercase text-emerald-700" id="sub-active-drop-badge">Active Drop</span>
-                <span class="text-[10px] font-mono bg-emerald-50 px-2 py-0.5 rounded-lg text-emerald-800 font-bold border border-emerald-200" id="sub-active-stop-seq">STOP 1</span>
-              </div>
-              <div>
-                <h2 class="text-base font-black text-slate-900" id="sub-active-shop-name">No Active Stops Assigned</h2>
-                <p class="text-[11px] text-slate-600 font-semibold mt-0.5" id="sub-active-shop-addr">Waiting for Admin dispatch handover</p>
-                <div class="mt-2 bg-amber-50 border border-amber-200 rounded-xl p-2.5 text-[11px] text-amber-950" id="sub-active-shop-items">Orders handed over by Admin will ring & appear here automatically.</div>
-              </div>
-              <div class="flex items-center gap-2">
-                <a id="sub-active-maps-link" href="https://maps.google.com" target="_blank" class="flex-1 bg-emerald-600 text-white py-2.5 rounded-xl text-xs font-black flex items-center justify-center gap-1.5">Navigate to Shop</a>
-              </div>
-            </div>
-
-            <div class="bg-white border border-slate-200 rounded-3xl p-4 space-y-3 shadow-xs">
-              <div class="flex items-center justify-between">
-                <h3 class="text-xs font-black text-slate-900">Proof of Delivery (POD)</h3>
-                <span class="text-[10px] font-mono text-brand-600 font-bold" id="sub-active-inv-id">--</span>
-              </div>
-              <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-1 text-xs">
-                <div class="flex justify-between"><span>Amount:</span><span class="font-black" id="sub-active-inv-amount">₹0</span></div>
-                <div class="flex justify-between"><span>Mode:</span><span class="font-bold text-emerald-700" id="sub-active-inv-mode">--</span></div>
-              </div>
-              <div class="flex gap-2">
-                <input type="text" id="sub-pod-otp" maxlength="4" placeholder="OTP" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-center text-sm font-mono font-black tracking-widest">
-                <button onclick="verifySubPodOtp()" class="bg-emerald-600 px-4 py-2.5 rounded-xl font-black text-xs shrink-0 text-white">Verify POD</button>
-              </div>
-            </div>
-
-            <div class="bg-white border border-slate-200 rounded-3xl p-3.5 space-y-3 shadow-xs">
-              <div class="flex items-center justify-between">
-                <span class="text-[10px] font-black uppercase text-emerald-700">Delivery Route Roadmap (<span id="drv-total-items-summary">0 Packs</span>)</span>
-                <button type="button" onclick="autoOptimizeDriverRoadmap()" class="px-2.5 py-1 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black">Auto-Sort</button>
-              </div>
-              <div class="space-y-1">
-                <div class="flex justify-between text-[10px] font-bold text-slate-600">
-                  <span id="drv-roadmap-progress-label">Hub Start → 0 of 0 Stops Done</span>
-                  <span class="text-emerald-700 font-black" id="drv-roadmap-pct">0%</span>
+                <!-- 3-Tier Wholesale Slab Cards -->
+                <div class="space-y-1.5">
+                  <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 block">Wholesale Bulk Slab Rates (Per Pack)</span>
+                  <div class="grid grid-cols-3 gap-2 text-center">
+                    <div class="p-2 rounded-xl bg-slate-50 border border-slate-200">
+                      <span class="text-[9px] font-bold text-slate-500 block">2 – 5 Packs</span>
+                      <span id="sub-prod-detail-t1" class="text-sm font-black text-slate-900">₹0</span>
+                    </div>
+                    <div class="p-2 rounded-xl bg-emerald-50 border border-emerald-200">
+                      <span class="text-[9px] font-bold text-emerald-700 block">6 – 15 Packs</span>
+                      <span id="sub-prod-detail-t2" class="text-sm font-black text-emerald-700">₹0</span>
+                    </div>
+                    <div class="p-2 rounded-xl bg-brand-50 border border-brand-200">
+                      <span class="text-[9px] font-bold text-brand-700 block">16+ Packs</span>
+                      <span id="sub-prod-detail-t3" class="text-sm font-black text-brand-600">₹0</span>
+                    </div>
+                  </div>
                 </div>
-                <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
-                  <div id="drv-roadmap-bar" class="bg-emerald-600 h-full w-0 rounded-full"></div>
+
+                <!-- Quantity Selector inside Product Showcase -->
+                <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-3">
+                  <div>
+                    <span class="text-[10px] text-slate-500 block font-bold">Selected Quantity</span>
+                    <span id="sub-prod-detail-subtotal" class="text-sm font-black text-brand-600">₹0</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button type="button" onclick="adjustDetailModalQty(-1)" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 font-black text-base text-slate-800">-</button>
+                    <span id="sub-prod-detail-qty" class="w-8 text-center text-sm font-black">0</span>
+                    <button type="button" onclick="adjustDetailModalQty(1)" class="w-9 h-9 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black text-base">+</button>
+                  </div>
                 </div>
-              </div>
-              <div id="driver-assigned-orders-list" class="space-y-2.5"></div>
-            </div>
-          </main>
 
-          <!-- LIVE DELIVERY HANDOVER ALERT POPUP CARD -->
-          <div id="driver-handover-alert-card" class="absolute top-14 inset-x-3 z-40 bg-white border-2 border-emerald-500 rounded-2xl shadow-2xl p-3.5 space-y-2 hidden fade-in">
-            <div class="flex items-start justify-between gap-2">
-              <div>
-                <span class="text-[9px] font-black uppercase text-emerald-700 block">Admin Order Handover</span>
-                <h4 class="text-xs font-black text-slate-900" id="drv-handover-shop">Shop Name • WB-INV-0000</h4>
+                <button type="button" onclick="closeSubAgentModal('sub-ag-product-detail-modal')" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-black text-xs">
+                  Done & Back to Catalog
+                </button>
               </div>
-              <button type="button" onclick="dismissDriverHandoverAlert()" class="text-slate-400 p-1"><i class="ph-bold ph-x text-sm"></i></button>
-            </div>
-            <div class="bg-emerald-50/80 border border-emerald-200 rounded-xl p-2 text-[11px] space-y-1">
-              <div class="font-bold text-slate-800" id="drv-handover-items">Items summary</div>
-              <div class="flex items-center justify-between pt-1 border-t border-emerald-200/70">
-                <span class="font-black text-emerald-800 text-xs" id="drv-handover-amount">₹0</span>
-                <span class="text-[10px] font-mono font-black text-brand-700" id="drv-handover-route">Route</span>
-              </div>
-            </div>
-            <div class="flex items-center gap-2">
-              <button type="button" onclick="dismissDriverHandoverAlert()" class="flex-1 py-2 rounded-xl bg-emerald-600 text-white font-black text-[11px]">Accept & Load Route</button>
-              <button type="button" onclick="playDriverHandoverChime()" class="px-3 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs"><i class="ph-bold ph-speaker-high"></i></button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 3. KIRANA RETAILER B2B STOREFRONT APP -->
-      <div id="subapp-kirana" class="hidden w-full h-[100dvh] lg:h-[92dvh] lg:max-w-[460px] bg-white text-slate-900 rounded-none lg:rounded-3xl border-0 lg:border lg:border-slate-200 shadow-none lg:shadow-xl overflow-hidden flex flex-col relative">
-        <div id="sub-retailer-auth-screen" class="absolute inset-0 top-0 z-40 bg-white flex flex-col justify-between p-5 overflow-y-auto no-scrollbar">
-          <div class="space-y-4">
-            <div class="flex justify-end">
-              <button type="button" onclick="closeConnectedAppOverlay()" class="text-[10px] font-bold text-slate-400 hover:text-slate-700 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-slate-100">
-                <i class="ph-bold ph-squares-four"></i> Admin
-              </button>
-            </div>
-            <div class="flex flex-col items-center text-center space-y-2">
-              <div class="inline-flex items-center justify-center">
-                <svg class="h-11 w-auto" viewBox="0 0 720 280" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <g>
-                    <text x="350" y="70" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="52" fill="#0f172a" letter-spacing="-1">apnamart</text>
-                    <rect x="585" y="38" width="68" height="38" rx="8" fill="url(#kiranaLoginGrad24)" />
-                    <text x="595" y="67" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="30" fill="#ffffff">24</text>
-                    <path d="M 470 82 L 655 82" stroke="#ea580c" stroke-width="4.5" stroke-linecap="round"/>
-                    <circle cx="495" cy="82" r="4.5" fill="#dc2626"/>
-                    <circle cx="530" cy="82" r="4.5" fill="#dc2626"/>
-                  </g>
-                  <g>
-                    <circle cx="185" cy="165" r="110" fill="#0f172a"/>
-                    <text x="130" y="222" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="165" fill="#ffffff">B</text>
-                    <text x="255" y="222" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="170" fill="#0f172a" letter-spacing="-3">2</text>
-                    <text x="385" y="222" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="170" fill="#0f172a" letter-spacing="-3">B</text>
-                  </g>
-                  <defs>
-                    <linearGradient id="kiranaLoginGrad24" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stop-color="#ea580c"/>
-                      <stop offset="100%" stop-color="#f59e0b"/>
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </div>
-              <span class="bg-brand-50 text-brand-700 border border-brand-200 text-[10px] font-black px-3 py-0.5 rounded-full uppercase">Kirana Wholesale Partner Portal</span>
-            </div>
-            <div class="grid grid-cols-2 gap-1 bg-slate-100 p-1 rounded-2xl text-xs font-black">
-              <button type="button" onclick="switchSubRetailerAuthMode('signin')" id="sub-auth-tab-signin" class="py-2 rounded-xl bg-white text-slate-900 shadow-xs">Existing Shop Sign In</button>
-              <button type="button" onclick="switchSubRetailerAuthMode('signup')" id="sub-auth-tab-signup" class="py-2 rounded-xl text-slate-500">New Kirana Register</button>
-            </div>
-            <div id="sub-ret-auth-error" class="hidden bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-2xl text-[11px] font-bold">
-              <span id="sub-ret-auth-error-text">Invalid Store ID/Mobile or PIN.</span>
-            </div>
-            <form id="sub-retailer-signin-form" onsubmit="handleSubRetailerSignIn(event)" class="space-y-3 text-xs">
-              <input type="text" id="sub-ret-signin-id" required placeholder="9832049182 or RET-EGRA-01" class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-3 py-2.5 font-bold">
-              <input type="password" id="sub-ret-signin-pin" required maxlength="6" placeholder="••••" class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-3 py-2.5 font-mono font-black">
-              <button type="submit" class="w-full bg-brand-600 text-white py-3 rounded-2xl font-black text-xs">Sign In to Wholesale Mandi</button>
-            </form>
-            <form id="sub-retailer-signup-form" onsubmit="handleSubRetailerSignUp(event)" class="space-y-2.5 text-xs hidden">
-              <input type="text" id="sub-ret-reg-shop" required placeholder="Kirana / Store Name *" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-semibold">
-              <div class="grid grid-cols-2 gap-2">
-                <input type="text" id="sub-ret-reg-owner" required placeholder="Owner Name *" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-semibold">
-                <input type="tel" id="sub-ret-reg-phone" required placeholder="Mobile *" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-semibold">
-              </div>
-              <div class="grid grid-cols-2 gap-2">
-                <input type="text" id="sub-ret-reg-gst" placeholder="GSTIN (Optional)" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 uppercase font-mono">
-                <input type="password" id="sub-ret-reg-pin" required maxlength="4" placeholder="Create PIN *" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-mono font-black">
-              </div>
-              <select id="sub-ret-reg-hub" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-semibold">
-                <option value="Egra Hub">Egra Central Hub</option>
-                <option value="Contai Depot">Contai Coastal Depot</option>
-              </select>
-              <button type="submit" class="w-full bg-emerald-600 text-white py-2.5 rounded-xl font-black text-xs">Create Store Account & Enter Mandi</button>
-            </form>
-          </div>
-          <div class="text-center border-t border-slate-100 pt-2.5">
-            <p class="text-[9px] text-slate-400 font-semibold">ApnaMart24 B2B Wholesale • 5:00 AM Doorstep Delivery</p>
-          </div>
-        </div>
-
-        <header class="bg-white border-b border-slate-100 p-3 shrink-0 shadow-xs z-30">
-          <div class="flex items-center justify-between gap-2">
-            <span class="font-black text-sm text-brand-600 cursor-pointer" onclick="filterSubKiranaCategory('all')">ApnaMart24 B2B</span>
-            <button onclick="openSubKhataSheet()" class="flex items-center gap-1.5 bg-amber-50 border border-amber-300 px-2.5 py-1 rounded-xl text-left">
-              <span class="text-[8px] font-bold text-amber-800 uppercase block">Khata Due:</span>
-              <span class="text-[11px] font-black text-slate-950" id="sub-khata-balance-text">₹0</span>
-            </button>
-          </div>
-          <div class="mt-2 flex items-center justify-between text-[10px] text-slate-500 border-t border-slate-50 pt-1.5">
-            <span class="font-bold text-slate-700 truncate" id="sub-ret-header-shop-label">Maa Sarada Traders • Egra Hub</span>
-            <div class="flex items-center gap-1.5 shrink-0">
-              <button type="button" onclick="closeConnectedAppOverlay()" class="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-black text-[9px]">ADMIN</button>
-              <button onclick="handleSubRetailerLogout()" class="w-5 h-5 rounded-md bg-slate-100 text-slate-600 flex items-center justify-center"><i class="ph-bold ph-sign-out text-[11px]"></i></button>
-            </div>
-          </div>
-          <div class="mt-2">
-            <input type="text" oninput="searchSubKiranaCatalog(this.value)" placeholder="Search Miniket Rice, Mustard Oil, Dal..." class="w-full bg-slate-100 rounded-xl px-3 py-2 text-xs font-semibold">
-          </div>
-          <div class="mt-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-[11px] font-bold">
-            <button onclick="filterSubKiranaCategory('all')" class="px-3 py-1 rounded-full bg-slate-900 text-white shrink-0">All Mandi</button>
-            <button onclick="filterSubKiranaCategory('staples')" class="px-3 py-1 rounded-full bg-slate-100 text-slate-700 shrink-0">Rice & Atta</button>
-            <button onclick="filterSubKiranaCategory('oils')" class="px-3 py-1 rounded-full bg-slate-100 text-slate-700 shrink-0">Oils (15L)</button>
-            <button onclick="filterSubKiranaCategory('pulses')" class="px-3 py-1 rounded-full bg-slate-100 text-slate-700 shrink-0">Pulses</button>
-          </div>
-        </header>
-
-        <main class="flex-1 overflow-y-auto p-3 bg-slate-50 space-y-3 pb-24 no-scrollbar">
-          <div class="bg-gradient-to-r from-brand-600 to-amber-500 rounded-2xl p-3 text-white shadow-xs flex items-center justify-between">
-            <div>
-              <h4 class="text-xs font-black">Doorstep Unloading Before 5:00 AM</h4>
-              <p class="text-[10px] text-amber-100" id="sub-freight-msg">Add ₹8,000 for FREE mini-truck freight</p>
-            </div>
-            <div class="text-right shrink-0">
-              <span class="text-xs font-black block" id="sub-freight-ratio">₹0 / 8k</span>
-              <div class="w-16 bg-black/30 h-1.5 rounded-full overflow-hidden mt-1">
-                <div id="sub-freight-bar" class="bg-white h-full w-0"></div>
-              </div>
-            </div>
-          </div>
-          <div id="kirana-catalog-grid" class="space-y-2.5"></div>
-        </main>
-
-        <div id="sub-floating-cart" class="absolute bottom-14 inset-x-3 bg-slate-900 text-white rounded-2xl p-2.5 shadow-2xl flex items-center justify-between z-20 hidden">
-          <div class="flex items-center gap-2 pl-1">
-            <span class="w-6 h-6 rounded-lg bg-brand-500 text-white font-black text-xs flex items-center justify-center" id="sub-float-qty">0</span>
-            <span class="text-xs font-black block" id="sub-float-total">₹0</span>
-          </div>
-          <button onclick="openSubCartSheet()" class="bg-brand-600 px-3.5 py-1.5 rounded-xl text-xs font-black">Checkout →</button>
-        </div>
-
-        <nav class="bg-white border-t border-slate-200 px-3 py-2 flex items-center justify-around shrink-0 z-30">
-          <button onclick="switchSubRetailerTab('mandi')" class="flex flex-col items-center gap-0.5 text-brand-600 font-bold text-[10px]">
-            <i class="ph-fill ph-storefront text-lg"></i><span>Mandi</span>
-          </button>
-          <button onclick="openSubKhataSheet()" class="flex flex-col items-center gap-0.5 text-slate-500 font-semibold text-[10px]">
-            <i class="ph-bold ph-wallet text-lg"></i><span>Khata</span>
-          </button>
-          <button onclick="switchSubRetailerTab('orders')" class="flex flex-col items-center gap-0.5 text-slate-500 font-semibold text-[10px]">
-            <i class="ph-bold ph-receipt text-lg"></i><span>My Orders</span>
-          </button>
-          <button onclick="openSubCartSheet()" class="flex flex-col items-center gap-0.5 text-slate-700 font-semibold text-[10px]">
-            <i class="ph-bold ph-shopping-cart-simple text-lg"></i><span>Cart (<span id="sub-nav-badge">0</span>)</span>
-          </button>
-        </nav>
-
-        <div id="sub-retailer-orders-view" class="absolute inset-0 top-0 bottom-14 z-25 bg-slate-50 flex flex-col hidden">
-          <div class="bg-white border-b border-slate-200 p-3.5 flex items-center justify-between shrink-0">
-            <h3 class="text-xs font-black text-slate-900">My Wholesale Orders (<span id="sub-ret-active-orders-count">0</span>)</h3>
-            <button onclick="switchSubRetailerTab('mandi')" class="bg-slate-900 text-white px-2.5 py-1.5 rounded-xl text-[10px] font-black">+ Order More</button>
-          </div>
-          <div id="sub-retailer-orders-list" class="flex-1 overflow-y-auto p-3 space-y-2.5 no-scrollbar"></div>
-        </div>
-
-        <div id="sub-cart-sheet" class="absolute inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex flex-col justify-end hidden">
-          <div class="bg-white rounded-t-3xl shadow-2xl max-h-[88%] flex flex-col overflow-hidden">
-            <div class="p-3.5 bg-slate-900 text-white flex items-center justify-between">
-              <h3 class="text-xs font-black">Wholesale Tax Invoice Summary</h3>
-              <button onclick="closeSubSheet('sub-cart-sheet')" class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center"><i class="ph-bold ph-x text-xs"></i></button>
-            </div>
-            <div id="sub-cart-items-box" class="p-3 overflow-y-auto space-y-2 flex-1"></div>
-            <div class="p-3 bg-slate-50 border-t border-slate-200 space-y-2 text-xs">
-              <div class="flex justify-between"><span>Base:</span><span class="font-bold" id="sub-bill-base">₹0</span></div>
-              <div class="flex justify-between"><span>GST:</span><span class="font-bold text-emerald-700" id="sub-bill-gst">+ ₹0</span></div>
-              <div class="flex justify-between text-sm font-black border-t pt-1.5"><span>Grand Total:</span><span class="text-brand-600" id="sub-bill-total">₹0</span></div>
-              <div class="grid grid-cols-2 gap-2 text-[10px] pt-1">
-                <label class="border border-emerald-400 bg-emerald-50 p-2 rounded-xl flex items-center gap-1.5 font-bold">
-                  <input type="radio" name="subRetPayType" value="khata" checked><span>Khata BNPL (14d)</span>
-                </label>
-                <label class="border border-slate-200 bg-white p-2 rounded-xl flex items-center gap-1.5 font-bold">
-                  <input type="radio" name="subRetPayType" value="upi"><span>Instant UPI</span>
-                </label>
-              </div>
-              <button onclick="placeSubWholesaleOrder()" class="w-full bg-brand-600 text-white py-3 rounded-xl font-black text-xs">Confirm 5:00 AM Dispatch</button>
-            </div>
-          </div>
-        </div>
-
-        <div id="sub-khata-sheet" class="absolute inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex flex-col justify-end hidden">
-          <div class="bg-white rounded-t-3xl shadow-2xl max-h-[85%] flex flex-col overflow-hidden">
-            <div class="p-3.5 bg-slate-900 text-white flex items-center justify-between">
-              <h3 class="text-xs font-black">Kirana Khata Ledger (14-Day Cycle)</h3>
-              <button onclick="closeSubSheet('sub-khata-sheet')" class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center"><i class="ph-bold ph-x text-xs"></i></button>
-            </div>
-            <div class="p-4 space-y-3 text-xs">
-              <div class="grid grid-cols-2 gap-2 text-center bg-slate-50 p-3 rounded-2xl border border-slate-200">
-                <div>
-                  <span class="text-[9px] text-slate-500 uppercase font-bold block">Khata Status</span>
-                  <span class="font-black text-emerald-700" id="sub-sheet-khata-status">Active (Admin Controlled)</span>
-                </div>
-                <div>
-                  <span class="text-[9px] text-slate-500 uppercase font-bold block">Current Due</span>
-                  <span class="font-black text-amber-700" id="sub-sheet-khata-used">₹0</span>
-                </div>
-              </div>
-              <button onclick="repaySubKhata()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-black text-xs shadow-md">
-                Settle Khata Balance via UPI
-              </button>
             </div>
           </div>
         </div>
@@ -2536,7 +1783,7 @@
           <i class="ph-fill ph-bell-ringing"></i>
         </div>
         <div>
-          <span class="text-[10px] font-black uppercase tracking-wider text-brand-600 block" id="incoming-alert-source">New Wholesale Order</span>
+          <span class="text-[10px] font-black uppercase tracking-wider text-brand-600 block" id="incoming-alert-source">New Field Order</span>
           <h4 class="text-xs font-black text-slate-900" id="incoming-alert-shop">Shop Name • WB-INV-0000</h4>
         </div>
       </div>
@@ -2553,7 +1800,7 @@
     </div>
     <div class="flex items-center gap-2">
       <button onclick="viewIncomingOrderInAdmin()" class="flex-1 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black text-xs transition shadow-xs">
-        Open & Assign Vehicle
+        Open in Wholesale Orders
       </button>
       <button onclick="playAdminOrderChime()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs" title="Replay Chime">
         <i class="ph-bold ph-speaker-high"></i>
@@ -2561,7 +1808,7 @@
     </div>
   </div>
 
-  <!-- CLOUD REAL-TIME ENGINE (FIREBASE REALTIME DB + FIRESTORE + CROSS-TAB SYNC) -->
+  <!-- CLOUD REAL-TIME ENGINE (FIREBASE SDK: ANALYTICS, REALTIME DB & FIRESTORE) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
@@ -2569,6 +1816,7 @@
     import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
     import { getDatabase, ref, set as rtdbSet, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
+    // Your web app's Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAjU83LJqN3S4xA-RCUK_8NDWgvxhf45io",
       authDomain: "apnamart24-b2b.firebaseapp.com",
@@ -2580,12 +1828,13 @@
       measurementId: "G-J78D8VK9YE"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     let analytics = null;
     try {
       analytics = getAnalytics(app);
     } catch (err) {
-      console.warn('Analytics skipped in sandboxed iframe:', err);
+      console.warn('Firebase Analytics skipped in local/sandbox context:', err);
     }
 
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'apnamart24-b2b';
@@ -2619,6 +1868,7 @@
     };
 
     async function bootCloudRealtimeSync() {
+      updateCloudSyncBadge('connecting', 'Connecting...');
       try {
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -2732,6 +1982,7 @@
     bootCloudRealtimeSync();
   </script>
 
+  <!-- APPLICATION STATE, REAL-TIME SYNC & INTERACTIVITY -->
   <script>
     // =========================================================================
     // 1. REAL-TIME SYNC ENGINE & CORE STATE
@@ -2741,8 +1992,6 @@
     const STORAGE_KEY_ADMIN_PASS = 'APNAMART24_ADMIN_PASS_V1';
     const STORAGE_KEY_ADMIN_AUTH = 'APNAMART24_ADMIN_UNLOCKED_V1';
     const STORAGE_KEY_AGENT_SESSION = 'APNAMART24_AGENT_SESSION_V1';
-    const STORAGE_KEY_DRIVER_SESSION = 'APNAMART24_DRIVER_SESSION_V1';
-    const STORAGE_KEY_RETAILER_SESSION = 'APNAMART24_RETAILER_SESSION_V1';
     const STORAGE_KEY_ADMIN_SOUND = 'APNAMART24_ADMIN_SOUND_V1';
 
     const FIXED_ADMIN_LOGIN_ID = 'amit7074b2b';
@@ -2754,16 +2003,12 @@
     let sharedAudioCtx = null;
     let incomingAlertTimer = null;
     let incomingRingInterval = null;
-    let driverHandoverAlertTimer = null;
-    let driverHandoverRingInterval = null;
     let titleFlashInterval = null;
-    const BASE_DOCUMENT_TITLE = 'ApnaMart24 B2B - Central Admin & Logistics Hub';
+    const BASE_DOCUMENT_TITLE = 'ApnaMart24 B2B - Central Admin & Field Agent Hub';
     let activeConnectedApp = null;
     let currentEditingSkuId = null;
-    let pendingRemoveDriverId = null;
     let pendingRemoveMarketingId = null;
     let pendingRemoveSkuId = null;
-    let pendingAssignOrderId = null;
     let pendingRemoveSubKiranaId = null;
     let tempNewSkuImage = '';
     let tempEditSkuImage = '';
@@ -2839,60 +2084,6 @@
           img: 'https://placehold.co/120x120/eff6ff/2563eb?text=Soap+Box'
         }
       ],
-      fleetDrivers: [
-        {
-          id: 'DRV-EGRA-01',
-          loginId: 'AM24-BIKAS01',
-          password: 'Apna@8219',
-          name: 'Bikas Maity',
-          phone: '9832049182',
-          vehicleType: 'Tata Ace Gold (1.5 MT)',
-          plate: 'WB 34 AD 8219',
-          hub: 'Egra Central Hub',
-          dl: 'WB34 20180012910',
-          status: 'ON_ROUTE',
-          route: 'Route #WB-EGRA-01'
-        },
-        {
-          id: 'DRV-CONTAI-02',
-          loginId: 'AM24-TAPAN02',
-          password: 'Apna@1102',
-          name: 'Tapan Giri',
-          phone: '9734190821',
-          vehicleType: 'Mahindra Bolero Maxi (2.5 MT)',
-          plate: 'WB 29 BF 1102',
-          hub: 'Contai Coastal Depot',
-          dl: 'WB29 20190088412',
-          status: 'ON_ROUTE',
-          route: 'Route #WB-CONTAI-02'
-        },
-        {
-          id: 'DRV-EGRA-03',
-          loginId: 'AM24-SUJIT03',
-          password: 'Apna@9044',
-          name: 'Sujit Jana',
-          phone: '9647812094',
-          vehicleType: 'Ashok Leyland Bada Dost (3.0 MT)',
-          plate: 'WB 32 CX 9044',
-          hub: 'Egra Central Hub',
-          dl: 'WB32 20200034901',
-          status: 'AT_HUB',
-          route: 'Standby Bay A'
-        },
-        {
-          id: 'DRV-MID-04',
-          loginId: 'AM24-SUBRATA04',
-          password: 'Apna@7712',
-          name: 'Subrata Adhikary',
-          phone: '9832044112',
-          vehicleType: 'Tata Ace Gold (1.5 MT)',
-          plate: 'WB 34 BE 7712',
-          hub: 'Midnapore Master Warehouse',
-          dl: '',
-          status: 'AT_HUB',
-          route: 'Standby Bay B'
-        }
-      ],
       marketingAgents: [
         {
           id: 'MKT-EGRA-01',
@@ -2957,7 +2148,24 @@
       ],
       wholesaleOrders: [],
       agentOrders: [],
-      khataAccounts: [],
+      khataAccounts: [
+        {
+          shopName: 'Maa Sarada Traders',
+          ownerName: 'Subhasis Sahoo',
+          phone: '9832049182',
+          limit: 50000,
+          outstanding: 0,
+          cycle: '14-Day Standard'
+        },
+        {
+          shopName: 'Joy Guru Enterprise',
+          ownerName: 'Debashis Panda',
+          phone: '9832100000',
+          limit: 30000,
+          outstanding: 0,
+          cycle: '14-Day Standard'
+        }
+      ],
       kycQueue: [],
       retailerAccounts: [
         {
@@ -2965,7 +2173,6 @@
           shopName: 'Maa Sarada Traders',
           ownerName: 'Subhasis Sahoo',
           phone: '9832049182',
-          pin: '1234',
           gstin: '19AABCM4821K1Z8',
           hub: 'Egra Hub',
           khataLimit: 50000,
@@ -2976,16 +2183,12 @@
           shopName: 'Joy Guru Enterprise',
           ownerName: 'Debashis Panda',
           phone: '9832100000',
-          pin: '1234',
           gstin: '19AADCD9012F1Z1',
           hub: 'Contai Depot',
           khataLimit: 30000,
           khataUsed: 0
         }
-      ],
-      driverStops: [],
-      driverCodCollected: 0,
-      driverOnDuty: true
+      ]
     };
 
     let appState = loadPersistedState();
@@ -3006,16 +2209,11 @@
       return JSON.parse(JSON.stringify(defaultState));
     }
 
-    window.__exportFullStateString = function () {
-      return JSON.stringify(appState);
-    };
-
-    window.__applyIncomingLiveState = function (rawJson) {
+    function applyIncomingLiveState(rawJson) {
       try {
         const incoming = typeof rawJson === 'string' ? JSON.parse(rawJson) : rawJson;
         if (!incoming || typeof incoming !== 'object') return;
         const prevIds = new Set((appState.wholesaleOrders || []).map(o => o.id));
-        const prevStopIds = new Set((appState.driverStops || []).map(s => s.orderId));
         isApplyingRemoteState = true;
         appState = {
           ...JSON.parse(JSON.stringify(defaultState)),
@@ -3026,36 +2224,66 @@
 
         const incomingOrders = appState.wholesaleOrders || [];
         const brandNewOrders = incomingOrders.filter(o => !prevIds.has(o.id));
-        if (brandNewOrders.length > 0) {
-          // Check if the current browser or device is in sub-app mode (Agent, Driver, or Kirana)
-          const isSubAppOpen = activeConnectedApp !== null || 
-                               window.location.hash.includes('subapp') || 
-                               localStorage.getItem('APNAMART24_DRIVER_SESSION_V1') !== null ||
-                               localStorage.getItem('APNAMART24_AGENT_SESSION_V1') !== null;
-
-          // Trigger alert and sound only if the Central Admin Panel is open
-          if (!isSubAppOpen) {
-            triggerAdminNewOrderNotification(brandNewOrders[0]);
-          }
-        }
-        const loggedInDriverId = localStorage.getItem(STORAGE_KEY_DRIVER_SESSION);
-        if (loggedInDriverId) {
-          const newStopsForDriver = (appState.driverStops || []).filter(
-            s => !s.delivered && !prevStopIds.has(s.orderId) && (!s.driverId || s.driverId === loggedInDriverId)
-          );
-          if (newStopsForDriver.length > 0) {
-            triggerDriverHandoverNotification(newStopsForDriver[0]);
-          }
+        if (brandNewOrders.length > 0 && activeConnectedApp === null) {
+          triggerAdminNewOrderNotification(brandNewOrders[0]);
         }
       } catch (err) {
         console.warn('Incoming state sync error:', err);
       } finally {
         isApplyingRemoteState = false;
       }
+    }
+
+    window.__exportFullStateString = function () {
+      return JSON.stringify(appState);
     };
 
+    window.__applyIncomingLiveState = applyIncomingLiveState;
+
+    function persistAndBroadcastState(silent = false) {
+      if (isApplyingRemoteState) return;
+      const serialized = JSON.stringify(appState);
+      try {
+        localStorage.setItem(STORAGE_KEY_STATE, serialized);
+      } catch (e) {}
+      if (syncChannel) {
+        syncChannel.postMessage({
+          type: 'APNAMART24_STATE_UPDATE',
+          senderId: window.__instanceTabId,
+          payload: serialized
+        });
+      }
+      if (window.__cloudSync && typeof window.__cloudSync.pushState === 'function') {
+        window.__cloudSync.pushState(serialized);
+      }
+      refreshAllViews();
+      if (!silent) flashSyncIndicator();
+    }
+
+    function flashSyncIndicator() {
+      const icon = document.getElementById('admin-global-refresh-icon');
+      if (icon) {
+        icon.classList.add('animate-spin');
+        setTimeout(() => icon.classList.remove('animate-spin'), 450);
+      }
+    }
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === STORAGE_KEY_STATE && e.newValue) {
+        applyIncomingLiveState(e.newValue);
+      }
+    });
+
+    if (syncChannel) {
+      syncChannel.onmessage = (event) => {
+        if (event.data && event.data.type === 'APNAMART24_STATE_UPDATE' && event.data.senderId !== window.__instanceTabId) {
+          applyIncomingLiveState(event.data.payload);
+        }
+      };
+    }
+
     // =========================================================================
-    // ADMIN LIVE ORDER SOUND & POPUP NOTIFICATION ENGINE
+    // 2. SOUND ALERTS & NOTIFICATION ENGINE
     // =========================================================================
     function unlockAdminAudioContext() {
       try {
@@ -3063,9 +2291,6 @@
         if (!AudioCtx) return null;
         if (!sharedAudioCtx) sharedAudioCtx = new AudioCtx();
         if (sharedAudioCtx.state === 'suspended') sharedAudioCtx.resume();
-        if ('Notification' in window && Notification.permission === 'default') {
-          Notification.requestPermission().catch(() => {});
-        }
         return sharedAudioCtx;
       } catch (e) {
         return null;
@@ -3073,7 +2298,6 @@
     }
 
     document.addEventListener('pointerdown', unlockAdminAudioContext, { passive: true });
-    document.addEventListener('keydown', unlockAdminAudioContext, { passive: true });
 
     function playAdminOrderChime() {
       if (!adminSoundEnabled) return;
@@ -3081,13 +2305,12 @@
       if (!ctx) return;
       try {
         const now = ctx.currentTime;
-        const notes = [
+        [
           { freq: 523.25, start: 0, dur: 0.16 },
           { freq: 659.25, start: 0.13, dur: 0.16 },
           { freq: 783.99, start: 0.26, dur: 0.18 },
           { freq: 1046.50, start: 0.40, dur: 0.36 }
-        ];
-        notes.forEach(n => {
+        ].forEach(n => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'triangle';
@@ -3100,9 +2323,7 @@
           osc.start(now + n.start);
           osc.stop(now + n.start + n.dur + 0.02);
         });
-      } catch (err) {
-        console.warn('Audio chime skipped:', err);
-      }
+      } catch (err) {}
     }
 
     function stopAdminOrderRingLoop() {
@@ -3146,7 +2367,6 @@
       if (!order) return;
       stopAdminOrderRingLoop();
       playAdminOrderChime();
-
       let ringCount = 1;
       incomingRingInterval = setInterval(() => {
         if (!adminSoundEnabled || ringCount >= 3) {
@@ -3168,7 +2388,7 @@
 
       const card = document.getElementById('admin-incoming-order-alert');
       if (!card) return;
-      document.getElementById('incoming-alert-source').textContent = `NEW ORDER • ${order.source || 'Connected App'}`;
+      document.getElementById('incoming-alert-source').textContent = `NEW ORDER • ${order.source || 'Field Agent'}`;
       document.getElementById('incoming-alert-shop').textContent = `${order.shopName} (${order.id})`;
       document.getElementById('incoming-alert-items').textContent = `${order.itemsSummary} (${order.units} packs)`;
       document.getElementById('incoming-alert-amount').textContent = `₹${Number(order.amount || 0).toLocaleString('en-IN')}`;
@@ -3176,9 +2396,7 @@
       card.classList.remove('hidden');
 
       clearTimeout(incomingAlertTimer);
-      incomingAlertTimer = setTimeout(() => {
-        dismissIncomingOrderAlert();
-      }, 20000);
+      incomingAlertTimer = setTimeout(() => dismissIncomingOrderAlert(), 20000);
     }
 
     function dismissIncomingOrderAlert() {
@@ -3194,125 +2412,7 @@
     }
 
     // =========================================================================
-    // DRIVER APP HANDOVER SOUND & POPUP NOTIFICATION ENGINE
-    // =========================================================================
-    function playDriverHandoverChime() {
-      const ctx = unlockAdminAudioContext();
-      if (!ctx) return;
-      try {
-        const now = ctx.currentTime;
-        const notes = [
-          { freq: 392.00, start: 0, dur: 0.14 },
-          { freq: 493.88, start: 0.12, dur: 0.14 },
-          { freq: 587.33, start: 0.24, dur: 0.16 },
-          { freq: 783.99, start: 0.38, dur: 0.34 }
-        ];
-        notes.forEach(n => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(n.freq, now + n.start);
-          gain.gain.setValueAtTime(0.001, now + n.start);
-          gain.gain.exponentialRampToValueAtTime(0.38, now + n.start + 0.02);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + n.start + n.dur);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(now + n.start);
-          osc.stop(now + n.start + n.dur + 0.02);
-        });
-      } catch (err) {}
-    }
-
-    function stopDriverHandoverRingLoop() {
-      clearInterval(driverHandoverRingInterval);
-      driverHandoverRingInterval = null;
-    }
-
-    function triggerDriverHandoverNotification(stop) {
-      if (!stop) return;
-      const loggedInDriverId = localStorage.getItem(STORAGE_KEY_DRIVER_SESSION);
-      if (!loggedInDriverId) return;
-      if (stop.driverId && stop.driverId !== loggedInDriverId) return;
-
-      stopDriverHandoverRingLoop();
-      playDriverHandoverChime();
-
-      let ringCount = 1;
-      driverHandoverRingInterval = setInterval(() => {
-        if (ringCount >= 3) {
-          stopDriverHandoverRingLoop();
-          return;
-        }
-        ringCount += 1;
-        playDriverHandoverChime();
-      }, 2600);
-
-      const card = document.getElementById('driver-handover-alert-card');
-      if (!card) return;
-      document.getElementById('drv-handover-shop').textContent = `${stop.shopName} • ${stop.orderId}`;
-      document.getElementById('drv-handover-items').textContent = `📦 ${stop.itemsSummary}`;
-      document.getElementById('drv-handover-amount').textContent = `₹${Number(stop.amount || 0).toLocaleString('en-IN')} (${stop.paymentMode || 'Wholesale'})`;
-      document.getElementById('drv-handover-route').textContent = stop.address || 'Morning Route';
-      card.classList.remove('hidden');
-
-      clearTimeout(driverHandoverAlertTimer);
-      driverHandoverAlertTimer = setTimeout(() => {
-        dismissDriverHandoverAlert();
-      }, 20000);
-    }
-
-    function dismissDriverHandoverAlert() {
-      stopDriverHandoverRingLoop();
-      const card = document.getElementById('driver-handover-alert-card');
-      if (card) card.classList.add('hidden');
-    }
-
-    function persistAndBroadcastState(silent = false) {
-      if (isApplyingRemoteState) return;
-      const serialized = JSON.stringify(appState);
-      try {
-        localStorage.setItem(STORAGE_KEY_STATE, serialized);
-      } catch (e) {}
-      if (syncChannel) {
-        syncChannel.postMessage({
-          type: 'APNAMART24_STATE_UPDATE',
-          senderId: window.__instanceTabId,
-          payload: serialized
-        });
-      }
-      if (window.__cloudSync && typeof window.__cloudSync.pushState === 'function') {
-        window.__cloudSync.pushState(serialized);
-      }
-      refreshAllViews();
-      if (!silent) {
-        flashSyncIndicator();
-      }
-    }
-
-    function flashSyncIndicator() {
-      const icon = document.getElementById('admin-global-refresh-icon');
-      if (icon) {
-        icon.classList.add('animate-spin');
-        setTimeout(() => icon.classList.remove('animate-spin'), 450);
-      }
-    }
-
-    window.addEventListener('storage', (e) => {
-      if (e.key === STORAGE_KEY_STATE && e.newValue) {
-        window.__applyIncomingLiveState(e.newValue);
-      }
-    });
-
-    if (syncChannel) {
-      syncChannel.onmessage = (event) => {
-        if (event.data && event.data.type === 'APNAMART24_STATE_UPDATE' && event.data.senderId !== window.__instanceTabId) {
-          window.__applyIncomingLiveState(event.data.payload);
-        }
-      };
-    }
-
-    // =========================================================================
-    // 2. ADMIN AUTHENTICATION & PASSWORD CONTROLS
+    // 3. ADMIN AUTHENTICATION & PASSWORD CONTROLS
     // =========================================================================
     function getStoredAdminPassword() {
       return localStorage.getItem(STORAGE_KEY_ADMIN_PASS) || DEFAULT_ADMIN_PASS;
@@ -3321,9 +2421,7 @@
     function checkAdminSession() {
       const unlocked = localStorage.getItem(STORAGE_KEY_ADMIN_AUTH) === 'true';
       const gate = document.getElementById('admin-login-gate');
-      if (gate) {
-        gate.classList.toggle('hidden', unlocked);
-      }
+      if (gate) gate.classList.toggle('hidden', unlocked);
     }
 
     function handleAdminLogin(e) {
@@ -3339,7 +2437,7 @@
         document.getElementById('admin-login-gate').classList.add('hidden');
         document.getElementById('admin-login-pass-input').value = '';
         refreshAllViews();
-        showToast('Admin Console unlocked • Live Real-Time Sync active');
+        showToast('Admin Console unlocked • Live Sync active');
       } else {
         errText.textContent = 'Invalid Admin Login ID or Password!';
         errBox.classList.remove('hidden');
@@ -3390,22 +2488,10 @@
     }
 
     // =========================================================================
-    // 3. NAVIGATION, MODALS & TOAST HELPERS
+    // 4. NAVIGATION, MODALS & TOAST HELPERS
     // =========================================================================
     function switchTab(tabName) {
-      const tabs = ['dashboard', 'orders', 'fleet', 'marketing', 'inventory', 'khata', 'kyc'];
-      const isFleetTab = tabName === 'fleet';
-
-      const sidebarFleetSnap = document.getElementById('sidebar-fleet-snapshot');
-      if (sidebarFleetSnap) {
-        sidebarFleetSnap.classList.toggle('hidden', !isFleetTab);
-      }
-
-      const rosterPanel = document.getElementById('fleet-drivers-roster-panel');
-      if (rosterPanel) {
-        rosterPanel.classList.toggle('hidden', !isFleetTab);
-      }
-
+      const tabs = ['dashboard', 'orders', 'marketing', 'inventory', 'khata', 'kyc'];
       tabs.forEach((t) => {
         const sec = document.getElementById('tab-' + t);
         const btn = document.getElementById('nav-' + t);
@@ -3418,28 +2504,16 @@
           }
         }
         if (btn) {
-          if (t === tabName) {
-            btn.className = 'w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition bg-brand-600 text-white shadow-sm';
-          } else {
-            btn.className = 'w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition text-slate-600 hover:bg-slate-100 hover:text-slate-900';
-          }
+          btn.className = t === tabName
+            ? 'w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition bg-brand-600 text-white shadow-sm'
+            : 'w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition text-slate-600 hover:bg-slate-100 hover:text-slate-900';
         }
       });
 
-      const mainScroll = document.getElementById('admin-main-scroll');
-      if (mainScroll) {
-        mainScroll.scrollTo({ top: 0, behavior: 'instant' });
-      }
-      window.scrollTo({ top: 0, behavior: 'instant' });
-
       const sidebar = document.getElementById('ops-sidebar');
       const backdrop = document.getElementById('sidebar-backdrop');
-      if (sidebar && window.innerWidth < 768) {
-        sidebar.classList.add('-translate-x-full');
-      }
-      if (backdrop) {
-        backdrop.classList.add('hidden');
-      }
+      if (sidebar && window.innerWidth < 768) sidebar.classList.add('-translate-x-full');
+      if (backdrop) backdrop.classList.add('hidden');
     }
 
     function toggleMobileSidebar() {
@@ -3450,18 +2524,6 @@
       sidebar.classList.toggle('-translate-x-full', !isClosed);
       if (backdrop) backdrop.classList.toggle('hidden', !isClosed);
     }
-
-    function toggleAppSwitcherMenu() {
-      const dd = document.getElementById('app-switcher-dropdown');
-      if (dd) dd.classList.toggle('hidden');
-    }
-
-    document.addEventListener('click', (e) => {
-      const dd = document.getElementById('app-switcher-dropdown');
-      if (dd && !dd.classList.contains('hidden') && !e.target.closest('#app-switcher-dropdown') && !e.target.closest('button[onclick="toggleAppSwitcherMenu()"]')) {
-        dd.classList.add('hidden');
-      }
-    });
 
     function switchDepot(val) {
       showToast(`Switched Fulfillment Depot to ${val}`);
@@ -3480,9 +2542,7 @@
       label.textContent = msg;
       toast.classList.remove('hidden');
       clearTimeout(toastTimeout);
-      toastTimeout = setTimeout(() => {
-        toast.classList.add('hidden');
-      }, 3200);
+      toastTimeout = setTimeout(() => toast.classList.add('hidden'), 3200);
     }
 
     function manualAdminRefresh() {
@@ -3491,10 +2551,10 @@
       flashSyncIndicator();
       if (window.__cloudSync && window.__cloudSync.enabled && typeof window.__cloudSync.pullNow === 'function') {
         window.__cloudSync.pullNow().then((pulled) => {
-          showToast(pulled ? 'Synced latest live data from Cloud' : 'All live hub & field app metrics synced');
+          showToast(pulled ? 'Synced latest live data from Firebase Cloud' : 'All live hub & field agent metrics synced');
         });
       } else {
-        showToast('All live hub & field app metrics synced');
+        showToast('All live hub & field agent metrics synced');
       }
     }
 
@@ -3503,12 +2563,11 @@
     }
 
     // =========================================================================
-    // 4. MASTER REAL-TIME VIEW REFRESH & EXECUTIVE DASHBOARD
+    // 5. MASTER REAL-TIME VIEW REFRESH & EXECUTIVE DASHBOARD
     // =========================================================================
     function refreshAllViews() {
       renderDashboardMetrics();
       renderOrdersTable();
-      renderFleetTab();
       renderMarketingTab();
       renderInventoryTable();
       renderKhataTable();
@@ -3528,8 +2587,6 @@
       if (kycBadge) kycBadge.textContent = `${(appState.kycQueue || []).length} New`;
 
       if (activeConnectedApp === 'agent') renderSubAgentWorkspace();
-      if (activeConnectedApp === 'driver') renderSubDriverWorkspace();
-      if (activeConnectedApp === 'kirana') renderSubKiranaWorkspace();
     }
 
     function renderDashboardMetrics() {
@@ -3552,26 +2609,24 @@
 
       const kpiShops = document.getElementById('kpi-shops');
       if (kpiShops) kpiShops.textContent = `${shops} Shops`;
-      const kpiShopsSub = document.getElementById('kpi-shops-sub');
-      if (kpiShopsSub) kpiShopsSub.innerHTML = `<span>Verified B2B Kirana stores across hubs</span>`;
 
       const kpiKhata = document.getElementById('kpi-khata');
       if (kpiKhata) kpiKhata.textContent = `₹${khataOut.toLocaleString('en-IN')}`;
 
       const routesBadge = document.getElementById('dashboard-active-routes-badge');
       const dispatchedOrders = orders.filter(o => o.status === 'DISPATCHED');
-      if (routesBadge) routesBadge.textContent = `${dispatchedOrders.length} Active Dispatches`;
+      if (routesBadge) routesBadge.textContent = `${dispatchedOrders.length} Dispatched`;
 
       const routesList = document.getElementById('dashboard-dispatch-routes-list');
       if (routesList) {
         if (orders.length === 0) {
           routesList.innerHTML = `
             <div class="p-6 rounded-2xl bg-slate-50 border border-dashed border-slate-300 text-center text-xs text-slate-500">
-              No wholesale orders queued yet. Orders from Kirana Store App, Field Agents, or Manual Booking will appear here in real time.
+              No wholesale orders queued yet. Orders booked from the Field Marketing Agent App or Manual Desk will appear here in real time.
             </div>
           `;
         } else {
-          routesList.innerHTML = orders.slice(0, 4).map(o => `
+          routesList.innerHTML = orders.slice(0, 5).map(o => `
             <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3 text-xs">
               <div>
                 <div class="font-black text-slate-900">${o.shopName} <span class="font-mono text-[10px] text-brand-600">(${o.id})</span></div>
@@ -3588,7 +2643,7 @@
     }
 
     // =========================================================================
-    // 5. WHOLESALE ORDERS QUEUE & VEHICLE ASSIGNMENT
+    // 6. WHOLESALE ORDERS QUEUE
     // =========================================================================
     function filterOrdersTable(val) {
       currentOrderStatusFilter = val;
@@ -3620,7 +2675,7 @@
         tbody.innerHTML = `
           <tr>
             <td colspan="7" class="py-8 px-4 text-center text-xs text-slate-500 font-semibold">
-              No wholesale orders match the current filter. Click <strong>+ New Order</strong> or book from Kirana/Agent App.
+              No wholesale orders match the current filter. Click <strong>+ New Order</strong> or book from the Marketing Agent App.
             </td>
           </tr>
         `;
@@ -3633,6 +2688,8 @@
           : o.status === 'PACKING'
             ? 'bg-amber-50 text-amber-800 border-amber-200'
             : 'bg-brand-50 text-brand-700 border-brand-200';
+        const nextStatus = o.status === 'NEW' ? 'PACKING' : 'DISPATCHED';
+        const nextLabel = o.status === 'NEW' ? 'Approve & Pack' : o.status === 'PACKING' ? 'Mark Dispatched' : 'Dispatched ✓';
         return `
           <tr class="hover:bg-slate-50/80 transition">
             <td class="py-3.5 px-4">
@@ -3649,28 +2706,42 @@
               <div class="font-black text-slate-900">₹${Number(o.amount || 0).toLocaleString('en-IN')}</div>
               <div class="text-[10px] font-bold text-emerald-700">${o.paymentMode}</div>
             </td>
-            <td class="py-3.5 px-4 text-xs font-bold text-slate-700">${o.route || 'Egra Hub Route'}</td>
+            <td class="py-3.5 px-4">
+              <div class="text-xs font-bold text-slate-700">${o.route || 'Egra Hub Route'}</div>
+              <div class="text-[10px] text-rose-600 font-semibold">${o.source || 'Hub Desk'}</div>
+            </td>
             <td class="py-3.5 px-4">
               <span class="px-2.5 py-1 rounded-lg border text-[10px] font-black uppercase ${statusBadge}">${o.status}</span>
             </td>
-         <td class="py-3.5 px-4 text-right whitespace-nowrap space-x-1">
-    <button onclick="openAssignDriverModal('${o.id}')" class="px-2.5 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black text-[10px] transition">
-        ${o.status === 'DISPATCHED' ? 'Reassign' : 'Assign'}
-    </button>
-    <button onclick="removeWholesaleOrder('${o.id}')" class="px-2.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-bold text-[10px] border border-red-200 transition" title="Remove Order">
-        Remove
-    </button>
-</td>
+            <td class="py-3.5 px-4 text-right whitespace-nowrap space-x-1">
+              ${o.status !== 'DISPATCHED' ? `
+                <button onclick="advanceWholesaleOrderStatus('${o.id}', '${nextStatus}')" class="px-2.5 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black text-[10px] transition">
+                  ${nextLabel}
+                </button>
+              ` : `
+                <span class="px-2.5 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 font-black text-[10px]">Ready for 5 AM</span>
+              `}
+              <button onclick="removeWholesaleOrder('${o.id}')" class="px-2.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-bold text-[10px] border border-red-200 transition">
+                Remove
+              </button>
+            </td>
+          </tr>
         `;
       }).join('');
-    }function removeWholesaleOrder(orderId) {
-      if (!confirm(`Are you sure you want to remove wholesale order ${orderId}?`)) return;
-      appState.wholesaleOrders = (appState.wholesaleOrders || []).filter(o => o.id !== orderId);
-      if (appState.driverStops) {
-        appState.driverStops = appState.driverStops.filter(s => s.orderId !== orderId);
-      }
+    }
+
+    function advanceWholesaleOrderStatus(orderId, status) {
+      const ord = (appState.wholesaleOrders || []).find(o => o.id === orderId);
+      if (!ord) return;
+      ord.status = status;
       persistAndBroadcastState();
-      showToast(`Wholesale order ${orderId} removed successfully`);
+      showToast(`Order ${orderId} updated to ${status}`);
+    }
+
+    function removeWholesaleOrder(orderId) {
+      appState.wholesaleOrders = (appState.wholesaleOrders || []).filter(o => o.id !== orderId);
+      persistAndBroadcastState();
+      showToast(`Wholesale order ${orderId} removed`);
     }
 
     function openCreateOrderModal() {
@@ -3713,193 +2784,9 @@
       document.getElementById('order-items-modal').classList.remove('hidden');
     }
 
-    function openAssignDriverModal(orderId) {
-      pendingAssignOrderId = orderId;
-      document.getElementById('assign-order-id').value = orderId;
-      const sel = document.getElementById('assign-vehicle-select');
-      if (sel) {
-        sel.innerHTML = (appState.fleetDrivers || []).map(d =>
-          `<option value="${d.id}">${d.vehicleType} (${d.plate}) • Driver: ${d.name}</option>`
-        ).join('');
-      }
-      document.getElementById('assign-driver-modal').classList.remove('hidden');
-    }
-
-    function confirmDriverAssignment() {
-      if (!pendingAssignOrderId) return;
-      const ord = (appState.wholesaleOrders || []).find(o => o.id === pendingAssignOrderId);
-      const drvId = document.getElementById('assign-vehicle-select').value;
-      const drv = (appState.fleetDrivers || []).find(d => d.id === drvId);
-      if (ord && drv) {
-        ord.status = 'DISPATCHED';
-        ord.assignedDriverId = drv.id;
-        drv.status = 'ON_ROUTE';
-        const stopObj = {
-          orderId: ord.id,
-          driverId: drv.id,
-          shopName: ord.shopName,
-          address: ord.route || drv.hub,
-          itemsSummary: ord.itemsSummary,
-          units: ord.units,
-          amount: ord.amount,
-          paymentMode: ord.paymentMode,
-          otp: String(Math.floor(1000 + Math.random() * 9000)),
-          delivered: false
-        };
-        appState.driverStops = (appState.driverStops || []).filter(s => s.orderId !== ord.id);
-        appState.driverStops.push(stopObj);
-        persistAndBroadcastState();
-        triggerDriverHandoverNotification(stopObj);
-        showToast(`Dispatched ${ord.id} to ${drv.name} (${drv.plate})`);
-      }
-      closeModal('assign-driver-modal');
-    }
-
     // =========================================================================
-    // 6. LIVE FLEET TRACKING & MARKETING SALES RENDERERS
+    // 7. MARKETING & SALES FORCE TAB
     // =========================================================================
-    function refreshFleetLocations() {
-      const icon = document.getElementById('refresh-fleet-icon');
-      if (icon) {
-        icon.classList.add('animate-spin');
-        setTimeout(() => icon.classList.remove('animate-spin'), 500);
-      }
-      renderFleetTab();
-      showToast('Live GPS telematics refreshed');
-    }
-
-    function selectTrackedVehicle(plateCode) {
-      const label = document.getElementById('map-active-vehicle');
-      if (label) label.textContent = plateCode;
-      showToast(`Tracking vehicle ${plateCode}`);
-    }
-
-    function sendDriverWhatsAppManifest(name, plate) {
-      showToast(`WhatsApp route manifest sent to ${name} (${plate})`);
-    }
-
-    function openAddDriverModal() {
-      document.getElementById('add-driver-form').reset();
-      generateDriverCredentials();
-      document.getElementById('add-driver-modal').classList.remove('hidden');
-    }
-
-    function generateDriverCredentials() {
-      const rnd = Math.floor(100 + Math.random() * 900);
-      const idInp = document.getElementById('driver-login-id');
-      const passInp = document.getElementById('driver-password');
-      if (idInp) idInp.value = `AM24-DRV-${rnd}`;
-      if (passInp) passInp.value = `Apna@${rnd}`;
-    }
-
-    function toggleDriverPasswordVisibility() {
-      const inp = document.getElementById('driver-password');
-      if (inp) inp.type = inp.type === 'password' ? 'text' : 'password';
-    }
-
-    function handleCreateDriver(e) {
-      e.preventDefault();
-      const newDriver = {
-        id: 'DRV-' + Math.floor(100 + Math.random() * 900),
-        name: document.getElementById('driver-name').value.trim(),
-        phone: document.getElementById('driver-phone').value.trim(),
-        vehicleType: document.getElementById('driver-vehicle-type').value,
-        plate: document.getElementById('driver-plate').value.trim().toUpperCase(),
-        hub: document.getElementById('driver-hub').value,
-        dl: document.getElementById('driver-dl').value.trim().toUpperCase(),
-        loginId: document.getElementById('driver-login-id').value.trim().toUpperCase(),
-        password: document.getElementById('driver-password').value.trim(),
-        status: 'AT_HUB',
-        route: 'Standby Bay'
-      };
-      appState.fleetDrivers.push(newDriver);
-      persistAndBroadcastState();
-      closeModal('add-driver-modal');
-      showToast(`Driver ${newDriver.name} (${newDriver.loginId}) activated`);
-    }
-
-    function openRemoveDriverModal(id) {
-      const drv = (appState.fleetDrivers || []).find(d => d.id === id);
-      if (!drv) return;
-      pendingRemoveDriverId = id;
-      document.getElementById('remove-driver-summary').textContent = `${drv.name} • ${drv.plate}`;
-      document.getElementById('remove-driver-login-info').textContent = `Login ID: ${drv.loginId}`;
-      document.getElementById('remove-driver-modal').classList.remove('hidden');
-    }
-
-    function confirmRemoveDriver() {
-      if (!pendingRemoveDriverId) return;
-      appState.fleetDrivers = (appState.fleetDrivers || []).filter(d => d.id !== pendingRemoveDriverId);
-      persistAndBroadcastState();
-      closeModal('remove-driver-modal');
-      showToast('Delivery partner removed from roster');
-    }
-
-    function renderFleetTab() {
-      const drivers = appState.fleetDrivers || [];
-      const stops = appState.driverStops || [];
-      const doneStops = stops.filter(s => s.delivered).length;
-      const packs = stops.reduce((sum, s) => sum + Number(s.units || 0), 0);
-
-      const statDrivers = document.getElementById('stat-total-drivers');
-      if (statDrivers) statDrivers.textContent = `${drivers.length} Drivers`;
-      const statDrops = document.getElementById('stat-fleet-drops');
-      if (statDrops) statDrops.textContent = `${doneStops} / ${stops.length} Done`;
-      const statTonnage = document.getElementById('stat-fleet-tonnage');
-      if (statTonnage) statTonnage.textContent = `${((packs * 25) / 1000).toFixed(2)} MT`;
-
-      const rosterList = document.getElementById('fleet-drivers-list');
-      if (rosterList) {
-        rosterList.innerHTML = drivers.map(d => `
-          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5 text-xs">
-            <div class="flex items-center justify-between">
-              <span class="font-black text-slate-900">${d.name}</span>
-              <span class="px-2 py-0.5 rounded-full text-[9px] font-black ${d.status === 'ON_ROUTE' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-200 text-slate-700'}">${d.status === 'ON_ROUTE' ? 'On Route' : 'At Hub'}</span>
-            </div>
-            <div class="text-[10px] font-mono font-bold text-brand-700">${d.plate} • ${d.vehicleType}</div>
-            <div class="grid grid-cols-2 gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 text-[10px]">
-              <div>
-                <span class="text-slate-400 font-bold block text-[9px] uppercase">Driver ID</span>
-                <span class="font-mono font-black text-emerald-700">${d.loginId}</span>
-              </div>
-              <div>
-                <span class="text-slate-400 font-bold block text-[9px] uppercase">Password</span>
-                <span class="font-mono font-black text-slate-900">${d.password || 'Apna@1234'}</span>
-              </div>
-            </div>
-            <div class="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-200">
-              <span>${d.phone || ''}</span>
-              <button onclick="openRemoveDriverModal('${d.id}')" class="text-red-600 font-bold hover:underline">Remove</button>
-            </div>
-          </div>
-        `).join('');
-      }
-
-      const timelineSteps = document.getElementById('live-trip-timeline-steps');
-      if (timelineSteps) {
-        const activeStop = stops.find(s => !s.delivered);
-        const routeTitle = document.getElementById('timeline-route-title');
-        const etaBadge = document.getElementById('timeline-eta');
-        if (routeTitle) {
-          routeTitle.textContent = activeStop ? `En Route: ${activeStop.shopName} (${activeStop.orderId})` : 'Awaiting Vehicle Dispatch • Assign Order to Track';
-        }
-        if (etaBadge) {
-          etaBadge.textContent = `${doneStops} / ${stops.length} Stops Done`;
-        }
-        timelineSteps.innerHTML = [
-          { step: '1. Bay Loading', status: stops.length > 0 ? 'Completed' : 'Standby', done: stops.length > 0 },
-          { step: '2. Hub Gate Out', status: stops.length > 0 ? 'Verified' : 'Waiting', done: stops.length > 0 },
-          { step: '3. Kirana Unloading', status: activeStop ? activeStop.shopName : 'Pending', done: doneStops > 0 },
-          { step: '4. Digital POD & Cash', status: doneStops > 0 ? `${doneStops} Verified` : 'Awaiting OTP', done: doneStops > 0 && doneStops === stops.length }
-        ].map(st => `
-          <div class="p-2.5 rounded-xl border ${st.done ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-white border-slate-200 text-slate-600'}">
-            <div class="font-black text-[10px]">${st.step}</div>
-            <div class="text-[10px] font-semibold mt-0.5 truncate">${st.status}</div>
-          </div>
-        `).join('');
-      }
-    }
-
     function renderMarketingTab() {
       const agents = appState.marketingAgents || [];
       const agentOrders = appState.agentOrders || [];
@@ -3917,6 +2804,13 @@
 
       const badgeCount = document.getElementById('badge-agent-orders-count');
       if (badgeCount) badgeCount.textContent = `${agentOrders.length} Orders Today`;
+
+      const filterSel = document.getElementById('agent-order-filter');
+      if (filterSel) {
+        const curVal = filterSel.value;
+        filterSel.innerHTML = `<option value="ALL">All Marketing Agents</option>` +
+          agents.map(a => `<option value="${a.name}" ${a.name === curVal ? 'selected' : ''}>${a.name}</option>`).join('');
+      }
 
       const agentsGrid = document.getElementById('marketing-agents-list');
       if (agentsGrid) {
@@ -4089,7 +2983,7 @@
     }
 
     // =========================================================================
-    // 7. INVENTORY & SLAB PRICING TABLE
+    // 8. INVENTORY, KHATA & KYC TABLES
     // =========================================================================
     function renderInventoryTable() {
       const tbody = document.getElementById('inventory-tbody');
@@ -4214,7 +3108,7 @@
 
       persistAndBroadcastState();
       closeModal('add-sku-modal');
-      showToast(`Published ${name} to B2B Store & Agent App`);
+      showToast(`Published ${name} to Agent App`);
     }
 
     function openSlabEditModal(skuId) {
@@ -4245,7 +3139,7 @@
 
       persistAndBroadcastState();
       closeModal('slab-edit-modal');
-      showToast(`Updated ${sku.name} slabs & synced to all apps`);
+      showToast(`Updated ${sku.name} slabs & synced to Agent App`);
     }
 
     function openRemoveSkuModal(skuId) {
@@ -4265,9 +3159,6 @@
       showToast('Product SKU removed from catalog');
     }
 
-    // =========================================================================
-    // 8. KIRANA KHATA LEDGER & KYC TABLES
-    // =========================================================================
     function renderKhataTable() {
       const tbody = document.getElementById('khata-tbody');
       if (!tbody) return;
@@ -4280,7 +3171,7 @@
         tbody.innerHTML = `
           <tr>
             <td colspan="6" class="py-8 px-4 text-center text-xs text-slate-500 font-semibold">
-              No Kirana Khata accounts active yet. Approve KYC or place a Khata order to populate ledger.
+              No Kirana Khata accounts active yet. Approve KYC to populate ledger.
             </td>
           </tr>
         `;
@@ -4319,9 +3210,7 @@
 
     function onKhataLimitShopChange(shopName) {
       const acc = (appState.khataAccounts || []).find(k => k.shopName === shopName);
-      if (acc) {
-        document.getElementById('khata-limit-amount-input').value = acc.limit || 25000;
-      }
+      if (acc) document.getElementById('khata-limit-amount-input').value = acc.limit || 25000;
     }
 
     function handleSaveKhataLimit(e) {
@@ -4335,12 +3224,7 @@
         acc.limit = limit;
         acc.cycle = cycle;
       } else {
-        appState.khataAccounts.push({
-          shopName,
-          limit,
-          outstanding: 0,
-          cycle
-        });
+        appState.khataAccounts.push({ shopName, limit, outstanding: 0, cycle });
       }
 
       const ret = (appState.retailerAccounts || []).find(r => r.shopName === shopName);
@@ -4348,7 +3232,7 @@
 
       persistAndBroadcastState();
       closeModal('set-khata-limit-modal');
-      showToast(`Private Khata limit ₹${limit.toLocaleString('en-IN')} saved for ${shopName}`);
+      showToast(`Khata limit ₹${limit.toLocaleString('en-IN')} saved for ${shopName}`);
     }
 
     function renderKycTable() {
@@ -4374,7 +3258,7 @@
             <div class="text-[10px] text-slate-500">${k.ownerName} • ${k.phone}</div>
           </td>
           <td class="py-3.5 px-4 font-mono font-bold text-slate-700">${k.gstin || 'Pending'}</td>
-          <td class="py-3.5 px-4 text-xs font-semibold text-slate-600">${k.submittedBy || 'Kirana App'}</td>
+          <td class="py-3.5 px-4 text-xs font-semibold text-slate-600">${k.submittedBy || 'Field Agent'}</td>
           <td class="py-3.5 px-4">
             <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-50 text-amber-800 border border-amber-200">Pending Review</span>
           </td>
@@ -4414,9 +3298,9 @@
         shopName: item.shopName,
         ownerName: item.ownerName,
         phone: item.phone,
-        pin: item.pin || '1234',
         gstin: item.gstin,
         hub: item.hub || 'Egra Hub',
+        addedBy: item.submittedBy || 'Admin',
         khataLimit: assignedLimit,
         khataUsed: 0
       });
@@ -4436,44 +3320,67 @@
     }
 
     // =========================================================================
-    // 9. CONNECTED FIELD APPS (AGENT APP, DRIVER APP, KIRANA STORE APP)
+    // 9. MARKETING & FIELD SALES AGENT APP (MOBILE LOCKED + HISTORY + CONTACTS)
     // =========================================================================
+    let subAgentCart = {};
+    let activeDetailSkuId = null;
+
+    function isMobilePhoneDevice() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera || '';
+      const isTouchMobile = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+      const isSmallScreen = Math.min(window.screen.width || 999, window.innerWidth || 999) <= 640;
+      return isTouchMobile || isSmallScreen;
+    }
+
+    function enforceMobileViewportLock(active) {
+      let vp = document.querySelector('meta[name="viewport"]');
+      if (!vp) {
+        vp = document.createElement('meta');
+        vp.name = 'viewport';
+        document.head.appendChild(vp);
+      }
+      vp.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
+      document.body.classList.toggle('agent-mobile-locked', !!active);
+    }
+
     function openConnectedApp(appKey) {
-      const dd = document.getElementById('app-switcher-dropdown');
-      if (dd) dd.classList.add('hidden');
       if (appKey === 'admin') {
         closeConnectedAppOverlay();
         return;
       }
+      activeConnectedApp = 'agent';
+      enforceMobileViewportLock(true);
+      try {
+        if (window.location.hash !== '#agent-app') {
+          history.replaceState(null, '', '#agent-app');
+        }
+      } catch (e) {}
 
-      activeConnectedApp = appKey;
       const overlay = document.getElementById('connected-app-overlay');
       if (overlay) overlay.classList.remove('hidden');
-
-      ['agent', 'driver', 'kirana'].forEach(k => {
-        const el = document.getElementById('subapp-' + k);
-        if (el) el.classList.toggle('hidden', k !== appKey);
-      });
-
-      if (appKey === 'agent') initSubAgentApp();
-      if (appKey === 'driver') initSubDriverApp();
-      if (appKey === 'kirana') initSubKiranaApp();
+      initSubAgentApp();
     }
 
     function closeConnectedAppOverlay() {
       activeConnectedApp = null;
+      enforceMobileViewportLock(false);
+      try {
+        if (window.location.hash === '#agent-app') {
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+      } catch (e) {}
       const overlay = document.getElementById('connected-app-overlay');
       if (overlay) overlay.classList.add('hidden');
+      checkAdminSession();
     }
-
-    // --- A. MARKETING AGENT SUB-APP ---
-    let subAgentCart = {};
 
     function initSubAgentApp() {
       const savedId = localStorage.getItem(STORAGE_KEY_AGENT_SESSION);
       const agent = (appState.marketingAgents || []).find(a => a.id === savedId || a.loginId === savedId);
-      document.getElementById('agent-app-login-box').classList.toggle('hidden', !!agent);
-      document.getElementById('agent-app-workspace').classList.toggle('hidden', !agent);
+      const loginBox = document.getElementById('agent-app-login-box');
+      const workspace = document.getElementById('agent-app-workspace');
+      if (loginBox) loginBox.classList.toggle('hidden', !!agent);
+      if (workspace) workspace.classList.toggle('hidden', !agent);
       if (agent) renderSubAgentWorkspace();
     }
 
@@ -4486,10 +3393,10 @@
       );
       const errBox = document.getElementById('sub-login-error-box');
       if (!agent) {
-        errBox.classList.remove('hidden');
+        if (errBox) errBox.classList.remove('hidden');
         return;
       }
-      errBox.classList.add('hidden');
+      if (errBox) errBox.classList.add('hidden');
       localStorage.setItem(STORAGE_KEY_AGENT_SESSION, agent.id);
       initSubAgentApp();
     }
@@ -4511,42 +3418,170 @@
 
       const myOrders = (appState.agentOrders || []).filter(o => o.agentName === agent.name);
       const gmv = myOrders.reduce((s, o) => s + Number(o.amount || 0), 0);
+      const commRate = Number(agent.commissionRate || 2.0) / 100;
       document.getElementById('sub-ag-gmv-txt').textContent = `₹${gmv.toLocaleString('en-IN')}`;
-      document.getElementById('sub-ag-comm-txt').textContent = `₹${Math.round(gmv * 0.02).toLocaleString('en-IN')}`;
-      document.getElementById('sub-ag-target-txt').textContent = `${agent.onboarded || 0} / ${agent.target} Shops`;
+      document.getElementById('sub-ag-comm-txt').textContent = `₹${Math.round(gmv * commRate).toLocaleString('en-IN')}`;
 
-      function renderSubAgentWorkspace() {
-      const savedId = localStorage.getItem(STORAGE_KEY_AGENT_SESSION);
-      const agent = (appState.marketingAgents || []).find(a => a.id === savedId) || (appState.marketingAgents || [])[0];
-      if (!agent) return;
+      const pendingStores = (appState.kycQueue || [])
+        .filter(k => k.submittedBy === `Agent: ${agent.name}`)
+        .map(k => ({
+          id: k.id,
+          shopName: k.shopName,
+          ownerName: k.ownerName,
+          phone: k.phone,
+          gstin: k.gstin,
+          addedAt: k.addedAt || 'Pending KYC',
+          status: 'KYC PENDING',
+          isPending: true
+        }));
 
-      document.getElementById('active-sub-agent-name').textContent = agent.name;
-      document.getElementById('active-sub-agent-code').textContent = agent.loginId;
-      document.getElementById('active-sub-agent-beat').textContent = agent.beat;
-      document.getElementById('sub-ag-initials').textContent = agent.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+      const approvedStores = (appState.retailerAccounts || [])
+        .filter(r => r.addedBy === `Agent: ${agent.name}` || !r.addedBy)
+        .map(r => ({
+          id: r.id,
+          shopName: r.shopName,
+          ownerName: r.ownerName || 'Verified Owner',
+          phone: r.phone || '',
+          gstin: r.gstin || 'APPROVED',
+          addedAt: r.addedAt || 'Verified Partner',
+          status: 'APPROVED',
+          isPending: false
+        }));
 
-      const myOrders = (appState.agentOrders || []).filter(o => o.agentName === agent.name);
-      const gmv = myOrders.reduce((s, o) => s + Number(o.amount || 0), 0);
-      document.getElementById('sub-ag-gmv-txt').textContent = `₹${gmv.toLocaleString('en-IN')}`;
-      document.getElementById('sub-ag-comm-txt').textContent = `₹${Math.round(gmv * 0.02).toLocaleString('en-IN')}`;
-      document.getElementById('sub-ag-target-txt').textContent = `${kycList.length} / ${agent.target || 25} Shops`;
-      // Filter and list all shops onboarded by this specific agent with full details
-       const navBadge = document.getElementById('sub-nav-kiranas-badge');
-      if (navBadge) navBadge.textContent = String(kycList.length);
+      const allMyStoresRaw = [...pendingStores, ...approvedStores];
+      const storeSearchQ = ((document.getElementById('sub-ag-kirana-search') || {}).value || '').toLowerCase().trim();
+      const allMyStores = storeSearchQ
+        ? allMyStoresRaw.filter(s =>
+            (s.shopName || '').toLowerCase().includes(storeSearchQ) ||
+            (s.ownerName || '').toLowerCase().includes(storeSearchQ) ||
+            (s.phone || '').includes(storeSearchQ)
+          )
+        : allMyStoresRaw;
+
+      const addedCount = Math.max(Number(agent.onboarded || 0), allMyStoresRaw.filter(s => s.isPending || s.addedAt !== 'Verified Partner').length);
+      document.getElementById('sub-ag-target-txt').textContent = `${addedCount} / ${agent.target} Shops`;
+
+      const countBadge = document.getElementById('sub-ag-kiranas-count');
+      if (countBadge) countBadge.textContent = `${allMyStoresRaw.length} Stores`;
+      const navBadge = document.getElementById('sub-nav-kiranas-badge');
+      if (navBadge) navBadge.textContent = String(allMyStoresRaw.length);
 
       const kiranaContainer = document.getElementById('sub-ag-kiranas-list');
       if (kiranaContainer) {
-        kiranaContainer.innerHTML = kycList.length === 0
-          ? '<div class="bg-white border border-slate-200 rounded-2xl p-3 text-[11px] text-slate-500 text-center">Tap <strong>+ New Shop</strong> to onboard a Kirana store.</div>'
-          : kycList.map(k => `
-              <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between text-xs">
-                <div>
-                  <div class="font-black text-slate-900">${k.shopName}</div>
-                  <div class="text-[10px] text-slate-500">${k.ownerName} • ${k.phone}</div>
+        kiranaContainer.innerHTML = allMyStores.length === 0
+          ? '<div class="bg-white border border-slate-200 rounded-2xl p-3 text-[11px] text-slate-500 text-center">No matching Kirana stores found. Tap <strong>+ New Shop</strong> to add one.</div>'
+          : allMyStores.map(s => {
+              const cleanPhone = String(s.phone || '').replace(/\D/g, '');
+              const waPhone = cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone;
+              const waMsg = encodeURIComponent(`Namaskar ${s.ownerName || s.shopName}, ApnaMart24 B2B field executive ${agent.name} (${agent.loginId}) here.`);
+              const safeShop = s.shopName.replace(/'/g, "\\'");
+              return `
+                <div class="bg-white border border-slate-200 rounded-2xl p-3 space-y-2 text-xs shadow-2xs">
+                  <div class="flex items-start justify-between gap-2">
+                    <div class="min-w-0">
+                      <div class="flex items-center gap-1.5 flex-wrap">
+                        <span class="font-black text-slate-900 truncate">${s.shopName}</span>
+                        <span class="px-1.5 py-0.5 rounded text-[9px] font-black ${s.isPending ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}">${s.status}</span>
+                      </div>
+                      <div class="text-[10px] text-slate-600 font-semibold mt-0.5">Owner: <strong class="text-slate-800">${s.ownerName}</strong> • <span class="font-mono font-bold text-slate-800">${s.phone || 'No Phone'}</span></div>
+                      <div class="text-[9px] font-mono text-slate-400">ID/GST: ${s.gstin} • ${s.addedAt}</div>
+                    </div>
+                    ${s.isPending ? `<button type="button" onclick="openSubAgentRemoveKiranaModal('${s.id}')" class="text-red-600 font-bold text-[10px] hover:underline shrink-0">Remove</button>` : ''}
+                  </div>
+                  <div class="flex items-center gap-1.5 pt-1 border-t border-slate-100">
+                    ${cleanPhone ? `
+                      <a href="tel:${cleanPhone}" class="flex-1 py-1.5 px-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-[10px] flex items-center justify-center gap-1 transition">
+                        <i class="ph-bold ph-phone-call text-emerald-600"></i><span>Call</span>
+                      </a>
+                      <a href="https://wa.me/${waPhone}?text=${waMsg}" target="_blank" class="flex-1 py-1.5 px-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-black text-[10px] flex items-center justify-center gap-1 transition">
+                        <i class="ph-bold ph-whatsapp-logo"></i><span>WhatsApp</span>
+                      </a>
+                    ` : ''}
+                    <button type="button" onclick="openSubAssistedCatalogModal('${safeShop}')" class="py-1.5 px-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black text-[10px] shrink-0 transition">
+                      + Book Order
+                    </button>
+                  </div>
                 </div>
-                <button onclick="openSubAgentRemoveKiranaModal('${k.id}')" class="text-red-600 font-bold text-[10px] hover:underline">Remove</button>
+              `;
+            }).join('');
+      }
+
+      const ordersCountBadge = document.getElementById('sub-ag-orders-count');
+      if (ordersCountBadge) ordersCountBadge.textContent = `${myOrders.length} Orders`;
+
+      const orderSearchQ = ((document.getElementById('sub-ag-order-search') || {}).value || '').toLowerCase().trim();
+      const filteredOrders = orderSearchQ
+        ? myOrders.filter(o =>
+            (o.shopName || '').toLowerCase().includes(orderSearchQ) ||
+            (o.itemsSummary || '').toLowerCase().includes(orderSearchQ) ||
+            (o.id || '').toLowerCase().includes(orderSearchQ)
+          )
+        : myOrders;
+
+      const ordersListEl = document.getElementById('sub-ag-orders-list');
+      if (ordersListEl) {
+        if (filteredOrders.length === 0) {
+          ordersListEl.innerHTML = `<div class="bg-white border border-slate-200 rounded-2xl p-3.5 text-[11px] text-slate-500 text-center">No booked orders found. Tap <strong>Take Kirana Order</strong> to book wholesale items.</div>`;
+        } else {
+          ordersListEl.innerHTML = filteredOrders.map(o => {
+            const liveMasterOrder = (appState.wholesaleOrders || []).find(w => w.id === o.id);
+            const liveStatus = liveMasterOrder ? liveMasterOrder.status : 'NEW';
+            const statusClass = liveStatus === 'DISPATCHED'
+              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+              : liveStatus === 'PACKING'
+                ? 'bg-amber-50 text-amber-800 border-amber-200'
+                : 'bg-brand-50 text-brand-700 border-brand-200';
+            const matchedShop = (appState.retailerAccounts || []).find(r => r.shopName === o.shopName)
+              || (appState.kycQueue || []).find(k => k.shopName === o.shopName);
+            const ownerLabel = o.ownerName || (matchedShop && matchedShop.ownerName) || 'Kirana Partner';
+            const phoneDigits = String(o.shopPhone || (matchedShop && matchedShop.phone) || '').replace(/\D/g, '');
+            const waDigits = phoneDigits.length === 10 ? '91' + phoneDigits : phoneDigits;
+            const orderSlipMsg = encodeURIComponent(
+              `ApnaMart24 B2B Order Slip\nShop: ${o.shopName}\nOrder ID: ${o.id}\nDate: ${o.bookedAt || 'Today'}\nItems: ${o.itemsSummary}\nTotal Packs: ${o.units || 0}\nGrand Total: ₹${Number(o.amount || 0).toLocaleString('en-IN')} (${o.paymentMode})\nBooked by: ${agent.name}`
+            );
+            const estComm = Math.round(Number(o.amount || 0) * commRate);
+
+            return `
+              <div class="bg-white border border-slate-200 rounded-2xl p-3 space-y-2 text-xs shadow-2xs">
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div class="flex items-center gap-1.5">
+                      <span class="font-mono font-black text-brand-600 text-[10px]">${o.id}</span>
+                      <span class="text-[9px] text-slate-400 font-semibold">${o.bookedAt || 'Today'}</span>
+                    </div>
+                    <h4 class="font-black text-slate-900 text-xs mt-0.5">${o.shopName}</h4>
+                    <p class="text-[10px] text-slate-500">For: <strong class="text-slate-700">${ownerLabel}</strong> • ${o.beat || agent.beat}</p>
+                  </div>
+                  <span class="px-2 py-0.5 rounded-lg border text-[9px] font-black uppercase ${statusClass}">${liveStatus}</span>
+                </div>
+
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-2 space-y-1">
+                  <div class="text-[9px] font-black uppercase tracking-wider text-slate-400">Ordered Items (${o.units || 0} Packs):</div>
+                  <div class="text-[11px] text-slate-800 font-semibold leading-snug">${o.itemsSummary}</div>
+                </div>
+
+                <div class="flex items-center justify-between text-[11px] pt-0.5">
+                  <div>
+                    <span class="text-slate-500 text-[10px]">Bill (${o.paymentMode}):</span>
+                    <strong class="font-black text-slate-900 ml-1">₹${Number(o.amount || 0).toLocaleString('en-IN')}</strong>
+                  </div>
+                  <span class="text-[10px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">+₹${estComm.toLocaleString('en-IN')} Comm.</span>
+                </div>
+
+                ${phoneDigits ? `
+                  <div class="flex items-center gap-1.5 pt-1.5 border-t border-slate-100">
+                    <a href="tel:${phoneDigits}" class="flex-1 py-1.5 px-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-[10px] flex items-center justify-center gap-1 transition">
+                      <i class="ph-bold ph-phone-call text-emerald-600"></i><span>Call Shop</span>
+                    </a>
+                    <a href="https://wa.me/${waDigits}?text=${orderSlipMsg}" target="_blank" class="flex-1 py-1.5 px-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-black text-[10px] flex items-center justify-center gap-1 transition">
+                      <i class="ph-bold ph-whatsapp-logo"></i><span>WhatsApp Slip</span>
+                    </a>
+                  </div>
+                ` : ''}
               </div>
-            `).join('');
+            `;
+          }).join('');
+        }
       }
     }
 
@@ -4580,10 +3615,12 @@
         ownerName,
         phone,
         gstin,
+        addedAt: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
         submittedBy: `Agent: ${agent.name}`
       });
       if (agent.onboarded !== undefined) agent.onboarded += 1;
 
+      e.target.reset();
       persistAndBroadcastState();
       closeSubAgentModal('sub-ag-onboard-modal');
       showToast(`Submitted ${shopName} to Admin KYC Queue`);
@@ -4606,33 +3643,15 @@
       showToast('Kirana store removed');
     }
 
-    function submitSubAgentDriverOnboarding(e) {
-      e.preventDefault();
-      const rnd = Math.floor(100 + Math.random() * 900);
-      const newDrv = {
-        id: 'DRV-' + rnd,
-        loginId: `AM24-DRV-${rnd}`,
-        password: `Apna@${rnd}`,
-        name: document.getElementById('sub-drv-inp-name').value.trim(),
-        phone: document.getElementById('sub-drv-inp-phone').value.trim(),
-        plate: document.getElementById('sub-drv-inp-plate').value.trim().toUpperCase(),
-        vehicleType: document.getElementById('sub-drv-inp-vehicle').value,
-        hub: document.getElementById('sub-drv-inp-hub').value,
-        dl: document.getElementById('sub-drv-inp-dl').value.trim().toUpperCase(),
-        status: 'AT_HUB',
-        route: 'Standby Bay'
-      };
-      appState.fleetDrivers.push(newDrv);
-      persistAndBroadcastState();
-      closeSubAgentModal('sub-ag-driver-modal');
-      showToast(`Issued Driver ID ${newDrv.loginId} (Pass: ${newDrv.password})`);
-    }
-
-    function openSubAssistedCatalogModal() {
+    function openSubAssistedCatalogModal(preselectShopName) {
       subAgentCart = {};
       const sel = document.getElementById('sub-ord-shop-select');
-      if (sel && (appState.retailerAccounts || []).length > 0) {
-        sel.innerHTML = appState.retailerAccounts.map(r => `<option value="${r.shopName}">${r.shopName} (${r.hub})</option>`).join('');
+      const allShops = [
+        ...(appState.retailerAccounts || []).map(r => ({ shopName: r.shopName, hub: r.hub })),
+        ...(appState.kycQueue || []).map(k => ({ shopName: k.shopName, hub: 'Pending KYC' }))
+      ];
+      if (sel && allShops.length > 0) {
+        sel.innerHTML = allShops.map(r => `<option value="${r.shopName}" ${r.shopName === preselectShopName ? 'selected' : ''}>${r.shopName} (${r.hub})</option>`).join('');
       }
       renderSubAgentSkuPicker();
       openSubAgentModal('sub-ag-order-drawer');
@@ -4645,12 +3664,16 @@
         const qty = subAgentCart[sku.id] || 0;
         const unitPrice = qty >= 16 ? sku.t3 : qty >= 6 ? sku.t2 : sku.t1;
         return `
-          <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2.5 min-w-0">
-              <img src="${sku.img}" class="w-11 h-11 rounded-xl object-cover border border-slate-200 shrink-0">
+          <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between gap-2 shadow-2xs">
+            <div onclick="openSubAgentProductDetail('${sku.id}')" class="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer group">
+              <div class="relative shrink-0">
+                <img src="${sku.img}" onerror="this.src='https://placehold.co/120x120/1e293b/f97316?text=SKU'" class="w-14 h-14 rounded-xl object-cover border border-slate-200 group-hover:scale-105 transition">
+                <span class="absolute bottom-0.5 right-0.5 bg-slate-900/80 text-white text-[8px] font-black px-1 rounded">View</span>
+              </div>
               <div class="min-w-0">
-                <div class="text-xs font-black text-slate-900 truncate">${sku.name}</div>
-                <div class="text-[10px] font-bold text-brand-600">₹${unitPrice} / pack</div>
+                <div class="text-xs font-black text-slate-900 truncate group-hover:text-brand-600 transition">${sku.name}</div>
+                <div class="text-[10px] font-bold text-brand-600 mt-0.5">₹${unitPrice} / pack <span class="text-slate-400">• 16+: ₹${sku.t3}</span></div>
+                <div class="text-[9px] text-slate-400 font-semibold mt-0.5">Tap photo to show full details & slabs</div>
               </div>
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
@@ -4662,6 +3685,40 @@
         `;
       }).join('');
       updateSubAgentCartSummary();
+    }
+
+    function openSubAgentProductDetail(skuId) {
+      const sku = (appState.inventoryCatalog || []).find(s => s.id === skuId);
+      if (!sku) return;
+      activeDetailSkuId = skuId;
+      document.getElementById('sub-prod-detail-img').src = sku.img || 'https://placehold.co/240x240/1e293b/f97316?text=SKU';
+      document.getElementById('sub-prod-detail-cat').textContent = sku.category || 'Wholesale';
+      document.getElementById('sub-prod-detail-sku').textContent = `${sku.id} • ${sku.bay || 'Hub'}`;
+      document.getElementById('sub-prod-detail-stock').textContent = `${sku.stock || 0} Packs Available`;
+      document.getElementById('sub-prod-detail-name').textContent = sku.name;
+      document.getElementById('sub-prod-detail-t1').textContent = `₹${sku.t1}`;
+      document.getElementById('sub-prod-detail-t2').textContent = `₹${sku.t2}`;
+      document.getElementById('sub-prod-detail-t3').textContent = `₹${sku.t3}`;
+      refreshSubAgentProductDetailQty();
+      openSubAgentModal('sub-ag-product-detail-modal');
+    }
+
+    function adjustDetailModalQty(delta) {
+      if (!activeDetailSkuId) return;
+      updateSubAgentCartQty(activeDetailSkuId, delta);
+      refreshSubAgentProductDetailQty();
+    }
+
+    function refreshSubAgentProductDetailQty() {
+      if (!activeDetailSkuId) return;
+      const sku = (appState.inventoryCatalog || []).find(s => s.id === activeDetailSkuId);
+      if (!sku) return;
+      const qty = subAgentCart[sku.id] || 0;
+      const price = qty >= 16 ? sku.t3 : qty >= 6 ? sku.t2 : sku.t1;
+      document.getElementById('sub-prod-detail-qty').textContent = String(qty);
+      document.getElementById('sub-prod-detail-subtotal').textContent = qty > 0
+        ? `₹${(qty * price).toLocaleString('en-IN')} (@ ₹${price}/pack)`
+        : `₹0 (Tap + to add)`;
     }
 
     function updateSubAgentCartQty(skuId, delta) {
@@ -4712,16 +3769,24 @@
 
       const invId = 'WB-INV-' + Math.floor(1000 + Math.random() * 9000);
       const itemsSummary = summaryParts.join(', ');
+      const bookedAt = new Date().toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true });
+      const shopInfo = (appState.retailerAccounts || []).find(r => r.shopName === shopName)
+        || (appState.kycQueue || []).find(k => k.shopName === shopName);
+      const shopPhone = shopInfo ? shopInfo.phone : '';
+      const ownerName = shopInfo ? shopInfo.ownerName : '';
 
       appState.agentOrders.unshift({
         id: invId,
         agentName: agent.name,
         shopName,
+        ownerName,
+        shopPhone,
         beat: agent.beat,
         itemsSummary,
         units,
         amount,
-        paymentMode
+        paymentMode,
+        bookedAt
       });
 
       appState.wholesaleOrders.unshift({
@@ -4739,490 +3804,23 @@
 
       persistAndBroadcastState();
       closeSubAgentModal('sub-ag-order-drawer');
-      showToast(`Order ${invId} sent to Admin Hub!`);
-    }
-
-    // --- B. DELIVERY PARTNER / DRIVER SUB-APP ---
-    function initSubDriverApp() {
-      const savedId = localStorage.getItem(STORAGE_KEY_DRIVER_SESSION);
-      const driver = (appState.fleetDrivers || []).find(d => d.id === savedId || d.loginId === savedId);
-      document.getElementById('driver-app-login-box').classList.toggle('hidden', !!driver);
-      document.getElementById('driver-app-workspace').classList.toggle('hidden', !driver);
-      if (driver) renderSubDriverWorkspace();
-    }
-
-    function handleDriverAppLogin(e) {
-      e.preventDefault();
-      const idVal = (document.getElementById('sub-drv-id').value || '').trim().toUpperCase();
-      const passVal = (document.getElementById('sub-drv-pass').value || '').trim();
-      const driver = (appState.fleetDrivers || []).find(
-        d => (d.loginId.toUpperCase() === idVal || d.id.toUpperCase() === idVal) && d.password === passVal
-      );
-      const errBox = document.getElementById('sub-drv-login-error');
-      if (!driver) {
-        errBox.classList.remove('hidden');
-        return;
-      }
-      errBox.classList.add('hidden');
-      localStorage.setItem(STORAGE_KEY_DRIVER_SESSION, driver.id);
-      initSubDriverApp();
-    }
-
-    function logoutDriverApp() {
-      localStorage.removeItem(STORAGE_KEY_DRIVER_SESSION);
-      initSubDriverApp();
-    }
-
-    function toggleSubDriverDutyStatus() {
-      appState.driverOnDuty = !appState.driverOnDuty;
-      const btn = document.getElementById('sub-duty-toggle');
-      if (btn) btn.textContent = appState.driverOnDuty ? '● On Duty' : '○ Off Duty';
-      persistAndBroadcastState();
-    }
-
-    function moveDriverStop(index, dir) {
-      const stops = appState.driverStops || [];
-      const target = index + dir;
-      if (target < 0 || target >= stops.length) return;
-      const temp = stops[index];
-      stops[index] = stops[target];
-      stops[target] = temp;
-      persistAndBroadcastState();
-    }
-
-    function makeStopNextInRoadmap(index) {
-      const stops = appState.driverStops || [];
-      if (index <= 0 || index >= stops.length) return;
-      const [picked] = stops.splice(index, 1);
-      stops.unshift(picked);
-      persistAndBroadcastState();
-      showToast(`${picked.shopName} moved to Stop #1 Next`);
-    }
-
-    function autoOptimizeDriverRoadmap() {
-      const stops = appState.driverStops || [];
-      stops.sort((a, b) => Number(a.delivered) - Number(b.delivered));
-      persistAndBroadcastState();
-      showToast('Pending stops sorted to top of roadmap');
-    }
-
-    function renderSubDriverWorkspace() {
-      const savedId = localStorage.getItem(STORAGE_KEY_DRIVER_SESSION);
-      const driver = (appState.fleetDrivers || []).find(d => d.id === savedId) || (appState.fleetDrivers || [])[0];
-      if (!driver) return;
-
-      document.getElementById('active-sub-drv-name').textContent = driver.name;
-      document.getElementById('active-sub-drv-code').textContent = driver.loginId;
-      document.getElementById('active-sub-drv-vehicle').textContent = driver.vehicleType;
-      document.getElementById('active-sub-drv-plate').textContent = driver.plate;
-      document.getElementById('sub-drv-avatar').textContent = driver.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-
-      const myStops = (appState.driverStops || []).filter(s => !s.driverId || s.driverId === driver.id);
-      const done = myStops.filter(s => s.delivered).length;
-      const packs = myStops.reduce((sum, s) => sum + Number(s.units || 0), 0);
-
-      document.getElementById('sub-drops-counter').textContent = `${done} / ${myStops.length} Done`;
-      document.getElementById('sub-drv-payload').textContent = `${((packs * 25) / 1000).toFixed(2)} MT`;
-      document.getElementById('sub-cod-collected').textContent = `₹${Number(appState.driverCodCollected || 0).toLocaleString('en-IN')}`;
-      document.getElementById('drv-total-items-summary').textContent = `${packs} Packs`;
-
-      const pct = myStops.length > 0 ? Math.round((done / myStops.length) * 100) : 0;
-      document.getElementById('drv-roadmap-progress-label').textContent = `Hub Start → ${done} of ${myStops.length} Stops Done`;
-      document.getElementById('drv-roadmap-pct').textContent = `${pct}%`;
-      document.getElementById('drv-roadmap-bar').style.width = `${pct}%`;
-
-      const nextStop = myStops.find(s => !s.delivered) || myStops[0];
-      if (nextStop) {
-        document.getElementById('sub-active-shop-name').textContent = nextStop.shopName;
-        document.getElementById('sub-active-shop-addr').textContent = nextStop.address;
-        document.getElementById('sub-active-shop-items').textContent = `📦 ${nextStop.itemsSummary}`;
-        document.getElementById('sub-active-inv-id').textContent = nextStop.orderId;
-        document.getElementById('sub-active-inv-amount').textContent = `₹${Number(nextStop.amount || 0).toLocaleString('en-IN')}`;
-        document.getElementById('sub-active-inv-mode').textContent = `${nextStop.paymentMode} (OTP: ${nextStop.otp})`;
-        document.getElementById('sub-active-maps-link').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(nextStop.shopName + ' ' + nextStop.address)}`;
-      } else {
-        document.getElementById('sub-active-shop-name').textContent = 'No Active Stops Assigned';
-        document.getElementById('sub-active-shop-addr').textContent = 'Waiting for Admin dispatch handover';
-        document.getElementById('sub-active-shop-items').textContent = 'Orders handed over by Admin will ring & appear here automatically.';
-      }
-
-      const listEl = document.getElementById('driver-assigned-orders-list');
-      if (listEl) {
-        if (myStops.length === 0) {
-          listEl.innerHTML = `<div class="p-4 rounded-2xl bg-slate-50 border border-dashed border-slate-300 text-center text-[11px] text-slate-500">No route stops loaded yet.</div>`;
-        } else {
-          listEl.innerHTML = myStops.map((s, idx) => `
-            <div class="p-3 rounded-2xl border ${s.delivered ? 'bg-emerald-50/70 border-emerald-200' : 'bg-slate-50 border-slate-200'} space-y-1.5 text-xs">
-              <div class="flex items-center justify-between gap-2">
-                <div class="flex items-center gap-1.5">
-                  <span class="w-5 h-5 rounded-full ${s.delivered ? 'bg-emerald-600 text-white' : 'bg-slate-900 text-white'} text-[10px] font-black flex items-center justify-center">${idx + 1}</span>
-                  <span class="font-black text-slate-900">${s.shopName}</span>
-                </div>
-                <div class="flex items-center gap-1">
-                  ${!s.delivered && idx > 0 ? `<button type="button" onclick="makeStopNextInRoadmap(${idx})" class="px-1.5 py-0.5 rounded bg-brand-100 text-brand-700 text-[9px] font-black">Set #1 Next</button>` : ''}
-                  <button type="button" onclick="moveDriverStop(${idx}, -1)" class="p-1 rounded bg-white border border-slate-300 text-slate-700 text-[10px]">↑</button>
-                  <button type="button" onclick="moveDriverStop(${idx}, 1)" class="p-1 rounded bg-white border border-slate-300 text-slate-700 text-[10px]">↓</button>
-                </div>
-              </div>
-              <div class="text-[10px] text-slate-600 font-semibold">${s.address}</div>
-              <div class="text-[10px] text-slate-700 bg-white p-2 rounded-xl border border-slate-200">📦 ${s.itemsSummary}</div>
-              <div class="flex items-center justify-between text-[10px] pt-0.5">
-                <span class="font-mono font-bold text-slate-500">${s.orderId} • OTP: ${s.otp}</span>
-                <span class="font-black text-emerald-700">₹${Number(s.amount || 0).toLocaleString('en-IN')}</span>
-              </div>
-            </div>
-          `).join('');
-        }
-      }
-    }
-
-    function verifySubPodOtp() {
-      const savedId = localStorage.getItem(STORAGE_KEY_DRIVER_SESSION);
-      const driver = (appState.fleetDrivers || []).find(d => d.id === savedId) || (appState.fleetDrivers || [])[0];
-      const nextStop = (appState.driverStops || []).find(s => !s.delivered && (!s.driverId || (driver && s.driverId === driver.id)));
-      if (!nextStop) {
-        showToast('No pending delivery stop to verify');
-        return;
-      }
-      const entered = (document.getElementById('sub-pod-otp').value || '').trim();
-      if (entered.length < 4) {
-        showToast(`Enter 4-digit OTP (${nextStop.otp})`);
-        return;
-      }
-      nextStop.delivered = true;
-      if ((nextStop.paymentMode || '').toLowerCase().includes('cod')) {
-        appState.driverCodCollected = Number(appState.driverCodCollected || 0) + Number(nextStop.amount || 0);
-      }
-      document.getElementById('sub-pod-otp').value = '';
-      persistAndBroadcastState();
-      showToast(`POD Verified for ${nextStop.shopName}!`);
-    }
-
-    // --- C. KIRANA RETAILER STOREFRONT SUB-APP ---
-    let subKiranaCart = {};
-    let subKiranaCatFilter = 'all';
-    let subKiranaSearchQuery = '';
-
-    function initSubKiranaApp() {
-      const savedId = localStorage.getItem(STORAGE_KEY_RETAILER_SESSION);
-      const ret = (appState.retailerAccounts || []).find(r => r.id === savedId);
-      document.getElementById('sub-retailer-auth-screen').classList.toggle('hidden', !!ret);
-      if (ret) renderSubKiranaWorkspace();
-    }
-
-    function switchSubRetailerAuthMode(mode) {
-      const isSignIn = mode === 'signin';
-      document.getElementById('sub-retailer-signin-form').classList.toggle('hidden', !isSignIn);
-      document.getElementById('sub-retailer-signup-form').classList.toggle('hidden', isSignIn);
-      document.getElementById('sub-auth-tab-signin').className = isSignIn
-        ? 'py-2 rounded-xl bg-white text-slate-900 shadow-xs transition'
-        : 'py-2 rounded-xl text-slate-500 hover:text-slate-800 transition';
-      document.getElementById('sub-auth-tab-signup').className = !isSignIn
-        ? 'py-2 rounded-xl bg-white text-slate-900 shadow-xs transition'
-        : 'py-2 rounded-xl text-slate-500 hover:text-slate-800 transition';
-    }
-
-    function handleSubRetailerSignIn(e) {
-      e.preventDefault();
-      const idVal = (document.getElementById('sub-ret-signin-id').value || '').trim().toUpperCase();
-      const pinVal = (document.getElementById('sub-ret-signin-pin').value || '').trim();
-      const ret = (appState.retailerAccounts || []).find(
-        r => (r.phone === idVal || r.id.toUpperCase() === idVal) && r.pin === pinVal
-      );
-      const errBox = document.getElementById('sub-ret-auth-error');
-      if (!ret) {
-        errBox.classList.remove('hidden');
-        return;
-      }
-      errBox.classList.add('hidden');
-      localStorage.setItem(STORAGE_KEY_RETAILER_SESSION, ret.id);
-      initSubKiranaApp();
-    }
-
-    function handleSubRetailerSignUp(e) {
-      e.preventDefault();
-      const shopName = document.getElementById('sub-ret-reg-shop').value.trim();
-      const ownerName = document.getElementById('sub-ret-reg-owner').value.trim();
-      const phone = document.getElementById('sub-ret-reg-phone').value.trim();
-      const gstin = document.getElementById('sub-ret-reg-gst').value.trim().toUpperCase();
-      const pin = document.getElementById('sub-ret-reg-pin').value.trim();
-      const hub = document.getElementById('sub-ret-reg-hub').value;
-
-      const newRet = {
-        id: 'RET-' + Math.floor(100 + Math.random() * 900),
-        shopName,
-        ownerName,
-        phone,
-        pin,
-        gstin,
-        hub,
-        khataLimit: 0,
-        khataUsed: 0
-      };
-      appState.retailerAccounts.push(newRet);
-      appState.kycQueue.push({
-        id: 'KYC-' + Math.floor(1000 + Math.random() * 9000),
-        shopName,
-        ownerName,
-        phone,
-        gstin,
-        hub,
-        pin,
-        submittedBy: 'Kirana Store App'
-      });
-
-      localStorage.setItem(STORAGE_KEY_RETAILER_SESSION, newRet.id);
-      persistAndBroadcastState();
-      initSubKiranaApp();
-      showToast(`Welcome ${shopName}! KYC sent to Admin`);
-    }
-
-    function handleSubRetailerLogout() {
-      localStorage.removeItem(STORAGE_KEY_RETAILER_SESSION);
-      initSubKiranaApp();
-    }
-
-    function filterSubKiranaCategory(cat) {
-      subKiranaCatFilter = cat;
-      renderSubKiranaWorkspace();
-    }
-
-    function searchSubKiranaCatalog(q) {
-      subKiranaSearchQuery = (q || '').toLowerCase().trim();
-      renderSubKiranaWorkspace();
-    }
-
-    function renderSubKiranaWorkspace() {
-      const savedId = localStorage.getItem(STORAGE_KEY_RETAILER_SESSION);
-      const ret = (appState.retailerAccounts || []).find(r => r.id === savedId) || (appState.retailerAccounts || [])[0];
-      if (!ret) return;
-
-      document.getElementById('sub-ret-header-shop-label').textContent = `${ret.shopName} • ${ret.hub}`;
-      document.getElementById('sub-khata-balance-text').textContent = `₹${Number(ret.khataUsed || 0).toLocaleString('en-IN')}`;
-      document.getElementById('sub-sheet-khata-used').textContent = `₹${Number(ret.khataUsed || 0).toLocaleString('en-IN')}`;
-
-      let items = [...(appState.inventoryCatalog || [])];
-      if (subKiranaCatFilter !== 'all') {
-        items = items.filter(i => (i.category || '').toLowerCase().includes(subKiranaCatFilter));
-      }
-      if (subKiranaSearchQuery) {
-        items = items.filter(i => (i.name || '').toLowerCase().includes(subKiranaSearchQuery));
-      }
-
-      const grid = document.getElementById('kirana-catalog-grid');
-      if (grid) {
-        grid.innerHTML = items.map(sku => {
-          const qty = subKiranaCart[sku.id] || 0;
-          const activePrice = qty >= 16 ? sku.t3 : qty >= 6 ? sku.t2 : sku.t1;
-          return `
-            <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between gap-3 shadow-xs">
-              <div class="flex items-center gap-3 min-w-0">
-                <img src="${sku.img}" class="w-14 h-14 rounded-xl object-cover border border-slate-200 shrink-0">
-                <div class="min-w-0">
-                  <span class="text-[9px] font-black uppercase text-brand-600">${sku.category}</span>
-                  <h4 class="text-xs font-black text-slate-900 truncate">${sku.name}</h4>
-                  <div class="flex items-center gap-2 mt-1">
-                    <span class="text-sm font-black text-slate-900">₹${activePrice}</span>
-                    <span class="text-[9px] text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded">16+: ₹${sku.t3}</span>
-                  </div>
-                </div>
-              </div>
-              <div class="flex items-center gap-1.5 shrink-0">
-                ${qty > 0 ? `
-                  <button onclick="updateSubKiranaCart('${sku.id}', -1)" class="w-7 h-7 rounded-xl bg-slate-100 font-black text-slate-800">-</button>
-                  <span class="w-6 text-center text-xs font-black">${qty}</span>
-                ` : ''}
-                <button onclick="updateSubKiranaCart('${sku.id}', 1)" class="px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black text-xs">
-                  ${qty > 0 ? '+' : 'Add'}
-                </button>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-
-      updateSubKiranaCartUi();
-    }
-
-    function updateSubKiranaCart(skuId, delta) {
-      const next = Math.max(0, (subKiranaCart[skuId] || 0) + delta);
-      if (next === 0) delete subKiranaCart[skuId];
-      else subKiranaCart[skuId] = next;
-      renderSubKiranaWorkspace();
-    }
-
-    function updateSubKiranaCartUi() {
-      let totalQty = 0;
-      let totalAmt = 0;
-      Object.entries(subKiranaCart).forEach(([id, qty]) => {
-        const sku = (appState.inventoryCatalog || []).find(s => s.id === id);
-        if (!sku) return;
-        const price = qty >= 16 ? sku.t3 : qty >= 6 ? sku.t2 : sku.t1;
-        totalQty += qty;
-        totalAmt += qty * price;
-      });
-
-      document.getElementById('sub-nav-badge').textContent = String(totalQty);
-      const floatBar = document.getElementById('sub-floating-cart');
-      if (floatBar) floatBar.classList.toggle('hidden', totalQty === 0);
-      document.getElementById('sub-float-qty').textContent = String(totalQty);
-      document.getElementById('sub-float-total').textContent = `₹${totalAmt.toLocaleString('en-IN')}`;
-      document.getElementById('sub-freight-ratio').textContent = `₹${Math.round(totalAmt / 1000)}k / 8k`;
-      document.getElementById('sub-freight-bar').style.width = `${Math.min(100, (totalAmt / 8000) * 100)}%`;
-    }
-
-    function switchSubRetailerTab(tab) {
-      const ordersView = document.getElementById('sub-retailer-orders-view');
-      if (ordersView) ordersView.classList.toggle('hidden', tab !== 'orders');
-      if (tab === 'orders') renderSubRetailerOrdersList();
-    }
-
-    function renderSubRetailerOrdersList() {
-      const savedId = localStorage.getItem(STORAGE_KEY_RETAILER_SESSION);
-      const ret = (appState.retailerAccounts || []).find(r => r.id === savedId) || (appState.retailerAccounts || [])[0];
-      const listEl = document.getElementById('sub-retailer-orders-list');
-      if (!listEl || !ret) return;
-
-      const myOrders = (appState.wholesaleOrders || []).filter(o => o.shopName === ret.shopName);
-      document.getElementById('sub-ret-active-orders-count').textContent = String(myOrders.length);
-
-      if (myOrders.length === 0) {
-        listEl.innerHTML = `<div class="p-6 text-center text-xs text-slate-500">No wholesale orders placed yet.</div>`;
-        return;
-      }
-
-      listEl.innerHTML = myOrders.map(o => `
-        <div class="bg-white border border-slate-200 rounded-2xl p-3 space-y-1.5 text-xs">
-          <div class="flex justify-between font-black">
-            <span class="font-mono text-brand-600">${o.id}</span>
-            <span class="text-emerald-700">${o.status}</span>
-          </div>
-          <div class="text-slate-700">${o.itemsSummary}</div>
-          <div class="flex justify-between font-black pt-1 border-t border-slate-100">
-            <span>${o.paymentMode}</span>
-            <span>₹${Number(o.amount || 0).toLocaleString('en-IN')}</span>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function openSubCartSheet() {
-      let base = 0;
-      const box = document.getElementById('sub-cart-items-box');
-      const entries = Object.entries(subKiranaCart);
-      if (box) {
-        box.innerHTML = entries.length === 0
-          ? '<div class="p-4 text-center text-xs text-slate-500">Your wholesale cart is empty.</div>'
-          : entries.map(([id, qty]) => {
-              const sku = (appState.inventoryCatalog || []).find(s => s.id === id);
-              if (!sku) return '';
-              const price = qty >= 16 ? sku.t3 : qty >= 6 ? sku.t2 : sku.t1;
-              base += qty * price;
-              return `
-                <div class="flex items-center justify-between text-xs p-2 rounded-xl bg-slate-50 border border-slate-200">
-                  <span class="font-bold text-slate-800">${qty}x ${sku.name}</span>
-                  <span class="font-black text-slate-900">₹${(qty * price).toLocaleString('en-IN')}</span>
-                </div>
-              `;
-            }).join('');
-      }
-      const gst = Math.round(base * 0.05);
-      document.getElementById('sub-bill-base').textContent = `₹${base.toLocaleString('en-IN')}`;
-      document.getElementById('sub-bill-gst').textContent = `+ ₹${gst.toLocaleString('en-IN')}`;
-      document.getElementById('sub-bill-total').textContent = `₹${(base + gst).toLocaleString('en-IN')}`;
-      document.getElementById('sub-cart-sheet').classList.remove('hidden');
-    }
-
-    function openSubKhataSheet() {
-      document.getElementById('sub-khata-sheet').classList.remove('hidden');
-    }
-
-    function closeSubSheet(id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.add('hidden');
-    }
-
-    function placeSubWholesaleOrder() {
-      const entries = Object.entries(subKiranaCart);
-      if (entries.length === 0) {
-        showToast('Cart is empty');
-        return;
-      }
-      const savedId = localStorage.getItem(STORAGE_KEY_RETAILER_SESSION);
-      const ret = (appState.retailerAccounts || []).find(r => r.id === savedId) || (appState.retailerAccounts || [])[0];
-      const payRadio = document.querySelector('input[name="subRetPayType"]:checked');
-      const isKhata = !payRadio || payRadio.value === 'khata';
-
-      let units = 0;
-      let base = 0;
-      const parts = [];
-      entries.forEach(([id, qty]) => {
-        const sku = (appState.inventoryCatalog || []).find(s => s.id === id);
-        if (!sku) return;
-        const price = qty >= 16 ? sku.t3 : qty >= 6 ? sku.t2 : sku.t1;
-        units += qty;
-        base += qty * price;
-        parts.push(`${qty}x ${sku.name}`);
-      });
-
-      const total = base + Math.round(base * 0.05);
-      if (isKhata) {
-        const avail = Number(ret.khataLimit || 0) - Number(ret.khataUsed || 0);
-        if (total > avail) {
-          showToast('Khata BNPL unavailable for this amount. Please use Instant UPI.');
-          return;
-        }
-        ret.khataUsed = Number(ret.khataUsed || 0) + total;
-        let kAcc = (appState.khataAccounts || []).find(k => k.shopName === ret.shopName);
-        if (kAcc) kAcc.outstanding = ret.khataUsed;
-      }
-
-      const invId = 'WB-INV-' + Math.floor(1000 + Math.random() * 9000);
-      appState.wholesaleOrders.unshift({
-        id: invId,
-        shopName: ret.shopName,
-        gstin: ret.gstin || 'RETAILER-APP',
-        itemsSummary: parts.join(', '),
-        units,
-        amount: total,
-        paymentMode: isKhata ? 'Khata (14-Day)' : 'Instant UPI',
-        route: ret.hub,
-        status: 'NEW',
-        source: 'Kirana Store App'
-      });
-
-      subKiranaCart = {};
-      persistAndBroadcastState();
-      closeSubSheet('sub-cart-sheet');
-      showToast(`Order ${invId} confirmed for 5:00 AM delivery!`);
-    }
-
-    function repaySubKhata() {
-      const savedId = localStorage.getItem(STORAGE_KEY_RETAILER_SESSION);
-      const ret = (appState.retailerAccounts || []).find(r => r.id === savedId);
-      if (!ret) return;
-      ret.khataUsed = 0;
-      const kAcc = (appState.khataAccounts || []).find(k => k.shopName === ret.shopName);
-      if (kAcc) kAcc.outstanding = 0;
-      persistAndBroadcastState();
-      closeSubSheet('sub-khata-sheet');
-      showToast('Khata balance settled via UPI!');
+      showToast(`Order ${invId} pushed to Admin Hub!`);
     }
 
     // =========================================================================
-    // 10. INITIAL BOOT & LIVE CLOCK TELEMETRY
+    // 10. INITIAL BOOT
     // =========================================================================
-    setInterval(() => {
-      const clockEl = document.getElementById('live-timeline-clock');
-      if (clockEl) {
-        clockEl.textContent = new Date().toLocaleTimeString('en-IN', { hour12: true });
-      }
-    }, 1000);
-
     window.addEventListener('DOMContentLoaded', () => {
       checkAdminSession();
       updateAdminSoundToggleUi();
       refreshAllViews();
+
+      // Auto-launch strict Mobile Agent App if opened via #agent-app, active agent session, or mobile phone browser
+      const hasAgentSession = !!localStorage.getItem(STORAGE_KEY_AGENT_SESSION);
+      const isAdminUnlocked = localStorage.getItem(STORAGE_KEY_ADMIN_AUTH) === 'true';
+      if (window.location.hash === '#agent-app' || (hasAgentSession && !isAdminUnlocked) || (isMobilePhoneDevice() && !isAdminUnlocked)) {
+        openConnectedApp('agent');
+      }
     });
   </script>
 </body>
