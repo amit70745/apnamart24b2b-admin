@@ -4532,8 +4532,13 @@
       document.getElementById('sub-ag-target-txt').textContent = `${agent.onboarded || 0} / ${agent.target} Shops`;
 
       // Filter and list all shops onboarded by this specific agent with full details
-      const kycList = (appState.kycQueue || []).filter(k => k.submittedBy && k.submittedBy.toLowerCase().includes(agent.name.toLowerCase()));
-      
+     const kycList = (appState.kycQueue || []).filter(k => {
+  if (!k.submittedBy) return false;
+  const sub = k.submittedBy.toLowerCase();
+  const name = agent.name.toLowerCase();
+  const loginId = (agent.loginId || '').toLowerCase();
+  return sub.includes(name) || (loginId && sub.includes(loginId));
+});
       const countBadge = document.getElementById('sub-ag-kiranas-count');
       if (countBadge) countBadge.textContent = `${kycList.length} Stores`;
       const navBadge = document.getElementById('sub-nav-kiranas-badge');
