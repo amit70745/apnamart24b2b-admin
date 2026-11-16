@@ -4538,7 +4538,7 @@
   const loginId = (agent.loginId || '').toLowerCase();
   return sub.includes(name) || (loginId && sub.includes(loginId));
 });
-        // 1. Filter logic to find stores onboarded by the agent
+      // 1. Filter logic to find stores onboarded by the agent
 const kycList = (appState.kycQueue || []).filter(k => {
   if (!k.submittedBy) return false;
   const sub = k.submittedBy.toLowerCase();
@@ -4546,7 +4546,8 @@ const kycList = (appState.kycQueue || []).filter(k => {
   const loginId = (agent.loginId || '').toLowerCase();
   return sub.includes(name) || (loginId && sub.includes(loginId));
 });
-// 2. Update the monthly target count and badge dynamically based on actual onboarded shops
+
+// 2. Update the monthly target count and badge dynamically
 const currentInboundCount = kycList.length;
 const targetLimit = agent.target || 25;
 const targetEl = document.getElementById('sub-ag-target-txt');
@@ -4560,28 +4561,30 @@ if (navBadge) navBadge.textContent = String(kycList.length);
 // 3. Render the store list with full proprietor details and direct call buttons
 const kiranaContainer = document.getElementById('sub-ag-kiranas-list');
 if (kiranaContainer) {
-  kiranaContainer.innerHTML = kycList.length === 0
-    ? `<div class="bg-white border border-slate-200 rounded-2xl p-4 text-xs text-slate-500 text-center">No shops onboarded yet. Tap <span class="text-rose-600 font-bold">+ New Shop</span> above to add your first store!</div>`
-    : kycList.map(k => `
-        <div class="bg-white border border-slate-200 rounded-2xl p-3.5 space-y-2 text-xs shadow-xs">
-          <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
-            <span class="font-black text-slate-900 text-sm">${k.shopName}</span>
-            <span class="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-50 text-amber-800 border border-amber-200">KYC Pending</span>
-          </div>
-          <div class="grid grid-cols-2 gap-1 text-[11px] text-slate-600">
-            <div><strong>Proprietor:</strong> ${k.ownerName}</div>
-            <div><strong>Phone:</strong> <a href="tel:${k.phone}" class="text-blue-600 font-bold underline">${k.phone}</a></div>
-            <div><strong>GSTIN:</strong> ${k.gstin || 'N/A'}</div>
-            <div><strong>Beat:</strong> ${k.beat || agent.beat}</div>
-          </div>
-          <div class="pt-1 flex items-center justify-between">
-            <span class="text-[10px] text-slate-400">Submitted: ${k.submittedAt || 'Today'}</span>
-            <a href="tel:${k.phone}" class="bg-emerald-600 text-white px-3 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 shadow-sm">
-              📞 Call Shop
-            </a>
-          </div>
+  if (kycList.length === 0) {
+    kiranaContainer.innerHTML = `<div class="bg-white border border-slate-200 rounded-2xl p-4 text-xs text-slate-500 text-center">No shops onboarded yet. Tap <span class="text-rose-600 font-bold">+ New Shop</span> above to add your first store!</div>`;
+  } else {
+    kiranaContainer.innerHTML = kycList.map(k => `
+      <div class="bg-white border border-slate-200 rounded-2xl p-3.5 space-y-2 text-xs shadow-xs">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+          <span class="font-black text-slate-900 text-sm">${k.shopName}</span>
+          <span class="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-50 text-amber-800 border border-amber-200">KYC Pending</span>
         </div>
-      `).join('');
+        <div class="grid grid-cols-2 gap-1 text-[11px] text-slate-600">
+          <div><strong>Proprietor:</strong> ${k.ownerName}</div>
+          <div><strong>Phone:</strong> <a href="tel:${k.phone}" class="text-blue-600 font-bold underline">${k.phone}</a></div>
+          <div><strong>GSTIN:</strong> ${k.gstin || 'N/A'}</div>
+          <div><strong>Beat:</strong> ${k.beat || agent.beat}</div>
+        </div>
+        <div class="pt-1 flex items-center justify-between">
+          <span class="text-[10px] text-slate-400">Submitted: ${k.submittedAt || 'Today'}</span>
+          <a href="tel:${k.phone}" class="bg-emerald-600 text-white px-3 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 shadow-sm">
+            📞 Call Shop
+          </a>
+        </div>
+      </div>
+    `).join('');
+  }
 }
       const countBadge = document.getElementById('sub-ag-kiranas-count');
       if (countBadge) countBadge.textContent = `${kycList.length} Stores`;
