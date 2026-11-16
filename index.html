@@ -3027,9 +3027,17 @@
         const incomingOrders = appState.wholesaleOrders || [];
         const brandNewOrders = incomingOrders.filter(o => !prevIds.has(o.id));
         if (brandNewOrders.length > 0) {
-          triggerAdminNewOrderNotification(brandNewOrders[0]);
-        }
+          // Check if the current browser or device is in sub-app mode (Agent, Driver, or Kirana)
+          const isSubAppOpen = activeConnectedApp !== null || 
+                               window.location.hash.includes('subapp') || 
+                               localStorage.getItem('APNAMART24_DRIVER_SESSION_V1') !== null ||
+                               localStorage.getItem('APNAMART24_AGENT_SESSION_V1') !== null;
 
+          // Trigger alert and sound only if the Central Admin Panel is open
+          if (!isSubAppOpen) {
+            triggerAdminNewOrderNotification(brandNewOrders[0]);
+          }
+        }
         const loggedInDriverId = localStorage.getItem(STORAGE_KEY_DRIVER_SESSION);
         if (loggedInDriverId) {
           const newStopsForDriver = (appState.driverStops || []).filter(
