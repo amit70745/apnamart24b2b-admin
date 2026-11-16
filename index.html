@@ -4531,15 +4531,7 @@
       document.getElementById('sub-ag-comm-txt').textContent = `₹${Math.round(gmv * 0.02).toLocaleString('en-IN')}`;
       document.getElementById('sub-ag-target-txt').textContent = `${kycList.length} / ${agent.target || 25} Shops`;
       // Filter and list all shops onboarded by this specific agent with full details
-     const kycList = (appState.kycQueue || []).filter(k => {
-  if (!k.submittedBy) return false;
-  const sub = k.submittedBy.toLowerCase();
-  const name = agent.name.toLowerCase();
-  const loginId = (agent.loginId || '').toLowerCase();
-  return sub.includes(name) || (loginId && sub.includes(loginId));
-});
-   
-      const navBadge = document.getElementById('sub-nav-kiranas-badge');
+       const navBadge = document.getElementById('sub-nav-kiranas-badge');
       if (navBadge) navBadge.textContent = String(kycList.length);
 
       const kiranaContainer = document.getElementById('sub-ag-kiranas-list');
