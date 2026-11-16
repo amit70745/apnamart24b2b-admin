@@ -4515,9 +4515,49 @@
       document.getElementById('sub-ag-comm-txt').textContent = `₹${Math.round(gmv * 0.02).toLocaleString('en-IN')}`;
       document.getElementById('sub-ag-target-txt').textContent = `${agent.onboarded || 0} / ${agent.target} Shops`;
 
+      function renderSubAgentWorkspace() {
+      const savedId = localStorage.getItem(STORAGE_KEY_AGENT_SESSION);
+      const agent = (appState.marketingAgents || []).find(a => a.id === savedId) || (appState.marketingAgents || [])[0];
+      if (!agent) return;
+
+      document.getElementById('active-sub-agent-name').textContent = agent.name;
+      document.getElementById('active-sub-agent-code').textContent = agent.loginId;
+      document.getElementById('active-sub-agent-beat').textContent = agent.beat;
+      document.getElementById('sub-ag-initials').textContent = agent.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+
+      const myOrders = (appState.agentOrders || []).filter(o => o.agentName === agent.name);
+      const gmv = myOrders.reduce((s, o) => s + Number(o.amount || 0), 0);
+      document.getElementById('sub-ag-gmv-txt').textContent = `₹${gmv.toLocaleString('en-IN')}`;
+      document.getElementById('sub-ag-comm-txt').textContent = `₹${Math.round(gmv * 0.02).toLocaleString('en-IN')}`;
+      document.getElementById('sub-ag-target-txt').textContent = `${agent.onboarded || 0} / ${agent.target} Shops`;
+
+      // Filter and list all shops onboarded by this specific agent with full details
       const kycList = (appState.kycQueue || []).filter(k => k.submittedBy === `Agent: ${agent.name}`);
+      
       const countBadge = document.getElementById('sub-ag-kiranas-count');
       if (countBadge) countBadge.textContent = `${kycList.length} Stores`;
+      const navBadge = document.getElementById('sub-nav-kiranas-badge');
+      if (navBadge) navBadge.textContent = String(kycList.length);
+
+      const kiranaContainer = document.getElementById('sub-ag-kiranas-list');
+      if (kiranaContainer) {
+        kiranaContainer.innerHTML = kycList.length === 0
+          ? '<div class="bg-white border border-slate-200 rounded-2xl p-4 text-xs text-slate-500 text-center">No shops onboarded yet. Tap <strong>+ New Shop</strong> to add your first Kirana store.</div>'
+          : kycList.map(k => `
+              <div class="bg-white border border-slate-200 rounded-2xl p-3.5 space-y-2 text-xs shadow-xs">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                  <span class="font-black text-slate-900 text-sm">${k.shopName}</span>
+                  <span class="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-50 text-amber-800 border border-amber-200">KYC Pending</span>
+                </div>
+                <div class="grid grid-cols-2 gap-1 text-[11px] text-slate-600">
+                  <div><strong>Proprietor:</strong> ${k.ownerName}</div>
+                  <div><strong>Phone:</strong> <a href="tel:${k.phone}" class="text-brand-600 font-bold">${k.phone}</a></div>
+                  <div class="col-span-2 font-mono text-[10px] text-slate-500"><strong>GSTIN/Trade:</strong> ${k.gstin || 'N/A'}</div>
+                </div>
+              </div>
+            `).join('');
+      }
+    }
       const navBadge = document.getElementById('sub-nav-kiranas-badge');
       if (navBadge) navBadge.textContent = String(kycList.length);
 
