@@ -4532,7 +4532,7 @@
       document.getElementById('sub-ag-target-txt').textContent = `${agent.onboarded || 0} / ${agent.target} Shops`;
 
       // Filter and list all shops onboarded by this specific agent with full details
-      const kycList = (appState.kycQueue || []).filter(k => k.submittedBy === `Agent: ${agent.name}`);
+      const kycList = (appState.kycQueue || []).filter(k => k.submittedBy && k.submittedBy.toLowerCase().includes(agent.name.toLowerCase()));
       
       const countBadge = document.getElementById('sub-ag-kiranas-count');
       if (countBadge) countBadge.textContent = `${kycList.length} Stores`;
