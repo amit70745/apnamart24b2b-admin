@@ -1652,21 +1652,119 @@
                 <button type="submit" class="w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black text-xs shadow">Save Profile Details</button>
               </form>
             </div>
+
+            <!-- PAGE 4: PAYMENTS & KHATA COLLECTION -->
+            <div id="sub-ag-payments-section" class="hidden space-y-3">
+              <!-- Summary Strip -->
+              <div class="grid grid-cols-2 gap-2.5">
+                <div class="bg-white border border-slate-200 rounded-2xl p-3">
+                  <span class="text-[9.5px] font-black uppercase tracking-wider text-slate-400 block">BEAT KHATA DUE</span>
+                  <strong id="sub-pay-total-due" class="text-base font-black text-rose-600 mt-0.5 block">₹0</strong>
+                </div>
+                <div class="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-3">
+                  <span class="text-[9.5px] font-black uppercase tracking-wider text-emerald-700 block">COLLECTED BY ME</span>
+                  <strong id="sub-pay-total-collected" class="text-base font-black text-emerald-800 mt-0.5 block">₹0</strong>
+                </div>
+              </div>
+
+              <!-- Record Payment Form Card -->
+              <form onsubmit="submitSubAgentPaymentCollection(event)" class="bg-white border border-slate-200 rounded-3xl p-4 space-y-3 text-xs shadow-2xs">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                  <span class="font-black text-slate-900 flex items-center gap-1.5">
+                    <i class="ph-bold ph-hand-coins text-emerald-600 text-base"></i>
+                    <span>Collect Kirana Payment</span>
+                  </span>
+                  <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[9px] font-black">INSTANT KHATA SYNC</span>
+                </div>
+
+                <div>
+                  <label class="text-[10.5px] font-bold text-slate-600 block mb-1">Select Kirana Store *</label>
+                  <select id="sub-pay-shop-select" onchange="syncSubPayShopDueHint()" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-black text-slate-900"></select>
+                  <div id="sub-pay-shop-due-hint" class="text-[10.5px] font-bold text-brand-600 mt-1">Current Khata Due: ₹0</div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2.5">
+                  <div>
+                    <label class="text-[10.5px] font-bold text-slate-600 block mb-1">Amount Received (₹) *</label>
+                    <input type="number" id="sub-pay-amount-input" oninput="updateSubPayUpiQr()" required step="0.01" min="1" placeholder="e.g. 5000" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-black text-slate-900">
+                  </div>
+                  <div>
+                    <label class="text-[10.5px] font-bold text-slate-600 block mb-1">Payment Mode *</label>
+                    <select id="sub-pay-mode-select" onchange="updateSubPayUpiQr()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
+                      <option value="UPI / QR Scan">UPI / QR Scan</option>
+                      <option value="Cash Collection">Cash Collection</option>
+                      <option value="Bank Transfer / NEFT">Bank Transfer / NEFT</option>
+                      <option value="Cheque">Cheque</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Dynamic UPI QR Code Card for amit7074525@ibl -->
+                <div id="sub-pay-upi-qr-box" class="p-3.5 rounded-2xl bg-gradient-to-br from-orange-50/90 via-white to-amber-50/80 border border-brand-200 flex flex-col items-center text-center space-y-2 shadow-2xs">
+                  <div class="flex items-center justify-between w-full text-[10px]">
+                    <span class="px-2 py-0.5 rounded-full bg-brand-600 text-white font-black uppercase tracking-wider">SCAN &amp; PAY UPI</span>
+                    <span id="sub-pay-qr-amount-badge" class="font-black text-brand-700 text-xs">Any Amount</span>
+                  </div>
+                  <div class="p-2 bg-white rounded-2xl border border-slate-200 shadow-xs">
+                    <img id="sub-pay-upi-qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi%3A%2F%2Fpay%3Fpa%3Damit7074525%40ibl%26pn%3DApnaMart24%2520B2B%26cu%3DINR" alt="UPI QR Code amit7074525@ibl" class="w-40 h-40 object-contain rounded-lg">
+                  </div>
+                  <div class="space-y-0.5">
+                    <div class="text-[11px] font-black text-slate-900">ApnaMart24 B2B Hub</div>
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 font-mono text-[11px] font-black text-slate-800">
+                      <span>amit7074525@ibl</span>
+                      <button type="button" onclick="copySubPayUpiId()" title="Copy UPI ID" class="text-brand-600 hover:text-brand-700">
+                        <i class="ph-bold ph-copy text-xs"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <p class="text-[10px] text-slate-500">Customer can scan with PhonePe, GPay, Paytm or any BHIM UPI app</p>
+                  <button type="button" onclick="markUpiQrPaymentDone()" class="w-full py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px] shadow-xs flex items-center justify-center gap-1.5 transition active:scale-[0.99]">
+                    <i class="ph-bold ph-check-circle text-sm"></i>
+                    <span>Payment Done • Confirm Receipt</span>
+                  </button>
+                </div>
+
+                <div id="sub-pay-non-upi-fields" class="hidden space-y-3">
+                  <div>
+                    <label class="text-[10.5px] font-bold text-slate-600 block mb-1">UPI Ref / UTR / Receipt Note (Optional)</label>
+                    <input type="text" id="sub-pay-ref-input" placeholder="e.g. UPI Ref 6321894012 or Cash Receipt #12" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-semibold text-slate-800">
+                  </div>
+
+                  <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow flex items-center justify-center gap-1.5">
+                    <i class="ph-bold ph-check-circle text-sm"></i>
+                    <span>Confirm &amp; Update Khata Ledger</span>
+                  </button>
+                </div>
+              </form>
+
+              <!-- Recent Collection Receipts -->
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-black uppercase tracking-wider text-slate-500">MY PAYMENT COLLECTION HISTORY</span>
+                  <span id="sub-pay-history-count" class="px-2 py-0.5 rounded-full bg-slate-200/70 text-slate-700 font-black text-[10px]">0 Receipts</span>
+                </div>
+                <div id="sub-pay-history-list" class="space-y-2"></div>
+              </div>
+            </div>
           </div>
 
           <!-- Bottom App Tab Bar -->
-          <div class="bg-white border-t border-slate-200 px-3 py-2 grid grid-cols-4 items-center text-[10px] shrink-0">
+          <div class="bg-white border-t border-slate-200 px-2 py-2 grid grid-cols-5 items-center text-[9.5px] shrink-0">
             <button type="button" id="sub-nav-btn-kiranas" onclick="switchSubAgentPage('kiranas')" class="flex flex-col items-center gap-1 text-rose-600 font-extrabold">
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M4 9.5V19a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 20 19V9.5" stroke="currentColor" stroke-width="1.9"/><path d="M3 9.5 4.8 4h14.4L21 9.5a2.5 2.5 0 0 1-4.5 1.5 2.5 2.5 0 0 1-4.5 0 2.5 2.5 0 0 1-4.5 0A2.5 2.5 0 0 1 3 9.5Z" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-              <span>My Shops (<span id="sub-nav-kiranas-badge">2</span>)</span>
+              <span>Shops (<span id="sub-nav-kiranas-badge">2</span>)</span>
             </button>
             <button type="button" onclick="openSubAssistedCatalogModal()" class="flex flex-col items-center gap-1 text-amber-600 font-extrabold">
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4h2.5l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.8a1.5 1.5 0 0 0 1.4-1.1L20.5 7.5H6"/><circle cx="9.5" cy="19.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="17.5" cy="19.5" r="1.4" fill="currentColor" stroke="none"/></svg>
-              <span>Take Order</span>
+              <span>Order</span>
+            </button>
+            <button type="button" id="sub-nav-btn-payments" onclick="switchSubAgentPage('payments')" class="flex flex-col items-center gap-1 text-slate-600 font-bold">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="5" width="19" height="14" rx="3.5" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-width="1.8"/><path d="M2.5 9.5h19" stroke="currentColor" stroke-width="1.8"/><circle cx="16.5" cy="14" r="1.4" fill="currentColor"/></svg>
+              <span>Payments</span>
             </button>
             <button type="button" id="sub-nav-btn-orders" onclick="switchSubAgentPage('orders')" class="flex flex-col items-center gap-1 text-slate-600 font-bold">
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M5 4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v17l-3.5-2-3.5 2-3.5-2L5 21V4Z" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.5 8h7M8.5 12h4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-              <span>Orders</span>
+              <span>History</span>
             </button>
             <button type="button" id="sub-nav-btn-profile" onclick="switchSubAgentPage('profile')" class="flex flex-col items-center gap-1 text-slate-600 font-bold">
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8.5" r="3.8" fill="currentColor" fill-opacity="0.16" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 19.5c1.5-3.4 4.3-5 7.5-5s6 1.6 7.5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
@@ -1789,6 +1887,37 @@
               <button type="button" onclick="closeSubAgentModal('sub-ag-cancel-order-modal')" class="px-3.5 py-2 rounded-xl bg-slate-100 font-bold">Keep</button>
               <button type="submit" class="px-3.5 py-2 rounded-xl bg-red-600 text-white font-black">Confirm Cancel</button>
             </form>
+          </div>
+        </div>
+
+        <!-- Payment Done Confirmation Popup Modal -->
+        <div id="sub-ag-payment-done-modal" class="hidden absolute inset-0 z-40 bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4">
+          <div class="bg-white rounded-3xl w-full max-w-[340px] p-5 space-y-4 text-center shadow-2xl border border-emerald-100 fade-in">
+            <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-inner">
+              <i class="ph-fill ph-check-circle text-5xl"></i>
+            </div>
+            <div class="space-y-1">
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[9.5px] font-black uppercase tracking-wider">PAYMENT SUCCESSFUL</span>
+              <h4 class="text-lg font-black text-slate-900">Payment Done!</h4>
+              <p id="sub-pay-done-shop" class="text-xs font-bold text-slate-600">Kirana Store Name</p>
+            </div>
+            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5 text-xs">
+              <div class="text-[10px] font-bold uppercase text-slate-400">AMOUNT RECEIVED</div>
+              <div id="sub-pay-done-amount" class="text-2xl font-black text-emerald-700">₹0</div>
+              <div class="pt-1.5 border-t border-slate-200/80 flex items-center justify-between text-[10.5px] text-slate-500">
+                <span>Receipt: <strong id="sub-pay-done-id" class="font-mono text-slate-800">PAY-0000</strong></span>
+                <span id="sub-pay-done-mode" class="font-bold text-brand-600">UPI / QR Scan</span>
+              </div>
+              <div id="sub-pay-done-upi-row" class="text-[10px] font-mono text-slate-500 pt-0.5">
+                Paid to: <strong class="text-slate-800">amit7074525@ibl</strong>
+              </div>
+              <div id="sub-pay-done-rem-due" class="text-[10.5px] font-bold text-slate-600 pt-0.5">
+                Remaining Khata Due: ₹0
+              </div>
+            </div>
+            <button type="button" onclick="closeSubAgentModal('sub-ag-payment-done-modal')" class="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-emerald-600/20">
+              Done
+            </button>
           </div>
         </div>
 
@@ -2089,6 +2218,19 @@
           agentName: 'Debasish Samanta',
           agentComm: 129,
           status: 'DISPATCHED',
+          date: '2026-11-16'
+        }
+      ],
+      paymentCollections: [
+        {
+          id: 'PAY-8401',
+          shopId: 'SHP-01',
+          shopName: 'Maa Sarada Traders',
+          amount: 5000,
+          mode: 'UPI / QR Scan',
+          ref: 'UPI Ref 6319048122',
+          agentId: 'AG-01',
+          agentName: 'Debasish Samanta',
           date: '2026-11-16'
         }
       ],
@@ -3823,22 +3965,213 @@
     function switchSubAgentPage(page) {
       const kiranasSec = document.getElementById('sub-ag-kiranas-section');
       const ordersSec = document.getElementById('sub-ag-orders-section');
+      const paymentsSec = document.getElementById('sub-ag-payments-section');
       const profileSec = document.getElementById('sub-ag-profile-section');
       const quickActions = document.getElementById('sub-ag-quick-actions');
 
       if (kiranasSec) kiranasSec.classList.toggle('hidden', page !== 'kiranas');
       if (ordersSec) ordersSec.classList.toggle('hidden', page !== 'orders');
+      if (paymentsSec) paymentsSec.classList.toggle('hidden', page !== 'payments');
       if (profileSec) profileSec.classList.toggle('hidden', page !== 'profile');
-      if (quickActions) quickActions.classList.toggle('hidden', page === 'profile');
+      if (quickActions) quickActions.classList.toggle('hidden', page === 'profile' || page === 'payments');
 
       const btnK = document.getElementById('sub-nav-btn-kiranas');
+      const btnPay = document.getElementById('sub-nav-btn-payments');
       const btnO = document.getElementById('sub-nav-btn-orders');
       const btnP = document.getElementById('sub-nav-btn-profile');
       if (btnK) btnK.className = `flex flex-col items-center gap-1 ${page === 'kiranas' ? 'text-rose-600 font-extrabold' : 'text-slate-500 font-bold'}`;
+      if (btnPay) btnPay.className = `flex flex-col items-center gap-1 ${page === 'payments' ? 'text-emerald-600 font-extrabold' : 'text-slate-500 font-bold'}`;
       if (btnO) btnO.className = `flex flex-col items-center gap-1 ${page === 'orders' ? 'text-brand-600 font-extrabold' : 'text-slate-500 font-bold'}`;
       if (btnP) btnP.className = `flex flex-col items-center gap-1 ${page === 'profile' ? 'text-brand-600 font-extrabold' : 'text-slate-500 font-bold'}`;
 
       renderSubAgentWorkspace();
+    }
+
+    function openSubAgentPaymentPage(preselectShopId) {
+      switchSubAgentPage('payments');
+      const sel = document.getElementById('sub-pay-shop-select');
+      if (sel && preselectShopId) {
+        sel.value = preselectShopId;
+        syncSubPayShopDueHint();
+      }
+    }
+
+    function syncSubPayShopDueHint() {
+      const sel = document.getElementById('sub-pay-shop-select');
+      const hint = document.getElementById('sub-pay-shop-due-hint');
+      if (!sel || !hint) return;
+      const shop = (appState.kiranaShops || []).find(s => s.id === sel.value);
+      const due = shop ? (Number(shop.khataDue) || 0) : 0;
+      hint.textContent = `Current Khata Due: ₹${formatPriceVal(due)}`;
+      updateSubPayUpiQr();
+    }
+
+    function updateSubPayUpiQr() {
+      const mode = document.getElementById('sub-pay-mode-select')?.value || 'UPI / QR Scan';
+      const qrBox = document.getElementById('sub-pay-upi-qr-box');
+      const nonUpiFields = document.getElementById('sub-pay-non-upi-fields');
+      if (!qrBox) return;
+
+      if (mode !== 'UPI / QR Scan') {
+        qrBox.classList.add('hidden');
+        if (nonUpiFields) nonUpiFields.classList.remove('hidden');
+        return;
+      }
+
+      qrBox.classList.remove('hidden');
+      if (nonUpiFields) nonUpiFields.classList.add('hidden');
+      const amtVal = parseFloat(document.getElementById('sub-pay-amount-input')?.value) || 0;
+      const sel = document.getElementById('sub-pay-shop-select');
+      const shop = (appState.kiranaShops || []).find(s => s.id === sel?.value);
+      const note = shop ? `Khata Payment - ${shop.name}` : 'ApnaMart24 B2B Payment';
+
+      let upiUri = `upi://pay?pa=amit7074525@ibl&pn=${encodeURIComponent('ApnaMart24 B2B')}&tn=${encodeURIComponent(note)}&cu=INR`;
+      if (amtVal > 0) {
+        upiUri += `&am=${amtVal.toFixed(2)}`;
+      }
+
+      const qrImg = document.getElementById('sub-pay-upi-qr-img');
+      if (qrImg) {
+        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=6&data=${encodeURIComponent(upiUri)}`;
+      }
+      const badge = document.getElementById('sub-pay-qr-amount-badge');
+      if (badge) {
+        badge.textContent = amtVal > 0 ? `Pay ₹${formatPriceVal(amtVal)}` : 'Any Amount';
+      }
+    }
+
+    function copySubPayUpiId() {
+      const temp = document.createElement('input');
+      temp.value = 'amit7074525@ibl';
+      document.body.appendChild(temp);
+      temp.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(temp);
+      showToast('Copied UPI ID: amit7074525@ibl');
+    }
+
+    function markUpiQrPaymentDone() {
+      const amtInput = document.getElementById('sub-pay-amount-input');
+      const amtVal = parseFloat(amtInput?.value) || 0;
+      if (amtVal <= 0) {
+        const sel = document.getElementById('sub-pay-shop-select');
+        const shop = (appState.kiranaShops || []).find(s => s.id === sel?.value);
+        const due = shop ? (Number(shop.khataDue) || 0) : 0;
+        if (due > 0 && amtInput) {
+          amtInput.value = due;
+          updateSubPayUpiQr();
+        } else {
+          showToast('Enter received amount first');
+          amtInput?.focus();
+          return;
+        }
+      }
+      submitSubAgentPaymentCollection(new Event('submit'));
+    }
+
+    function showSubAgentPaymentDonePopup(receipt, remainingDue) {
+      const modal = document.getElementById('sub-ag-payment-done-modal');
+      if (!modal) return;
+      document.getElementById('sub-pay-done-shop').textContent = receipt.shopName;
+      document.getElementById('sub-pay-done-amount').textContent = '₹' + formatPriceVal(receipt.amount);
+      document.getElementById('sub-pay-done-id').textContent = receipt.id;
+      document.getElementById('sub-pay-done-mode').textContent = receipt.mode;
+      const upiRow = document.getElementById('sub-pay-done-upi-row');
+      if (upiRow) upiRow.classList.toggle('hidden', receipt.mode !== 'UPI / QR Scan');
+      document.getElementById('sub-pay-done-rem-due').textContent = `Remaining Khata Due: ₹${formatPriceVal(remainingDue)}`;
+      modal.classList.remove('hidden');
+    }
+
+    function renderSubAgentPaymentsSection(ag) {
+      const shops = (appState.kiranaShops || []).filter(s => s.status !== 'REJECTED');
+      const sel = document.getElementById('sub-pay-shop-select');
+      if (sel) {
+        const prev = sel.value;
+        sel.innerHTML = shops.map(s => `<option value="${s.id}">${s.name} (Due: ₹${formatPriceVal(s.khataDue || 0)})</option>`).join('');
+        if (prev && shops.some(s => s.id === prev)) sel.value = prev;
+        syncSubPayShopDueHint();
+      }
+
+      const totalBeatDue = shops.reduce((sum, s) => sum + (Number(s.khataDue) || 0), 0);
+      const collections = (appState.paymentCollections || []).filter(p => !ag || p.agentId === ag.id || p.agentName === ag.name);
+      const totalCollected = collections.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+
+      const dueEl = document.getElementById('sub-pay-total-due');
+      if (dueEl) dueEl.textContent = '₹' + formatPriceVal(totalBeatDue);
+      const colEl = document.getElementById('sub-pay-total-collected');
+      if (colEl) colEl.textContent = '₹' + formatPriceVal(totalCollected);
+      const cntEl = document.getElementById('sub-pay-history-count');
+      if (cntEl) cntEl.textContent = `${collections.length} Receipts`;
+
+      const listEl = document.getElementById('sub-pay-history-list');
+      if (listEl) {
+        listEl.innerHTML = collections.length
+          ? collections.map(p => `
+            <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between gap-2.5 text-xs">
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5">
+                  <span class="font-mono font-black text-emerald-700 text-[10.5px]">${p.id}</span>
+                  <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-black text-[9px]">${p.mode}</span>
+                </div>
+                <div class="font-black text-slate-900 truncate mt-0.5">${p.shopName}</div>
+                <div class="text-[10px] text-slate-500">${p.date || ''} ${p.ref ? '• ' + p.ref : ''}</div>
+              </div>
+              <div class="text-right shrink-0">
+                <strong class="text-sm font-black text-emerald-700">+₹${formatPriceVal(p.amount)}</strong>
+                <div class="text-[9.5px] font-bold text-slate-400">Khata Settled</div>
+              </div>
+            </div>
+          `).join('')
+          : '<div class="p-5 text-center text-xs text-slate-400 bg-white rounded-2xl border border-slate-200">No payment collections recorded yet.</div>';
+      }
+    }
+
+    function submitSubAgentPaymentCollection(e) {
+      e.preventDefault();
+      const ag = getActiveSubAgent();
+      const shopId = document.getElementById('sub-pay-shop-select')?.value;
+      const shop = (appState.kiranaShops || []).find(s => s.id === shopId);
+      const amount = parseFloat(document.getElementById('sub-pay-amount-input')?.value) || 0;
+      const mode = document.getElementById('sub-pay-mode-select')?.value || 'UPI / QR Scan';
+      const refNote = (document.getElementById('sub-pay-ref-input')?.value || '').trim();
+
+      if (!shop || amount <= 0) {
+        showToast('Please enter a valid payment amount');
+        return;
+      }
+
+      shop.khataDue = Math.max(0, Math.round(((Number(shop.khataDue) || 0) - amount) * 100) / 100);
+
+      const receipt = {
+        id: 'PAY-' + Math.floor(8500 + Math.random() * 1400),
+        shopId: shop.id,
+        shopName: shop.name,
+        amount,
+        mode,
+        ref: refNote,
+        agentId: ag ? ag.id : 'AG-01',
+        agentName: ag ? ag.name : 'Debasish Samanta',
+        date: getLocalIsoDateOffset(0)
+      };
+
+      appState.paymentCollections = appState.paymentCollections || [];
+      appState.paymentCollections.unshift(receipt);
+
+      appState.notifications = appState.notifications || [];
+      appState.notifications.unshift({
+        id: 'PAY-NTF-' + Date.now(),
+        type: 'PAYMENT',
+        title: `Khata Payment ₹${formatPriceVal(amount)} • ${shop.name}`,
+        desc: `${mode}${refNote ? ' (' + refNote + ')' : ''} • Collected by ${receipt.agentName}`,
+        unread: true
+      });
+
+      persistAndBroadcastState();
+      document.getElementById('sub-pay-amount-input').value = '';
+      document.getElementById('sub-pay-ref-input').value = '';
+      renderSubAgentWorkspace();
+      refreshAllViews();
+      showSubAgentPaymentDonePopup(receipt, shop.khataDue);
     }
 
     function renderSubAgentWorkspace() {
@@ -3947,13 +4280,15 @@
             </div>
             <div class="grid grid-cols-3 gap-1.5">
               <a href="tel:${s.phone}" class="py-2 rounded-xl bg-slate-100 text-slate-800 font-black text-[11px] flex items-center justify-center gap-1"><i class="ph-bold ph-phone"></i><span>Call</span></a>
-              <a href="https://wa.me/91${(s.phone || '').replace(/\D/g, '')}" target="_blank" class="py-2 rounded-xl bg-emerald-50 text-emerald-700 font-black text-[11px] flex items-center justify-center gap-1"><i class="ph-bold ph-whatsapp-logo"></i><span>WhatsApp</span></a>
+              <button type="button" onclick="openSubAgentPaymentPage('${s.id}')" class="py-2 rounded-xl bg-emerald-50 text-emerald-700 font-black text-[11px] flex items-center justify-center gap-1"><i class="ph-bold ph-hand-coins"></i><span>Collect ₹</span></button>
               <button type="button" onclick="openSubAssistedCatalogModal('${s.id}')" class="py-2 rounded-xl bg-brand-600 text-white font-black text-[11px]">+ Book Order</button>
             </div>
           </div>
         `;
         }).join('');
       }
+
+      renderSubAgentPaymentsSection(ag);
 
       // Render Booked Orders History
       const qOrd = (document.getElementById('sub-ag-order-search')?.value || '').toLowerCase();
