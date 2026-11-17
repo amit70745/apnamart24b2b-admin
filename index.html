@@ -803,21 +803,28 @@
 
       <!-- TAB 4: INVENTORY & SLAB PRICING -->
       <section id="tab-inventory" class="hidden space-y-5">
-        <div class="flex items-center justify-between gap-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 class="text-lg font-black text-slate-900">Warehouse Inventory & Dynamic Slab Pricing</h2>
-            <p class="text-xs text-slate-500">Manage live stock, multi-photo product galleries, and 3-tier wholesale bulk slab rates.</p>
+            <p class="text-xs text-slate-500">Manage live stock by brand, multi-photo product galleries, and 3-tier wholesale bulk slab rates.</p>
           </div>
-          <button type="button" onclick="openAddSkuModal()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs flex items-center gap-1.5 shadow-sm">
-            <i class="ph-bold ph-plus-circle text-sm"></i><span>Add New SKU</span>
-          </button>
+          <div class="flex items-center gap-2">
+            <input type="text" id="inventory-search-input" oninput="renderInventoryTable()" placeholder="Search SKU or brand..." class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+            <button type="button" onclick="openAddSkuModal()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs flex items-center gap-1.5 shadow-sm shrink-0">
+              <i class="ph-bold ph-plus-circle text-sm"></i><span>Add New SKU</span>
+            </button>
+          </div>
         </div>
+
+        <!-- Brand Filter Pills Bar -->
+        <div id="inventory-brand-filter-bar" class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar"></div>
 
         <div class="bg-white border border-slate-200 rounded-3xl overflow-x-auto shadow-2xs">
           <table class="w-full text-left border-collapse text-xs">
             <thead class="bg-slate-50 border-b border-slate-200 text-[10px] font-black uppercase tracking-wider text-slate-500">
               <tr>
                 <th class="py-3 px-4">Photo</th>
+                <th class="py-3 px-4">Brand</th>
                 <th class="py-3 px-4">SKU Name & ID</th>
                 <th class="py-3 px-4">Warehouse Bay</th>
                 <th class="py-3 px-4">Live Stock</th>
@@ -1088,15 +1095,26 @@
       <form onsubmit="handleSaveSkuModal(event)" class="space-y-3">
         <input type="hidden" id="edit-sku-id">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div class="sm:col-span-2">
-            <label class="font-bold text-slate-700 block mb-1">Product Name & Pack Size *</label>
-            <input type="text" id="edit-sku-name" required placeholder="e.g. Miniket Super Fine Rice (25kg Sack)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Brand Name *</label>
+            <input type="text" id="edit-sku-brand" list="sku-brand-suggestions" required placeholder="e.g. Tata, Fortune, Aashirvaad" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-black text-brand-700">
+            <datalist id="sku-brand-suggestions">
+              <option value="Tata">
+              <option value="Fortune">
+              <option value="Aashirvaad">
+              <option value="Surf Excel">
+              <option value="ApnaMart Staples">
+            </datalist>
           </div>
           <div>
             <label class="font-bold text-slate-700 block mb-1">Warehouse Bay *</label>
             <input type="text" id="edit-sku-bay" required placeholder="Bay A-01" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
           </div>
-          <div class="grid grid-cols-2 gap-2">
+          <div class="sm:col-span-2">
+            <label class="font-bold text-slate-700 block mb-1">Product Name & Pack Size *</label>
+            <input type="text" id="edit-sku-name" required placeholder="e.g. Miniket Super Fine Rice (25kg Sack)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
+          </div>
+          <div class="grid grid-cols-2 gap-2 sm:col-span-2">
             <div>
               <label class="font-bold text-slate-700 block mb-1">Stock (Packs) *</label>
               <input type="number" id="edit-sku-stock" required min="0" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
@@ -1683,6 +1701,7 @@
           </div>
           <div class="p-3 space-y-2.5 border-b border-slate-100 bg-slate-50 text-xs">
             <select id="sub-ord-shop-select" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 font-black text-slate-900"></select>
+            <div id="sub-agent-brand-filter-bar" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar"></div>
             <div class="grid grid-cols-2 gap-2 text-[11px]">
               <label id="sub-pay-khata-lbl" class="border border-emerald-400 bg-emerald-50/60 p-2 rounded-xl flex items-center gap-1.5 font-extrabold text-emerald-900 cursor-pointer">
                 <input type="radio" name="subAgentPayMode" value="Khata (14-Day)" checked onchange="syncSubAgentPayModeStyle()"><span>Khata (14-Day)</span>
@@ -1809,7 +1828,10 @@
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
+    let analytics = null;
+    try {
+      analytics = getAnalytics(app);
+    } catch (e) {}
     window.__firebaseApp = app;
     window.__firebaseAnalytics = analytics;
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'apnamart24-b2b';
@@ -1906,6 +1928,7 @@
       orderMonthFilter: '',
       orderSearchQuery: '',
       agentOrderFilter: 'ALL',
+      inventoryBrandFilter: 'ALL',
       inboundReservation: {
         bay: 'Bay A',
         manifest: 'Turdal & Miniket Rice 10-Wheeler trailer',
@@ -1914,6 +1937,7 @@
       skus: [
         {
           id: 'SKU-101',
+          brand: 'ApnaMart Staples',
           name: 'Miniket Super Fine Rice (25kg Sack)',
           bay: 'Bay A-01',
           stock: 18,
@@ -1926,6 +1950,7 @@
         },
         {
           id: 'SKU-102',
+          brand: 'Fortune',
           name: 'Fortune Kachi Ghani Mustard Oil (15L Tin)',
           bay: 'Bay B-04',
           stock: 64,
@@ -1938,6 +1963,7 @@
         },
         {
           id: 'SKU-103',
+          brand: 'Aashirvaad',
           name: 'Aashirvaad Shudh Chakki Atta (25kg Bag)',
           bay: 'Bay A-03',
           stock: 85,
@@ -1950,7 +1976,8 @@
         },
         {
           id: 'SKU-104',
-          name: 'Premium Unpolished Tur Dal (30kg Sack)',
+          brand: 'Tata',
+          name: 'Tata Sampann Unpolished Tur Dal (30kg Sack)',
           bay: 'Bay A-06',
           stock: 42,
           weightKg: 30,
@@ -1962,6 +1989,7 @@
         },
         {
           id: 'SKU-105',
+          brand: 'Surf Excel',
           name: 'Surf Excel Matic Wholesale Carton (12x1kg)',
           bay: 'Bay C-02',
           stock: 96,
@@ -2077,6 +2105,7 @@
     let editingSkuGallery = [];
     let currentSubDetailSkuId = null;
     let currentSubDetailPhotoIndex = 0;
+    let subAgentBrandFilter = 'ALL';
     let knownOrderIds = new Set();
     let knownShopIds = new Set();
 
@@ -3386,12 +3415,69 @@
       return num % 1 === 0 ? num.toLocaleString('en-IN') : num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
+    function getSkuBrandName(sku) {
+      if (sku && sku.brand && sku.brand.trim()) return sku.brand.trim();
+      const nm = (sku && sku.name) || '';
+      if (/tata/i.test(nm)) return 'Tata';
+      if (/fortune/i.test(nm)) return 'Fortune';
+      if (/aashirvaad/i.test(nm)) return 'Aashirvaad';
+      if (/surf/i.test(nm)) return 'Surf Excel';
+      return 'General';
+    }
+
+    function setInventoryBrandFilter(brand) {
+      appState.inventoryBrandFilter = brand || 'ALL';
+      renderInventoryTable();
+    }
+
     function renderInventoryTable() {
       const tbody = document.getElementById('inventory-tbody');
+      const brandBar = document.getElementById('inventory-brand-filter-bar');
       if (!tbody) return;
-      tbody.innerHTML = (appState.skus || []).map(s => `
+
+      const skus = appState.skus || [];
+      const brandCounts = {};
+      skus.forEach(s => {
+        const b = getSkuBrandName(s);
+        brandCounts[b] = (brandCounts[b] || 0) + 1;
+      });
+      const brands = Object.keys(brandCounts);
+      const activeBrand = (appState.inventoryBrandFilter && (appState.inventoryBrandFilter === 'ALL' || brandCounts[appState.inventoryBrandFilter]))
+        ? appState.inventoryBrandFilter
+        : 'ALL';
+
+      if (brandBar) {
+        brandBar.innerHTML = [
+          `<button type="button" onclick="setInventoryBrandFilter('ALL')" class="px-3.5 py-1.5 rounded-full text-xs font-black whitespace-nowrap transition ${activeBrand === 'ALL' ? 'bg-slate-900 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'}">All Brands (${skus.length})</button>`,
+          ...brands.map(b => `
+            <button type="button" onclick="setInventoryBrandFilter('${b.replace(/'/g, "\\'")}')" class="px-3.5 py-1.5 rounded-full text-xs font-black whitespace-nowrap transition ${activeBrand === b ? 'bg-brand-600 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-700 hover:border-brand-300'}">
+              ${b} (${brandCounts[b]})
+            </button>
+          `)
+        ].join('');
+      }
+
+      const q = (document.getElementById('inventory-search-input')?.value || '').toLowerCase().trim();
+      const filtered = skus.filter(s => {
+        const b = getSkuBrandName(s);
+        const matchBrand = activeBrand === 'ALL' || b === activeBrand;
+        const matchQ = !q || (s.name || '').toLowerCase().includes(q) || b.toLowerCase().includes(q) || (s.id || '').toLowerCase().includes(q);
+        return matchBrand && matchQ;
+      });
+
+      if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="9" class="py-8 text-center text-slate-400">No products found for this brand filter.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(s => {
+        const b = getSkuBrandName(s);
+        return `
         <tr class="hover:bg-slate-50">
           <td class="py-3 px-4"><img src="${s.img}" class="w-11 h-11 rounded-xl object-cover border border-slate-200"></td>
+          <td class="py-3 px-4">
+            <span class="px-2.5 py-1 rounded-lg bg-orange-50 text-brand-700 border border-orange-200/80 font-black text-[10.5px] whitespace-nowrap">${b}</span>
+          </td>
           <td class="py-3 px-4">
             <div class="font-black text-slate-900">${s.name}</div>
             <div class="text-[10px] font-mono text-slate-400">${s.id} • ${(s.images || [s.img]).length} Photos</div>
@@ -3405,12 +3491,24 @@
             <button type="button" onclick="openEditSkuModal('${s.id}')" class="px-3 py-1.5 rounded-xl bg-slate-900 text-white font-black text-[11px]">Edit</button>
           </td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
+    }
+
+    function populateSkuBrandDatalist() {
+      const dl = document.getElementById('sku-brand-suggestions');
+      if (!dl) return;
+      const defaults = ['Tata', 'Fortune', 'Aashirvaad', 'Surf Excel', 'ApnaMart Staples'];
+      const existing = (appState.skus || []).map(s => getSkuBrandName(s));
+      const allBrands = Array.from(new Set([...defaults, ...existing]));
+      dl.innerHTML = allBrands.map(b => `<option value="${b}">`).join('');
     }
 
     function openAddSkuModal() {
+      populateSkuBrandDatalist();
       document.getElementById('sku-editor-title').textContent = 'Add New Wholesale SKU';
       document.getElementById('edit-sku-id').value = '';
+      document.getElementById('edit-sku-brand').value = (appState.inventoryBrandFilter && appState.inventoryBrandFilter !== 'ALL') ? appState.inventoryBrandFilter : '';
       document.getElementById('edit-sku-name').value = '';
       document.getElementById('edit-sku-bay').value = 'Bay A-05';
       document.getElementById('edit-sku-stock').value = 50;
@@ -3424,10 +3522,12 @@
     }
 
     function openEditSkuModal(skuId) {
+      populateSkuBrandDatalist();
       const s = (appState.skus || []).find(x => x.id === skuId);
       if (!s) return;
       document.getElementById('sku-editor-title').textContent = `Edit SKU (${s.id})`;
       document.getElementById('edit-sku-id').value = s.id;
+      document.getElementById('edit-sku-brand').value = getSkuBrandName(s);
       document.getElementById('edit-sku-name').value = s.name;
       document.getElementById('edit-sku-bay').value = s.bay;
       document.getElementById('edit-sku-stock').value = s.stock;
@@ -3475,9 +3575,11 @@
     function handleSaveSkuModal(e) {
       e.preventDefault();
       const id = document.getElementById('edit-sku-id').value;
+      const brandVal = (document.getElementById('edit-sku-brand').value || '').trim() || 'General';
       const primaryImg = editingSkuGallery[0] || 'https://placehold.co/160x160/fff7ed/ea580c?text=SKU';
       const data = {
         id: id || ('SKU-' + Math.floor(106 + Math.random() * 890)),
+        brand: brandVal,
         name: document.getElementById('edit-sku-name').value.trim(),
         bay: document.getElementById('edit-sku-bay').value.trim(),
         stock: parseInt(document.getElementById('edit-sku-stock').value, 10) || 0,
@@ -3497,7 +3599,7 @@
       persistAndBroadcastState();
       closeModal('sku-editor-modal');
       refreshAllViews();
-      showToast('SKU & Slab Pricing saved!');
+      showToast(`SKU saved under brand "${brandVal}"!`);
     }
 
     // Khata, KYC & Shops Tables
@@ -4000,17 +4102,32 @@
 
     function renderSubAgentCatalogItems() {
       const box = document.getElementById('sub-agent-sku-list');
+      const brandBar = document.getElementById('sub-agent-brand-filter-bar');
       if (!box) return;
-      box.innerHTML = (appState.skus || []).map(s => {
+      const skus = appState.skus || [];
+      const brands = Array.from(new Set(skus.map(s => getSkuBrandName(s))));
+      if (subAgentBrandFilter !== 'ALL' && !brands.includes(subAgentBrandFilter)) subAgentBrandFilter = 'ALL';
+
+      if (brandBar) {
+        brandBar.innerHTML = [
+          `<button type="button" onclick="subAgentBrandFilter='ALL'; renderSubAgentCatalogItems();" class="px-2.5 py-1 rounded-full text-[10px] font-black whitespace-nowrap ${subAgentBrandFilter === 'ALL' ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200 text-slate-600'}">All Brands</button>`,
+          ...brands.map(b => `<button type="button" onclick="subAgentBrandFilter='${b.replace(/'/g, "\\'")}'; renderSubAgentCatalogItems();" class="px-2.5 py-1 rounded-full text-[10px] font-black whitespace-nowrap ${subAgentBrandFilter === b ? 'bg-brand-600 text-white' : 'bg-white border border-slate-200 text-slate-600'}">${b}</button>`)
+        ].join('');
+      }
+
+      const shownSkus = skus.filter(s => subAgentBrandFilter === 'ALL' || getSkuBrandName(s) === subAgentBrandFilter);
+      box.innerHTML = shownSkus.map(s => {
         const qty = subAgentCart[s.id] || 0;
         const rate = getSkuSlabRate(s, qty);
         const imgs = (s.images && s.images.length) ? s.images : [s.img];
+        const b = getSkuBrandName(s);
         return `
           <div class="p-2.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-2.5 text-xs">
             <div onclick="openSubSkuDetailModal('${s.id}')" class="flex items-center gap-2.5 min-w-0 cursor-pointer">
               <img src="${imgs[0]}" class="w-12 h-12 rounded-xl object-cover border border-slate-200 shrink-0">
               <div class="min-w-0">
-                <div class="font-black text-slate-900 truncate">${s.name}</div>
+                <span class="px-1.5 py-0.5 rounded bg-orange-100/80 text-brand-700 font-black text-[9px] uppercase">${b}</span>
+                <div class="font-black text-slate-900 truncate mt-0.5">${s.name}</div>
                 <div class="text-[10px] text-brand-600 font-bold">₹${formatPriceVal(rate)}/pack • Stock: ${s.stock}</div>
                 <button type="button" onclick="event.stopPropagation(); openSubSkuDetailModal('${s.id}')" class="text-[10.5px] font-black text-brand-600 hover:text-brand-700 underline underline-offset-2 mt-0.5 inline-block">
                   View more${imgs.length > 1 ? ` (${imgs.length} photos)` : ''}
@@ -4048,6 +4165,8 @@
       currentSubDetailSkuId = skuId;
       const gallery = sku.images && sku.images.length ? sku.images : [sku.img];
       currentSubDetailPhotoIndex = Math.max(0, Math.min(startIdx, gallery.length - 1));
+      const catPill = document.getElementById('sub-detail-category-pill');
+      if (catPill) catPill.textContent = getSkuBrandName(sku).toUpperCase();
       document.getElementById('sub-detail-sku-meta').textContent = `${sku.id} • ${sku.bay}`;
       document.getElementById('sub-detail-stock-badge').textContent = `${sku.stock} Packs Available`;
       document.getElementById('sub-detail-sku-name').textContent = sku.name;
