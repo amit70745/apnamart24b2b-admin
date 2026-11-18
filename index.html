@@ -743,9 +743,12 @@
             <!-- Bay Progress Bars -->
             <div class="space-y-3.5 text-xs">
               <div class="space-y-1.5">
-                <div class="flex items-center justify-between font-bold">
-                  <span class="text-slate-800">Bay A (Staples: Rice & Atta Sacks)</span>
-                  <span id="bay-a-pct-label" class="font-black text-brand-600">84% Full</span>
+                <div class="flex items-center justify-between gap-2 font-bold">
+                  <div class="min-w-0">
+                    <span id="bay-a-title" class="text-slate-800 block truncate">Bay A (ApnaMart Staples, Aashirvaad, Tata)</span>
+                    <span id="bay-a-sub" class="text-[10px] font-semibold text-slate-400 block truncate">145 Packs • 3 SKUs</span>
+                  </div>
+                  <span id="bay-a-pct-label" class="font-black text-brand-600 shrink-0">84% Full</span>
                 </div>
                 <div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
                   <div id="bay-a-bar" class="h-full rounded-full bg-brand-600 transition-all duration-300" style="width: 84%"></div>
@@ -753,9 +756,12 @@
               </div>
 
               <div class="space-y-1.5">
-                <div class="flex items-center justify-between font-bold">
-                  <span class="text-slate-800">Bay B (Edible Oil Tins & Jars)</span>
-                  <span id="bay-b-pct-label" class="font-black text-emerald-600">62% Full</span>
+                <div class="flex items-center justify-between gap-2 font-bold">
+                  <div class="min-w-0">
+                    <span id="bay-b-title" class="text-slate-800 block truncate">Bay B (Fortune)</span>
+                    <span id="bay-b-sub" class="text-[10px] font-semibold text-slate-400 block truncate">64 Packs • 1 SKU</span>
+                  </div>
+                  <span id="bay-b-pct-label" class="font-black text-emerald-600 shrink-0">62% Full</span>
                 </div>
                 <div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
                   <div id="bay-b-bar" class="h-full rounded-full bg-emerald-600 transition-all duration-300" style="width: 62%"></div>
@@ -763,9 +769,12 @@
               </div>
 
               <div class="space-y-1.5">
-                <div class="flex items-center justify-between font-bold">
-                  <span class="text-slate-800">Bay C (FMCG Soaps & Spices Pallets)</span>
-                  <span id="bay-c-pct-label" class="font-black text-purple-600">45% Full</span>
+                <div class="flex items-center justify-between gap-2 font-bold">
+                  <div class="min-w-0">
+                    <span id="bay-c-title" class="text-slate-800 block truncate">Bay C (Surf Excel)</span>
+                    <span id="bay-c-sub" class="text-[10px] font-semibold text-slate-400 block truncate">96 Packs • 1 SKU</span>
+                  </div>
+                  <span id="bay-c-pct-label" class="font-black text-purple-600 shrink-0">45% Full</span>
                 </div>
                 <div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
                   <div id="bay-c-bar" class="h-full rounded-full bg-purple-600 transition-all duration-300" style="width: 45%"></div>
@@ -3295,6 +3304,45 @@
           desc.innerHTML = `${appState.inboundReservation.manifest} arrival scheduled at <strong class="text-slate-900">${appState.inboundReservation.slotTime}</strong> (${appState.inboundReservation.bay}).`;
         }
       }
+
+      // Dynamic Depot Bay Capacity by Brands stored in Bay A, Bay B & Bay C
+      renderDepotBayBrands();
+    }
+
+    function renderDepotBayBrands() {
+      const skus = appState.skus || [];
+      const baySpecs = [
+        { key: 'bay-a', prefix: 'Bay A', fallbackLabel: 'Staples & Grains', maxCap: 250 },
+        { key: 'bay-b', prefix: 'Bay B', fallbackLabel: 'Edible Oils', maxCap: 150 },
+        { key: 'bay-c', prefix: 'Bay C', fallbackLabel: 'FMCG & Home Care', maxCap: 200 }
+      ];
+
+      baySpecs.forEach(spec => {
+        const baySkus = skus.filter(s => (s.bay || '').trim().toUpperCase().startsWith(spec.prefix.toUpperCase()));
+        const brands = Array.from(new Set(baySkus.map(s => getSkuBrandName(s)).filter(Boolean)));
+        const totalPacks = baySkus.reduce((sum, s) => sum + (Number(s.stock) || 0), 0);
+        const pct = baySkus.length
+          ? Math.min(100, Math.max(8, Math.round((totalPacks / spec.maxCap) * 100)))
+          : 0;
+
+        const titleEl = document.getElementById(`${spec.key}-title`);
+        const subEl = document.getElementById(`${spec.key}-sub`);
+        const pctEl = document.getElementById(`${spec.key}-pct-label`);
+        const barEl = document.getElementById(`${spec.key}-bar`);
+
+        if (titleEl) {
+          titleEl.textContent = brands.length
+            ? `${spec.prefix} (${brands.join(', ')})`
+            : `${spec.prefix} (Empty • ${spec.fallbackLabel})`;
+        }
+        if (subEl) {
+          subEl.textContent = baySkus.length
+            ? `${totalPacks.toLocaleString('en-IN')} Packs • ${baySkus.length} SKU${baySkus.length > 1 ? 's' : ''}`
+            : 'No SKUs assigned to this bay yet';
+        }
+        if (pctEl) pctEl.textContent = `${pct}% Full`;
+        if (barEl) barEl.style.width = `${pct}%`;
+      });
     }
 
     function dispatchEntireRoute(routeName) {
@@ -3387,7 +3435,6 @@
         activeMonthFilter = appState.orderMonthFilter || todayStr.slice(0, 7);
       }
 
-      // Sync quick buttons & date/month inputs
       const bToday = document.getElementById('orders-scope-today-btn');
       const bYest = document.getElementById('orders-scope-yesterday-btn');
       const bMonth = document.getElementById('orders-scope-month-btn');
@@ -3438,7 +3485,6 @@
       const xEl = document.getElementById('orders-period-cancelled');
       if (xEl) xEl.textContent = `${cancelledList.length} Cancelled`;
 
-      // Sidebar badge reflects Today's NEW orders so yesterday's don't stay stuck
       const badge = document.getElementById('badge-orders-count');
       if (badge) badge.textContent = all.filter(o => o.status === 'NEW' && (o.date || '').trim() === todayStr).length;
 
@@ -3621,7 +3667,6 @@
       document.getElementById('order-products-modal').classList.remove('hidden');
     }
 
-    // Wholesale Tax Invoice / Bill Generator (CGST 0 & SGST 0)
     function openWholesaleBillModal(orderId) {
       const ord = (appState.wholesaleOrders || []).find(o => o.id === orderId);
       if (!ord) return;
@@ -3716,7 +3761,6 @@
 
       const agents = appState.marketingAgents || [];
       const allAgentOrders = (appState.wholesaleOrders || []).filter(o => o.agentId || (o.source || '').startsWith('Agent:'));
-      // Monthly scoped agent orders (resets automatically each new month)
       const monthlyAgentOrders = allAgentOrders.filter(o => (o.date || '').trim().startsWith(activeYm));
       const activeMonthlyAgentOrders = monthlyAgentOrders.filter(o => o.status !== 'CANCELLED');
 
@@ -3782,7 +3826,6 @@
               <button type="button" onclick="openRemoveMarketingAgentModal('${ag.id}')" class="text-xs font-black text-rose-600 hover:text-rose-700">Remove</button>
             </div>
 
-            <!-- Monthly Earnings & Sales Highlight Strip -->
             <div class="grid grid-cols-3 gap-2 bg-gradient-to-r from-emerald-50/80 via-orange-50/70 to-amber-50/80 border border-emerald-200/80 rounded-2xl p-3">
               <div>
                 <span class="text-[9px] font-extrabold text-slate-500 uppercase block">MONTHLY SALES (${formatMonthLabel(activeYm)})</span>
