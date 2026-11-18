@@ -117,9 +117,131 @@
       width: 100% !important;
       min-width: 0 !important;
     }
+
+    /* Blinkit / Zepto-Inspired High-Energy B2B App Splash Screen */
+    #app-splash-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: linear-gradient(155deg, #ea580c 0%, #f97316 48%, #f59e0b 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2.25rem 1.5rem;
+      overflow: hidden;
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.55s ease, visibility 0.6s;
+    }
+    #app-splash-loader.splash-hide {
+      transform: translateY(-100%);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .zepto-dots-bg {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.16) 1.5px, transparent 1.5px);
+      background-size: 24px 24px;
+    }
+    .zepto-bounce-logo {
+      animation: zeptoSpringPop 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, zeptoHoverBob 2.6s ease-in-out 0.75s infinite;
+    }
+    .zepto-float-1 { animation: zeptoFloatPill 3.2s ease-in-out infinite; }
+    .zepto-float-2 { animation: zeptoFloatPill 3.6s ease-in-out 0.4s infinite; }
+    .zepto-float-3 { animation: zeptoFloatPill 3s ease-in-out 0.8s infinite; }
+    .zepto-float-4 { animation: zeptoFloatPill 3.4s ease-in-out 0.2s infinite; }
+    .zepto-track-runner {
+      animation: zeptoScooterZip 1.6s ease-in-out infinite;
+    }
+    @keyframes zeptoSpringPop {
+      0% { transform: scale(0.55) translateY(18px); opacity: 0; }
+      70% { transform: scale(1.06) translateY(-4px); opacity: 1; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    @keyframes zeptoHoverBob {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    @keyframes zeptoFloatPill {
+      0%, 100% { transform: translateY(0px) rotate(var(--r, 0deg)); }
+      50% { transform: translateY(-9px) rotate(var(--r, 0deg)); }
+    }
+    @keyframes zeptoScooterZip {
+      0%, 100% { transform: translateX(0px); }
+      50% { transform: translateX(4px); }
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+
+  <!-- =================================================== -->
+  <!-- BLINKIT / ZEPTO STYLE B2B QUICK-SUPPLY SPLASH SCREEN -->
+  <!-- =================================================== -->
+  <div id="app-splash-loader" aria-label="Loading ApnaMart24 B2B">
+    <div class="zepto-dots-bg absolute inset-0 pointer-events-none"></div>
+
+    <!-- Floating Quick-Commerce Kirana & Wholesale Item Badges -->
+    <div style="--r:-8deg" class="zepto-float-1 absolute top-14 left-5 sm:left-16 px-3.5 py-2 rounded-2xl bg-white/95 shadow-xl flex items-center gap-2 text-xs font-black text-slate-900 pointer-events-none">
+      <span class="text-lg">🌾</span><span>25kg Rice Sacks</span>
+    </div>
+    <div style="--r:7deg" class="zepto-float-2 absolute top-20 right-5 sm:right-16 px-3.5 py-2 rounded-2xl bg-amber-300 shadow-xl flex items-center gap-2 text-xs font-black text-slate-950 pointer-events-none">
+      <span class="text-lg">⚡</span><span>5:00 AM Wave</span>
+    </div>
+    <div style="--r:6deg" class="zepto-float-3 hidden sm:flex absolute bottom-28 left-14 px-3.5 py-2 rounded-2xl bg-white/95 shadow-xl items-center gap-2 text-xs font-black text-slate-900 pointer-events-none">
+      <span class="text-lg">🛢️</span><span>Mustard Oil 15L</span>
+    </div>
+    <div style="--r:-6deg" class="zepto-float-4 hidden sm:flex absolute bottom-32 right-14 px-3.5 py-2 rounded-2xl bg-emerald-400 shadow-xl items-center gap-2 text-xs font-black text-slate-950 pointer-events-none">
+      <span class="text-lg">💳</span><span>14-Day Khata</span>
+    </div>
+
+    <!-- Top Quick-Commerce Tag -->
+    <div class="relative z-10 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-950/20 backdrop-blur-md text-white text-[10.5px] font-black uppercase tracking-widest border border-white/25">
+      <span class="w-2 h-2 rounded-full bg-amber-300 animate-ping"></span>
+      <span>B2B Kirana Supply in Minutes</span>
+    </div>
+
+    <!-- Center Hero Brand Card (Zepto / Blinkit Bold Style) -->
+    <div class="relative z-10 flex flex-col items-center text-center max-w-sm w-full space-y-5 my-auto">
+      <div class="zepto-bounce-logo w-28 h-28 sm:w-32 sm:h-32 rounded-[34px] bg-white shadow-[0_25px_60px_-12px_rgba(67,20,7,0.45)] border-4 border-amber-200 flex items-center justify-center p-4">
+        <img src="Black_and_White_Minimalist_Monogram_Personal_Logo-removebg-preview.png" alt="ApnaMart24 B2B" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='icon-512.png'; this.onerror=function(){this.style.display='none'; document.getElementById('splash-logo-svg-fallback').classList.remove('hidden');};">
+        <svg id="splash-logo-svg-fallback" class="hidden w-full h-auto" viewBox="0 0 260 115" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="56" cy="64" r="44" fill="#333333"/>
+          <text x="46" y="88" fill="#FFFFFF" font-family="Plus Jakarta Sans, Arial, sans-serif" font-weight="900" font-size="68">B</text>
+          <text x="98" y="88" fill="#333333" font-family="Plus Jakarta Sans, Arial, sans-serif" font-weight="900" font-size="68">2B</text>
+          <text x="103" y="34" fill="#333333" font-family="Plus Jakarta Sans, Arial, sans-serif" font-style="italic" font-weight="900" font-size="22">apna</text>
+          <rect x="115" y="34" width="4.5" height="9" fill="#EA580C"/>
+          <text x="157" y="34" fill="#EA580C" font-family="Plus Jakarta Sans, Arial, sans-serif" font-style="italic" font-weight="900" font-size="22">mart</text>
+          <rect x="206" y="19" width="26" height="15" rx="2" fill="#F97316"/>
+          <text x="209" y="31" fill="#1E293B" font-family="Plus Jakarta Sans, Arial, sans-serif" font-weight="900" font-size="13">24</text>
+        </svg>
+      </div>
+
+      <div class="space-y-1.5">
+        <div class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-300 text-slate-950 font-black text-[10px] uppercase tracking-wider shadow-sm">
+          <span>⚡ SUPERFAST WHOLESALE HUB</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-black text-white tracking-tight drop-shadow-xs">
+          ApnaMart<span class="text-amber-300">24</span> <span class="font-extrabold text-white/95">B2B</span>
+        </h1>
+        <p class="text-xs sm:text-sm font-bold text-orange-100">
+          Wholesale Mandi Rates • Instant Stock • Zero-Hassle Khata
+        </p>
+      </div>
+    </div>
+
+    <!-- Bottom Express Progress Bar Card -->
+    <div class="relative z-10 w-full max-w-xs bg-white/95 backdrop-blur-md rounded-2xl p-3.5 shadow-2xl border border-white space-y-2">
+      <div class="flex items-center justify-between text-[11px] font-black text-slate-900">
+        <div class="flex items-center gap-1.5 truncate">
+          <span class="zepto-track-runner inline-block text-sm">🛵</span>
+          <span id="splash-status-text" class="truncate">Packing your B2B Mandi Store...</span>
+        </div>
+        <span id="splash-progress-pct" class="font-mono text-brand-600 shrink-0">30%</span>
+      </div>
+      <div class="w-full h-2.5 rounded-full bg-orange-100 overflow-hidden p-0.5">
+        <div id="splash-progress-fill" class="h-full rounded-full bg-gradient-to-r from-brand-600 via-orange-500 to-amber-500 transition-all duration-300 ease-out" style="width: 30%"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- ============================================== -->
   <!-- SECURE ADMIN LOGIN GATE OVERLAY -->
@@ -245,24 +367,24 @@
       </div>
 
       <!-- Center: Fulfillment Depot Selector & Dispatch Wave -->
-      <div class="hidden md:flex items-center gap-2 min-w-0">
-        <div class="flex items-center gap-2 bg-slate-50/90 border border-slate-200/90 px-2.5 py-1 rounded-2xl min-w-0 shadow-2xs">
-          <span class="w-7 h-7 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 text-white flex items-center justify-center shadow-xs shadow-orange-500/20 shrink-0">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M3 9.5 12 4l9 5.5V20H3V9.5Z" fill="currentColor" fill-opacity="0.24" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M8.5 20v-6.5h7V20" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      <div class="hidden md:flex items-center gap-2.5 flex-1 justify-center max-w-xl px-2 min-w-0">
+        <div class="flex items-center gap-2 bg-slate-50 hover:bg-slate-100/80 border border-slate-200 px-3 py-1.5 rounded-2xl w-full max-w-[330px] shadow-2xs transition">
+          <span class="w-6 h-6 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 text-white flex items-center justify-center shadow-2xs shrink-0">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"><path d="M3 9.5 12 4l9 5.5V20H3V9.5Z" fill="currentColor" fill-opacity="0.24" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M8.5 20v-6.5h7V20" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
           </span>
-          <span class="text-[10px] font-black text-slate-400 uppercase shrink-0">HUB:</span>
-          <select id="header-depot-select" onchange="switchDepot(this.value)" class="bg-transparent text-slate-900 font-extrabold text-[11px] focus:outline-none cursor-pointer truncate max-w-[235px] xl:max-w-[285px]">
-            <option value="EGRA-01" class="bg-white text-slate-900">Egra Central Hub (Bay A & B) • East Midnapore</option>
+          <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider shrink-0">HUB:</span>
+          <select id="header-depot-select" onchange="switchDepot(this.value)" class="bg-transparent text-slate-900 font-extrabold text-xs focus:outline-none cursor-pointer flex-1 min-w-0 truncate pr-1">
+            <option value="EGRA-01" class="bg-white text-slate-900">Egra Central Hub (Bay A &amp; B)</option>
             <option value="CONTAI-02" class="bg-white text-slate-900">Contai Coastal Depot (CONTAI-02)</option>
             <option value="DIGHA-03" class="bg-white text-slate-900">Digha Highway Depot (DIGHA-03)</option>
           </select>
         </div>
 
-        <div class="hidden 2xl:flex items-center gap-2 bg-gradient-to-r from-orange-50 to-amber-50/70 border border-orange-200/80 px-3 py-1 rounded-2xl text-[10px] font-extrabold text-brand-800 whitespace-nowrap shrink-0 shadow-2xs">
-          <span class="w-6 h-6 rounded-lg bg-brand-600/15 text-brand-600 flex items-center justify-center shrink-0">
+        <div class="hidden 2xl:flex items-center gap-1.5 bg-gradient-to-r from-orange-50 to-amber-50/70 border border-orange-200/80 px-3 py-1.5 rounded-2xl text-[10.5px] font-extrabold text-brand-800 whitespace-nowrap shrink-0 shadow-2xs">
+          <span class="w-5 h-5 rounded-lg bg-brand-600/15 text-brand-600 flex items-center justify-center shrink-0">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" fill="#ea580c" fill-opacity="0.16" stroke="currentColor" stroke-width="2"/><path d="M12 7.5v4.8l3 1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
-          <span>NEXT WAVE: <strong class="text-brand-900">05:00 AM</strong></span>
+          <span>WAVE: <strong class="text-brand-900">05:00 AM</strong></span>
         </div>
       </div>
 
@@ -507,9 +629,9 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
           <div onclick="openKpiCenterModal('gmv')" class="bg-white border border-slate-200 hover:border-brand-400 rounded-3xl p-4 sm:p-5 cursor-pointer transition shadow-2xs">
             <div class="flex items-center justify-between gap-2">
-              <span id="kpi-gmv-title" class="text-[10.5px] font-extrabold uppercase tracking-wider text-slate-500">MONTHLY WHOLESALE GMV</span>
+              <span id="kpi-gmv-title" class="text-[10.5px] font-extrabold uppercase tracking-wider text-slate-500">TODAY'S WHOLESALE GMV</span>
               <div class="flex items-center gap-1.5" onclick="event.stopPropagation()">
-                <input type="month" id="dashboard-gmv-month-picker" onchange="handleDashboardGmvMonthChange(this.value)" title="Select Month to View GMV" class="bg-orange-50/80 hover:bg-orange-100/80 text-brand-700 border border-orange-200 rounded-lg px-2 py-0.5 text-[10px] font-black cursor-pointer focus:outline-none">
+                <input type="date" id="dashboard-gmv-date-picker" onchange="handleDashboardGmvDateChange(this.value)" title="Select Date to View Daily GMV" class="bg-orange-50/80 hover:bg-orange-100/80 text-brand-700 border border-orange-200 rounded-lg px-2 py-0.5 text-[10px] font-black cursor-pointer focus:outline-none">
                 <div class="w-8 h-8 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 text-white flex items-center justify-center shadow-sm shadow-orange-500/25 shrink-0">
                   <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M6 5h12M6 9.5h12M13.5 5c2.2 0 3.8 1.5 3.8 3.6 0 2.1-1.6 3.6-3.8 3.6H6.5l7.5 6.8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
@@ -519,21 +641,21 @@
             <div class="text-[11px] text-emerald-700 font-bold mt-2.5 flex items-center justify-between gap-1">
               <div class="flex items-center gap-1 truncate">
                 <i class="ph-bold ph-trend-up shrink-0"></i>
-                <span id="kpi-gmv-sub" class="truncate">Live sync • 0 orders</span>
+                <span id="kpi-gmv-sub" class="truncate">Today's live sync • 0 orders</span>
               </div>
-              <button type="button" id="dashboard-gmv-all-btn" onclick="event.stopPropagation(); handleDashboardGmvMonthChange('')" class="hidden text-[10px] font-black text-brand-600 hover:underline shrink-0">All Time</button>
+              <button type="button" id="dashboard-gmv-today-btn" onclick="event.stopPropagation(); handleDashboardGmvDateChange(getLocalIsoDateOffset(0))" class="hidden text-[10px] font-black text-brand-600 hover:underline shrink-0">Today</button>
             </div>
           </div>
 
           <div onclick="openTonnageBreakdownModal()" class="bg-white border border-slate-200 hover:border-amber-400 rounded-3xl p-4 sm:p-5 cursor-pointer transition shadow-2xs">
             <div class="flex items-center justify-between">
-              <span class="text-[10.5px] font-extrabold uppercase tracking-wider text-slate-500">DISPATCHED TONNAGE</span>
+              <span id="kpi-tonnage-title" class="text-[10.5px] font-extrabold uppercase tracking-wider text-slate-500">TODAY'S DISPATCHED TONNAGE</span>
               <div class="w-8 h-8 rounded-2xl bg-gradient-to-br from-amber-500 to-yellow-500 text-white flex items-center justify-center shadow-sm shadow-amber-500/25">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M3 7h11v9H3V7Zm11 3h4l3 3v3h-7v-6Z" fill="currentColor" fill-opacity="0.22" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><circle cx="7.5" cy="17.5" r="2" fill="currentColor"/><circle cx="17.5" cy="17.5" r="2" fill="currentColor"/></svg>
               </div>
             </div>
             <div id="kpi-tonnage" class="text-[26px] font-black text-slate-900 mt-2 leading-none">0.0 MT</div>
-            <div id="kpi-tonnage-sub" class="text-[11px] text-slate-500 font-semibold mt-2.5">0 total packs scheduled for 05:00 AM</div>
+            <div id="kpi-tonnage-sub" class="text-[11px] text-slate-500 font-semibold mt-2.5">0 packs scheduled for today's 05:00 AM wave</div>
           </div>
 
           <div onclick="openKpiCenterModal('shops')" class="bg-white border border-slate-200 hover:border-purple-400 rounded-3xl p-4 sm:p-5 cursor-pointer transition shadow-2xs">
@@ -549,7 +671,7 @@
 
           <div onclick="openKpiCenterModal('khata')" class="bg-white border border-slate-200 hover:border-sky-400 rounded-3xl p-4 sm:p-5 cursor-pointer transition shadow-2xs">
             <div class="flex items-center justify-between gap-2">
-              <span class="text-[10.5px] font-extrabold uppercase tracking-wider text-slate-500">KHATA CREDIT OUTSTANDING</span>
+              <span id="kpi-khata-title" class="text-[10.5px] font-extrabold uppercase tracking-wider text-slate-500">TODAY'S KHATA CREDIT</span>
               <div class="flex items-center gap-1.5" onclick="event.stopPropagation()">
                 <input type="date" id="dashboard-khata-due-picker" onchange="handleDashboardKhataDueDateChange(this.value)" title="Set / Check Khata Repayment Cycle Due Date" class="bg-sky-50/90 hover:bg-sky-100/90 text-sky-700 border border-sky-200 rounded-lg px-2 py-0.5 text-[10px] font-black cursor-pointer focus:outline-none">
                 <div class="w-8 h-8 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 text-white flex items-center justify-center shadow-sm shadow-sky-500/25 shrink-0">
@@ -561,7 +683,7 @@
             <div class="text-[11px] text-slate-500 font-semibold mt-2.5 flex items-center justify-between gap-1">
               <div class="flex items-center gap-1 truncate">
                 <i class="ph-bold ph-calendar-check text-sky-600 shrink-0"></i>
-                <span id="kpi-khata-sub" class="truncate">14-day repayment cycle</span>
+                <span id="kpi-khata-sub" class="truncate">Today's net credit • 0 due</span>
               </div>
               <button type="button" onclick="event.stopPropagation(); resetKhata14DayCycle()" class="text-[10px] font-black text-sky-600 hover:underline shrink-0">+14d Cycle</button>
             </div>
@@ -672,20 +794,30 @@
       <section id="tab-orders" class="hidden space-y-5">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h2 class="text-lg font-black text-slate-900">Wholesale Dispatch Queue & Monthly Orders</h2>
-            <p class="text-xs text-slate-500">Inspect Kirana wholesale invoices, generate GST dispatch bills, or mark routes dispatched.</p>
+            <div class="flex items-center gap-2 flex-wrap">
+              <h2 class="text-lg font-black text-slate-900">Wholesale Dispatch Queue &amp; Daily Orders</h2>
+              <span id="orders-active-period-badge" class="px-2.5 py-0.5 rounded-full bg-orange-50 text-brand-700 border border-orange-200 text-[10px] font-black uppercase tracking-wider">TODAY'S LIVE QUEUE</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5">Auto-resets daily to today's orders. Switch to Yesterday, Monthly, or All-Time anytime.</p>
           </div>
           <div class="flex flex-wrap items-center gap-2">
-            <input type="text" oninput="searchOrdersTable(this.value)" placeholder="Search order ID, shop or item..." class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
-            <select onchange="filterOrdersTable(this.value)" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold">
+            <!-- Quick Period Switcher Pills -->
+            <div class="inline-flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-[11px] font-black">
+              <button type="button" id="orders-scope-today-btn" onclick="setOrdersPeriodScope('today')" class="px-2.5 py-1 rounded-lg bg-brand-600 text-white shadow-2xs transition">Today</button>
+              <button type="button" id="orders-scope-yesterday-btn" onclick="setOrdersPeriodScope('yesterday')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition">Yesterday</button>
+              <button type="button" id="orders-scope-month-btn" onclick="setOrdersPeriodScope('month')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition">Month</button>
+              <button type="button" id="orders-scope-all-btn" onclick="setOrdersPeriodScope('all')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition">All</button>
+            </div>
+            <input type="date" id="order-date-filter" onchange="filterOrdersByDate(this.value)" title="Filter by Exact Date" class="bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800">
+            <input type="month" id="order-month-filter" onchange="filterOrdersByMonth(this.value)" title="Filter by Month" class="bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800">
+            <input type="text" oninput="searchOrdersTable(this.value)" placeholder="Search order ID, shop or item..." class="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold">
+            <select onchange="filterOrdersTable(this.value)" class="bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold">
               <option value="ALL">All Statuses</option>
               <option value="NEW">New</option>
               <option value="PACKING">Packing</option>
               <option value="DISPATCHED">Dispatched</option>
               <option value="CANCELLED">Cancelled</option>
             </select>
-            <input type="month" id="order-month-filter" onchange="filterOrdersByMonth(this.value)" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold">
-            <button type="button" id="order-month-clear-btn" onclick="resetOrdersMonthFilter()" class="hidden px-2.5 py-2 rounded-xl bg-slate-100 text-xs font-bold text-slate-600">Clear</button>
             <button type="button" onclick="openCreateOrderModal()" class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black text-xs">+ New Order</button>
           </div>
         </div>
@@ -760,13 +892,17 @@
           <div class="bg-white border border-slate-200 rounded-3xl p-4">
             <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">INCENTIVE COMMISSION POOL</span>
             <div id="stat-marketing-comm" class="text-2xl font-black text-brand-600 mt-1.5">₹416</div>
-            <div class="text-[11px] text-slate-500 font-semibold mt-1.5">Avg 2.0% scheme commission</div>
+            <div class="text-[11px] text-slate-500 font-semibold mt-1.5">Avg 2.0% monthly payout</div>
           </div>
         </div>
 
-        <div class="flex items-center justify-between pt-1">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1">
           <h3 class="text-sm font-black text-slate-900 flex items-center gap-2"><i class="ph-bold ph-users-three text-rose-600"></i><span>Active Field Marketing Representatives & Beats</span></h3>
-          <span class="text-[11px] font-bold text-slate-400">Live Territory Check-ins</span>
+          <div class="flex items-center gap-2">
+            <span id="marketing-month-badge" class="px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-black uppercase tracking-wider">THIS MONTH</span>
+            <input type="month" id="marketing-month-picker" onchange="handleMarketingMonthChange(this.value)" title="Select Month to View Executive Earnings" class="bg-white border border-slate-200 rounded-xl px-2.5 py-1 text-xs font-black text-slate-800 cursor-pointer">
+            <button type="button" id="marketing-current-month-btn" onclick="handleMarketingMonthChange(getLocalIsoDateOffset(0).slice(0, 7))" class="hidden text-[11px] font-black text-rose-600 hover:underline">Current Month</button>
+          </div>
         </div>
 
         <div id="marketing-agents-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
@@ -1563,7 +1699,7 @@
               </div>
               <div class="flex justify-between">
                 <span class="text-slate-500">Field GMV: <strong id="sub-ag-gmv-txt" class="text-emerald-700 font-black">₹20,800</strong></span>
-                <span class="text-slate-500">Commission (2%): <strong id="sub-ag-comm-txt" class="text-brand-600 font-black">₹416</strong></span>
+                <span class="text-slate-500"><span id="sub-ag-comm-rate-label">Commission (2%)</span>: <strong id="sub-ag-comm-txt" class="text-brand-600 font-black">₹416</strong></span>
               </div>
             </div>
           </div>
@@ -1958,9 +2094,7 @@
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     let analytics = null;
-    try {
-      analytics = getAnalytics(app);
-    } catch (e) {}
+    try { analytics = getAnalytics(app); } catch (e) {}
     window.__firebaseApp = app;
     window.__firebaseAnalytics = analytics;
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'apnamart24-b2b';
@@ -2050,13 +2184,18 @@
     const DEFAULT_STATE = {
       activeTab: 'dashboard',
       depot: 'EGRA-01',
-      gmvFilterDate: '2026-11-17',
-      dashboardGmvMonth: '2026-11',
+      dashboardSelectedDate: '',
+      gmvFilterDate: '',
+      gmvFilterMode: 'date',
+      dashboardGmvMonth: '',
       khataRepaymentDueDate: '2026-12-01',
       orderStatusFilter: 'ALL',
+      orderPeriodScope: 'today',
+      orderDateFilter: '',
       orderMonthFilter: '',
       orderSearchQuery: '',
       agentOrderFilter: 'ALL',
+      marketingSelectedMonth: '',
       inventoryBrandFilter: 'ALL',
       inboundReservation: {
         bay: 'Bay A',
@@ -2360,21 +2499,60 @@
       if (el) el.classList.add('hidden');
     }
 
+    let __sharedAdminAudioCtx = null;
+    function getUnlockedAdminAudioCtx() {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return null;
+      if (!__sharedAdminAudioCtx) {
+        __sharedAdminAudioCtx = new AudioCtx();
+      }
+      if (__sharedAdminAudioCtx.state === 'suspended') {
+        __sharedAdminAudioCtx.resume().catch(() => {});
+      }
+      return __sharedAdminAudioCtx;
+    }
+
+    // Unlock audio engine on first user interaction so incoming live notifications play reliably
+    ['click', 'touchstart', 'keydown'].forEach(evtName => {
+      window.addEventListener(evtName, () => {
+        if (localStorage.getItem(STORAGE_KEY_ADMIN_SOUND) !== 'OFF') {
+          getUnlockedAdminAudioCtx();
+        }
+      }, { once: true, passive: true });
+    });
+
     function playOrderAlertChime() {
       if (localStorage.getItem(STORAGE_KEY_ADMIN_SOUND) === 'OFF') return;
       try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const ctx = getUnlockedAdminAudioCtx();
+        if (!ctx) return;
+
+        // Clean, crisp 2-note triangle chime matching your uploaded reference (660Hz -> 880Hz)
+        const now = ctx.currentTime;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(660, ctx.currentTime);
-        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.12);
-        gain.gain.setValueAtTime(0.18, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+        osc.frequency.setValueAtTime(660, now);
+        osc.frequency.setValueAtTime(880, now + 0.12);
+        gain.gain.setValueAtTime(0.42, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
         osc.connect(gain);
         gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.46);
+        osc.start(now);
+        osc.stop(now + 0.5);
+
+        // Subtle octave shimmer so it cuts through warehouse noise
+        const subOsc = ctx.createOscillator();
+        const subGain = ctx.createGain();
+        subOsc.type = 'sine';
+        subOsc.frequency.setValueAtTime(1320, now);
+        subOsc.frequency.setValueAtTime(1760, now + 0.12);
+        subGain.gain.setValueAtTime(0.16, now);
+        subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+        subOsc.connect(subGain);
+        subGain.connect(ctx.destination);
+        subOsc.start(now);
+        subOsc.stop(now + 0.48);
       } catch (e) {}
     }
 
@@ -2723,6 +2901,21 @@
       renderDashboard();
     }
 
+    function getActiveDashboardDate() {
+      const todayStr = getLocalIsoDateOffset(0);
+      return (appState.dashboardSelectedDate && appState.dashboardSelectedDate.trim())
+        ? appState.dashboardSelectedDate.trim()
+        : todayStr;
+    }
+
+    function handleDashboardGmvDateChange(dateVal) {
+      appState.dashboardSelectedDate = dateVal || getLocalIsoDateOffset(0);
+      appState.gmvFilterDate = appState.dashboardSelectedDate;
+      appState.gmvFilterMode = 'date';
+      persistAndBroadcastState();
+      renderDashboard();
+    }
+
     function handleDashboardKhataDueDateChange(dateVal) {
       if (!dateVal) return;
       appState.khataRepaymentDueDate = dateVal;
@@ -2858,12 +3051,24 @@
           };
         }
       } else if (type === 'khata') {
+        const activeDate = getActiveDashboardDate();
+        const todayStr = getLocalIsoDateOffset(0);
         const shops = (appState.kiranaShops || []).filter(s => s.status === 'APPROVED');
-        const totalDue = shops.reduce((acc, s) => acc + (Number(s.khataDue) || 0), 0);
+        const allTimeDue = shops.reduce((acc, s) => acc + (Number(s.khataDue) || 0), 0);
+        const dayKhataOrders = (appState.wholesaleOrders || []).filter(o =>
+          o.status !== 'CANCELLED' &&
+          (o.date || '').trim() === activeDate &&
+          (o.payMode || '').toLowerCase().includes('khata')
+        );
+        const dayCollections = (appState.paymentCollections || []).filter(p => (p.date || '').trim() === activeDate);
+        const dayIssued = dayKhataOrders.reduce((s, o) => s + (Number(o.amount) || 0), 0);
+        const dayCollected = dayCollections.reduce((s, p) => s + (Number(p.amount) || 0), 0);
+        const dayNetKhata = Math.max(0, Math.round((dayIssued - dayCollected) * 100) / 100);
+
         const dueDateStr = appState.khataRepaymentDueDate || '2026-12-01';
         const cycleMeta = getKhataCycleStatusMeta(dueDateStr);
-        titleEl.textContent = `Kirana Khata Credit Outstanding • ₹${totalDue.toLocaleString('en-IN')}`;
-        subEl.textContent = `14-day repayment cycle • Target Due Date: ${dueDateStr}`;
+        titleEl.textContent = `${activeDate === todayStr ? "Today's" : activeDate} Khata Credit • ₹${formatPriceVal(dayNetKhata)}`;
+        subEl.textContent = `Issued: ₹${formatPriceVal(dayIssued)} • Collected: ₹${formatPriceVal(dayCollected)} • Total Ledger Due: ₹${formatPriceVal(allTimeDue)}`;
         bodyEl.innerHTML = `
           <div class="p-3 rounded-2xl bg-sky-50/70 border border-sky-200 flex items-center justify-between gap-2 mb-2">
             <div>
@@ -2875,7 +3080,20 @@
               <button type="button" onclick="resetKhata14DayCycle(); openKpiCenterModal('khata');" class="px-2.5 py-1.5 rounded-xl bg-sky-600 text-white font-black text-[10px]">+14 Days</button>
             </div>
           </div>
-        ` + shops.map(s => `
+        ` + (dayKhataOrders.length ? `
+          <div class="text-[10px] font-black uppercase text-slate-400 px-1 pt-1">Khata Orders on ${activeDate}</div>
+          ${dayKhataOrders.map(o => `
+            <div class="p-2.5 rounded-2xl bg-orange-50/50 border border-orange-200/80 flex items-center justify-between gap-2">
+              <div>
+                <div class="font-black text-slate-900">${o.shopName} <span class="font-mono text-[10px] text-brand-600">(${o.id})</span></div>
+                <div class="text-[10px] text-slate-500">${o.itemsSummary}</div>
+              </div>
+              <strong class="font-black text-brand-600">+₹${formatPriceVal(o.amount)}</strong>
+            </div>
+          `).join('')}
+        ` : `<div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-center text-[11px] text-slate-400">No new Khata credit orders issued on ${activeDate}.</div>`) +
+        `<div class="text-[10px] font-black uppercase text-slate-400 px-1 pt-2">All-Time Store Khata Balances</div>` +
+        shops.map(s => `
           <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
             <div>
               <div class="font-black text-slate-900">${s.name}</div>
@@ -2896,6 +3114,7 @@
 
     function handleGmvDateChange(dateStr) {
       if (!dateStr) return;
+      appState.dashboardSelectedDate = dateStr;
       appState.gmvFilterDate = dateStr;
       appState.gmvFilterMode = 'date';
       persistAndBroadcastState();
@@ -2906,6 +3125,7 @@
     function setGmvQuickDate(mode) {
       if (mode === 'month') {
         appState.gmvFilterMode = 'month';
+        appState.dashboardGmvMonth = getLocalIsoDateOffset(0).slice(0, 7);
         persistAndBroadcastState();
         renderDashboard();
         openKpiCenterModal('gmv');
@@ -2918,7 +3138,8 @@
     function openTonnageBreakdownModal() {
       const modal = document.getElementById('tonnage-breakdown-modal');
       if (!modal) return;
-      const activeOrders = (appState.wholesaleOrders || []).filter(o => o.status !== 'CANCELLED');
+      const activeDate = getActiveDashboardDate();
+      const activeOrders = (appState.wholesaleOrders || []).filter(o => o.status !== 'CANCELLED' && (o.date || '').trim() === activeDate);
       const dispatched = activeOrders.filter(o => o.status === 'DISPATCHED');
       const totalPacks = activeOrders.reduce((s, o) => s + (Number(o.totalUnits) || 0), 0);
       const totalMt = ((totalPacks * 22) / 1000).toFixed(2);
@@ -2934,12 +3155,12 @@
             <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-2">
               <div>
                 <div class="font-black text-slate-900">${o.shopName} <span class="font-mono text-brand-600 text-[10px]">(${o.id})</span></div>
-                <div class="text-[10px] text-slate-500">${o.route || 'Egra Hub'} • ${o.status}</div>
+                <div class="text-[10px] text-slate-500">${o.date} • ${o.route || 'Egra Hub'} • ${o.status}</div>
               </div>
               <strong class="font-black text-slate-900">${o.totalUnits || 1} Packs (${(((Number(o.totalUnits) || 1) * 22) / 1000).toFixed(2)} MT)</strong>
             </div>
           `).join('')
-          : '<div class="p-6 text-center text-slate-400">No active dispatch tonnage queued.</div>';
+          : `<div class="p-6 text-center text-slate-400">No dispatch tonnage queued for ${activeDate}.</div>`;
       }
       modal.classList.remove('hidden');
     }
@@ -2953,41 +3174,60 @@
     }
 
     function renderDashboard() {
+      const todayStr = getLocalIsoDateOffset(0);
+      const activeDate = getActiveDashboardDate();
+      const isToday = activeDate === todayStr;
+
+      const datePicker = document.getElementById('dashboard-gmv-date-picker');
+      if (datePicker && datePicker.value !== activeDate) datePicker.value = activeDate;
+      const todayResetBtn = document.getElementById('dashboard-gmv-today-btn');
+      if (todayResetBtn) todayResetBtn.classList.toggle('hidden', isToday);
+
       const orders = appState.wholesaleOrders || [];
-      const activeOrders = orders.filter(o => o.status !== 'CANCELLED');
-      const dispatched = activeOrders.filter(o => o.status === 'DISPATCHED');
+      // Daily scoped orders (yesterday's orders do NOT bleed into today's overview)
+      const dailyActiveOrders = orders.filter(o => o.status !== 'CANCELLED' && (o.date || '').trim() === activeDate);
+      const dailyDispatched = dailyActiveOrders.filter(o => o.status === 'DISPATCHED');
 
-      const selectedMonth = typeof appState.dashboardGmvMonth === 'string' ? appState.dashboardGmvMonth : '2026-11';
-      const monthPicker = document.getElementById('dashboard-gmv-month-picker');
-      if (monthPicker && monthPicker.value !== selectedMonth) monthPicker.value = selectedMonth;
-      const allBtn = document.getElementById('dashboard-gmv-all-btn');
-      if (allBtn) allBtn.classList.toggle('hidden', !selectedMonth);
+      const dailyGmv = dailyActiveOrders.reduce((sum, o) => sum + (Number(o.amount) || 0), 0);
+      const dailyPacks = dailyActiveOrders.reduce((sum, o) => sum + (Number(o.totalUnits) || 0), 0);
+      const dailyMt = ((dailyPacks * 22) / 1000).toFixed(1);
 
-      const gmvOrders = selectedMonth
-        ? activeOrders.filter(o => (o.date || '').startsWith(selectedMonth))
-        : activeOrders;
-      const totalGmv = gmvOrders.reduce((sum, o) => sum + (Number(o.amount) || 0), 0);
-
-      const totalPacks = activeOrders.reduce((sum, o) => sum + (Number(o.totalUnits) || 0), 0);
-      const totalMt = ((totalPacks * 22) / 1000).toFixed(1);
       const approvedShops = (appState.kiranaShops || []).filter(s => s.status === 'APPROVED');
-      const totalKhata = approvedShops.reduce((sum, s) => sum + (Number(s.khataDue) || 0), 0);
+
+      // Daily Khata Credit Outstanding (today's Khata orders minus today's Khata collections)
+      const dailyKhataIssued = dailyActiveOrders
+        .filter(o => (o.payMode || '').toLowerCase().includes('khata'))
+        .reduce((sum, o) => sum + (Number(o.amount) || 0), 0);
+      const dailyKhataCollected = (appState.paymentCollections || [])
+        .filter(p => (p.date || '').trim() === activeDate)
+        .reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+      const dailyNetKhata = Math.max(0, Math.round((dailyKhataIssued - dailyKhataCollected) * 100) / 100);
 
       const gmvTitleEl = document.getElementById('kpi-gmv-title');
-      if (gmvTitleEl) gmvTitleEl.textContent = selectedMonth ? `GMV (${formatMonthLabel(selectedMonth)})` : 'ALL-TIME WHOLESALE GMV';
-      document.getElementById('kpi-gmv').textContent = '₹' + totalGmv.toLocaleString('en-IN');
+      if (gmvTitleEl) gmvTitleEl.textContent = isToday ? "TODAY'S WHOLESALE GMV" : `WHOLESALE GMV (${activeDate})`;
+      document.getElementById('kpi-gmv').textContent = '₹' + formatPriceVal(dailyGmv);
       const gmvSubEl = document.getElementById('kpi-gmv-sub');
       if (gmvSubEl) {
-        gmvSubEl.textContent = selectedMonth
-          ? `${gmvOrders.length} orders in ${formatMonthLabel(selectedMonth)}`
-          : `Live sync • ${gmvOrders.length} total orders`;
+        gmvSubEl.textContent = isToday
+          ? `Today (${todayStr}) • ${dailyActiveOrders.length} orders`
+          : `Daily log (${activeDate}) • ${dailyActiveOrders.length} orders`;
       }
 
-      document.getElementById('kpi-tonnage').textContent = `${totalMt} MT`;
+      const tonTitleEl = document.getElementById('kpi-tonnage-title');
+      if (tonTitleEl) tonTitleEl.textContent = isToday ? "TODAY'S DISPATCHED TONNAGE" : `DISPATCH TONNAGE (${activeDate})`;
+      document.getElementById('kpi-tonnage').textContent = `${dailyMt} MT`;
       const tonSub = document.getElementById('kpi-tonnage-sub');
-      if (tonSub) tonSub.textContent = `${totalPacks} total packs scheduled for 05:00 AM`;
+      if (tonSub) {
+        tonSub.textContent = isToday
+          ? `${dailyPacks} packs scheduled for today's 05:00 AM wave`
+          : `${dailyPacks} packs recorded on ${activeDate}`;
+      }
+
       document.getElementById('kpi-shops').textContent = `${approvedShops.length} Shops`;
-      document.getElementById('kpi-khata').textContent = '₹' + totalKhata.toLocaleString('en-IN');
+
+      const khataTitleEl = document.getElementById('kpi-khata-title');
+      if (khataTitleEl) khataTitleEl.textContent = isToday ? "TODAY'S KHATA CREDIT" : `KHATA CREDIT (${activeDate})`;
+      document.getElementById('kpi-khata').textContent = '₹' + formatPriceVal(dailyNetKhata);
 
       const khataDueDate = appState.khataRepaymentDueDate || '2026-12-01';
       const khataPicker = document.getElementById('dashboard-khata-due-picker');
@@ -2995,7 +3235,7 @@
       const khataSubEl = document.getElementById('kpi-khata-sub');
       if (khataSubEl) {
         const meta = getKhataCycleStatusMeta(khataDueDate);
-        khataSubEl.textContent = meta.label;
+        khataSubEl.textContent = `${isToday ? "Today's" : activeDate} net • ${meta.label}`;
         khataSubEl.className = `truncate ${meta.cls}`;
       }
 
@@ -3011,16 +3251,16 @@
         if (btn) btn.onclick = () => openEditSkuModal(lowSku.id);
       }
 
-      // Morning 5:00 AM Dispatch Schedule
+      // Morning 5:00 AM Dispatch Schedule (Scoped to selected/today's date)
       const pill = document.getElementById('dashboard-dispatch-count-pill');
-      if (pill) pill.textContent = `${dispatched.length} DISPATCHED`;
+      if (pill) pill.textContent = `${dailyDispatched.length} DISPATCHED`;
       const routesList = document.getElementById('dashboard-dispatch-routes-list');
       if (routesList) {
-        if (!activeOrders.length) {
-          routesList.innerHTML = `<div class="border border-dashed border-slate-200 rounded-2xl p-8 text-center text-xs text-slate-400">No wholesale orders queued yet. Orders booked from the Field Marketing Agent App or Manual Desk will appear here in real time.</div>`;
+        if (!dailyActiveOrders.length) {
+          routesList.innerHTML = `<div class="border border-dashed border-slate-200 rounded-2xl p-8 text-center text-xs text-slate-400">No wholesale orders queued for <strong>${isToday ? 'Today (' + todayStr + ')' : activeDate}</strong> yet. New orders placed today will appear here in real time.</div>`;
         } else {
           const grouped = {};
-          activeOrders.forEach(o => {
+          dailyActiveOrders.forEach(o => {
             const r = o.route || 'Egra Town Route 1';
             if (!grouped[r]) grouped[r] = [];
             grouped[r].push(o);
@@ -3036,7 +3276,7 @@
                     <strong class="text-xs font-black text-slate-900">${route}</strong>
                     <span class="px-2 py-0.5 rounded-full ${allDone ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800'} text-[9.5px] font-black">${list.length} Stops • ${routePacks} Packs</span>
                   </div>
-                  <div class="text-[11px] text-slate-500 mt-0.5">Manifest Value: <strong class="text-slate-800">₹${routeVal.toLocaleString('en-IN')}</strong> • Wave: 05:00 AM</div>
+                  <div class="text-[11px] text-slate-500 mt-0.5">Manifest Value: <strong class="text-slate-800">₹${formatPriceVal(routeVal)}</strong> • Wave: 05:00 AM (${activeDate})</div>
                 </div>
                 <div class="flex items-center gap-2">
                   <button type="button" onclick="openWholesaleBillModal('${list[0].id}')" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:border-brand-400 text-slate-800 font-black text-[11px]">Bill</button>
@@ -3079,20 +3319,51 @@
       renderOrdersTable();
     }
 
+    function setOrdersPeriodScope(scope) {
+      appState.orderPeriodScope = scope || 'today';
+      const todayStr = getLocalIsoDateOffset(0);
+      const yesterdayStr = getLocalIsoDateOffset(-1);
+      if (scope === 'today') {
+        appState.orderDateFilter = todayStr;
+        appState.orderMonthFilter = '';
+      } else if (scope === 'yesterday') {
+        appState.orderDateFilter = yesterdayStr;
+        appState.orderMonthFilter = '';
+      } else if (scope === 'month') {
+        appState.orderDateFilter = '';
+        appState.orderMonthFilter = todayStr.slice(0, 7);
+      } else {
+        appState.orderDateFilter = '';
+        appState.orderMonthFilter = '';
+      }
+      persistAndBroadcastState();
+      renderOrdersTable();
+    }
+
+    function filterOrdersByDate(val) {
+      if (!val) {
+        setOrdersPeriodScope('today');
+        return;
+      }
+      const todayStr = getLocalIsoDateOffset(0);
+      const yesterdayStr = getLocalIsoDateOffset(-1);
+      appState.orderDateFilter = val;
+      appState.orderMonthFilter = '';
+      appState.orderPeriodScope = val === todayStr ? 'today' : (val === yesterdayStr ? 'yesterday' : 'date');
+      persistAndBroadcastState();
+      renderOrdersTable();
+    }
+
     function filterOrdersByMonth(val) {
       appState.orderMonthFilter = val || '';
-      const clearBtn = document.getElementById('order-month-clear-btn');
-      if (clearBtn) clearBtn.classList.toggle('hidden', !val);
+      appState.orderDateFilter = '';
+      appState.orderPeriodScope = val ? 'month' : 'all';
+      persistAndBroadcastState();
       renderOrdersTable();
     }
 
     function resetOrdersMonthFilter() {
-      appState.orderMonthFilter = '';
-      const inp = document.getElementById('order-month-filter');
-      if (inp) inp.value = '';
-      const clearBtn = document.getElementById('order-month-clear-btn');
-      if (clearBtn) clearBtn.classList.add('hidden');
-      renderOrdersTable();
+      setOrdersPeriodScope('today');
     }
 
     function renderOrdersTable() {
@@ -3100,14 +3371,54 @@
       if (!tbody) return;
       const q = (appState.orderSearchQuery || '').toLowerCase();
       const st = appState.orderStatusFilter || 'ALL';
-      const mo = appState.orderMonthFilter || '';
+      const todayStr = getLocalIsoDateOffset(0);
+      const yesterdayStr = getLocalIsoDateOffset(-1);
+      const scope = appState.orderPeriodScope || 'today';
+
+      let activeDateFilter = '';
+      let activeMonthFilter = '';
+      if (scope === 'today') {
+        activeDateFilter = todayStr;
+      } else if (scope === 'yesterday') {
+        activeDateFilter = yesterdayStr;
+      } else if (scope === 'date') {
+        activeDateFilter = appState.orderDateFilter || todayStr;
+      } else if (scope === 'month') {
+        activeMonthFilter = appState.orderMonthFilter || todayStr.slice(0, 7);
+      }
+
+      // Sync quick buttons & date/month inputs
+      const bToday = document.getElementById('orders-scope-today-btn');
+      const bYest = document.getElementById('orders-scope-yesterday-btn');
+      const bMonth = document.getElementById('orders-scope-month-btn');
+      const bAll = document.getElementById('orders-scope-all-btn');
+      if (bToday) bToday.className = `px-2.5 py-1 rounded-lg transition ${scope === 'today' ? 'bg-brand-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'}`;
+      if (bYest) bYest.className = `px-2.5 py-1 rounded-lg transition ${scope === 'yesterday' ? 'bg-brand-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'}`;
+      if (bMonth) bMonth.className = `px-2.5 py-1 rounded-lg transition ${scope === 'month' ? 'bg-brand-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'}`;
+      if (bAll) bAll.className = `px-2.5 py-1 rounded-lg transition ${scope === 'all' ? 'bg-brand-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'}`;
+
+      const dateInp = document.getElementById('order-date-filter');
+      if (dateInp && dateInp.value !== activeDateFilter) dateInp.value = activeDateFilter;
+      const monthInp = document.getElementById('order-month-filter');
+      if (monthInp && monthInp.value !== activeMonthFilter) monthInp.value = activeMonthFilter;
+
+      const periodBadge = document.getElementById('orders-active-period-badge');
+      if (periodBadge) {
+        if (scope === 'today') periodBadge.textContent = `TODAY (${todayStr})`;
+        else if (scope === 'yesterday') periodBadge.textContent = `YESTERDAY (${yesterdayStr})`;
+        else if (scope === 'date') periodBadge.textContent = `DATE: ${activeDateFilter}`;
+        else if (scope === 'month') periodBadge.textContent = `${formatMonthLabel(activeMonthFilter)} ORDERS`;
+        else periodBadge.textContent = 'ALL-TIME ARCHIVE';
+      }
 
       const all = appState.wholesaleOrders || [];
       const filtered = all.filter(o => {
         const matchSt = st === 'ALL' || o.status === st;
-        const matchMo = !mo || (o.date || '').startsWith(mo);
+        const ordDate = (o.date || '').trim();
+        const matchDate = !activeDateFilter || ordDate === activeDateFilter;
+        const matchMo = !activeMonthFilter || ordDate.startsWith(activeMonthFilter);
         const matchQ = !q || (o.id || '').toLowerCase().includes(q) || (o.shopName || '').toLowerCase().includes(q) || (o.itemsSummary || '').toLowerCase().includes(q);
-        return matchSt && matchMo && matchQ;
+        return matchSt && matchDate && matchMo && matchQ;
       });
 
       const activeList = filtered.filter(o => o.status !== 'CANCELLED');
@@ -3123,15 +3434,19 @@
       const sEl = document.getElementById('orders-period-status');
       if (sEl) sEl.textContent = `${dispatchedList.length} Dispatched`;
       const gEl = document.getElementById('orders-period-gmv');
-      if (gEl) gEl.textContent = '₹' + periodGmv.toLocaleString('en-IN');
+      if (gEl) gEl.textContent = '₹' + formatPriceVal(periodGmv);
       const xEl = document.getElementById('orders-period-cancelled');
       if (xEl) xEl.textContent = `${cancelledList.length} Cancelled`;
 
+      // Sidebar badge reflects Today's NEW orders so yesterday's don't stay stuck
       const badge = document.getElementById('badge-orders-count');
-      if (badge) badge.textContent = all.filter(o => o.status === 'NEW').length;
+      if (badge) badge.textContent = all.filter(o => o.status === 'NEW' && (o.date || '').trim() === todayStr).length;
 
       if (!filtered.length) {
-        tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-slate-400">No wholesale orders match the current filter.</td></tr>';
+        const emptyLabel = scope === 'today'
+          ? `No wholesale orders received today (${todayStr}) yet. Switch to Yesterday, Month, or All to view previous orders.`
+          : 'No wholesale orders match the selected date or filter.';
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">${emptyLabel}</td></tr>`;
         return;
       }
 
@@ -3374,15 +3689,57 @@
     }
 
     // Marketing & Field Sales Executives Tab
+    function getActiveMarketingMonth() {
+      const currentYm = getLocalIsoDateOffset(0).slice(0, 7);
+      return (appState.marketingSelectedMonth && appState.marketingSelectedMonth.trim())
+        ? appState.marketingSelectedMonth.trim()
+        : currentYm;
+    }
+
+    function handleMarketingMonthChange(ymVal) {
+      appState.marketingSelectedMonth = ymVal || getLocalIsoDateOffset(0).slice(0, 7);
+      persistAndBroadcastState();
+      renderMarketingTab();
+    }
+
     function renderMarketingTab() {
+      const currentYm = getLocalIsoDateOffset(0).slice(0, 7);
+      const activeYm = getActiveMarketingMonth();
+      const isCurrentMonth = activeYm === currentYm;
+
+      const mPicker = document.getElementById('marketing-month-picker');
+      if (mPicker && mPicker.value !== activeYm) mPicker.value = activeYm;
+      const mBadge = document.getElementById('marketing-month-badge');
+      if (mBadge) mBadge.textContent = isCurrentMonth ? `THIS MONTH (${formatMonthLabel(activeYm)})` : formatMonthLabel(activeYm);
+      const mResetBtn = document.getElementById('marketing-current-month-btn');
+      if (mResetBtn) mResetBtn.classList.toggle('hidden', isCurrentMonth);
+
       const agents = appState.marketingAgents || [];
-      const agentOrders = (appState.wholesaleOrders || []).filter(o => o.agentId || (o.source || '').startsWith('Agent:'));
-      const activeAgentOrders = agentOrders.filter(o => o.status !== 'CANCELLED');
+      const allAgentOrders = (appState.wholesaleOrders || []).filter(o => o.agentId || (o.source || '').startsWith('Agent:'));
+      // Monthly scoped agent orders (resets automatically each new month)
+      const monthlyAgentOrders = allAgentOrders.filter(o => (o.date || '').trim().startsWith(activeYm));
+      const activeMonthlyAgentOrders = monthlyAgentOrders.filter(o => o.status !== 'CANCELLED');
+
+      const getAgentOrdersForMonth = (ag) => activeMonthlyAgentOrders.filter(o =>
+        o.agentId === ag.id || (o.agentName && o.agentName === ag.name) || (o.source && o.source.includes(ag.name))
+      );
+
+      const getOrderAgentCommission = (order, forcedPct = null) => {
+        if (forcedPct !== null) {
+          return Math.round((Number(order.amount) || 0) * (forcedPct / 100) * 100) / 100;
+        }
+        const matchedAg = agents.find(a => a.id === order.agentId || a.name === order.agentName);
+        const pct = matchedAg ? (Number(matchedAg.commPct) || 0) : 2.0;
+        return Math.round((Number(order.amount) || 0) * (pct / 100) * 100) / 100;
+      };
 
       const totalOnboarded = agents.reduce((s, a) => s + (Number(a.onboardedCount) || 0), 0);
       const totalGoal = agents.reduce((s, a) => s + (Number(a.target) || 25), 0);
-      const fieldGmv = activeAgentOrders.reduce((s, o) => s + (Number(o.amount) || 0), 0);
-      const commPool = activeAgentOrders.reduce((s, o) => s + (Number(o.agentComm) || Math.round((Number(o.amount) || 0) * 0.02)), 0);
+      const fieldGmv = Math.round(activeMonthlyAgentOrders.reduce((s, o) => s + (Number(o.amount) || 0), 0) * 100) / 100;
+      const commPool = Math.round(activeMonthlyAgentOrders.reduce((s, o) => s + getOrderAgentCommission(o), 0) * 100) / 100;
+      const avgCommPct = agents.length
+        ? (agents.reduce((s, a) => s + (Number(a.commPct) || 0), 0) / agents.length).toFixed(1)
+        : '2.0';
 
       const elTot = document.getElementById('stat-total-marketing');
       if (elTot) elTot.textContent = `${agents.length} Executives`;
@@ -3391,16 +3748,25 @@
       const elGoal = document.getElementById('stat-marketing-goal-sub');
       if (elGoal) elGoal.textContent = `Monthly Goal: ${totalGoal} Shops`;
       const elGmv = document.getElementById('stat-marketing-gmv');
-      if (elGmv) elGmv.textContent = '₹' + fieldGmv.toLocaleString('en-IN');
+      if (elGmv) elGmv.textContent = '₹' + formatPriceVal(fieldGmv);
+      const elGmvSub = elGmv ? elGmv.nextElementSibling : null;
+      if (elGmvSub) elGmvSub.textContent = `↗ ${formatMonthLabel(activeYm)} (${activeMonthlyAgentOrders.length} orders)`;
       const elComm = document.getElementById('stat-marketing-comm');
-      if (elComm) elComm.textContent = '₹' + commPool.toLocaleString('en-IN');
+      if (elComm) elComm.textContent = '₹' + formatPriceVal(commPool);
+      const elCommSub = elComm ? elComm.nextElementSibling : null;
+      if (elCommSub) elCommSub.textContent = `Avg ${avgCommPct}% • ${formatMonthLabel(activeYm)} payout`;
 
       const badge = document.getElementById('badge-agent-orders-count');
       if (badge) badge.textContent = `${agents.length} Active`;
 
       const listEl = document.getElementById('marketing-agents-list');
       if (listEl) {
-        listEl.innerHTML = agents.map(ag => `
+        listEl.innerHTML = agents.map(ag => {
+          const agOrders = getAgentOrdersForMonth(ag);
+          const agCommPct = Number(ag.commPct) || 0;
+          const agMonthlySales = Math.round(agOrders.reduce((s, o) => s + (Number(o.amount) || 0), 0) * 100) / 100;
+          const agMonthlyEarned = Math.round(agOrders.reduce((s, o) => s + getOrderAgentCommission(o, agCommPct), 0) * 100) / 100;
+          return `
           <div class="bg-white border border-slate-200 rounded-3xl p-4 sm:p-5 space-y-3.5 shadow-2xs">
             <div class="flex items-start justify-between gap-3">
               <div class="flex items-center gap-3">
@@ -3415,6 +3781,23 @@
               </div>
               <button type="button" onclick="openRemoveMarketingAgentModal('${ag.id}')" class="text-xs font-black text-rose-600 hover:text-rose-700">Remove</button>
             </div>
+
+            <!-- Monthly Earnings & Sales Highlight Strip -->
+            <div class="grid grid-cols-3 gap-2 bg-gradient-to-r from-emerald-50/80 via-orange-50/70 to-amber-50/80 border border-emerald-200/80 rounded-2xl p-3">
+              <div>
+                <span class="text-[9px] font-extrabold text-slate-500 uppercase block">MONTHLY SALES (${formatMonthLabel(activeYm)})</span>
+                <strong class="text-sm font-black text-slate-900">₹${formatPriceVal(agMonthlySales)}</strong>
+              </div>
+              <div>
+                <span class="text-[9px] font-extrabold text-emerald-700 uppercase block">COMMISSION EARNED</span>
+                <strong class="text-sm font-black text-emerald-700">₹${formatPriceVal(agMonthlyEarned)}</strong>
+              </div>
+              <div class="text-right">
+                <span class="text-[9px] font-extrabold text-slate-500 uppercase block">MONTH ORDERS</span>
+                <strong class="text-sm font-black text-brand-600">${agOrders.length} Orders</strong>
+              </div>
+            </div>
+
             <div class="grid grid-cols-4 gap-2 bg-slate-50 border border-slate-200/80 rounded-2xl p-3 text-center">
               <div>
                 <span class="text-[9px] font-extrabold text-slate-400 uppercase block">LOGIN ID</span>
@@ -3429,12 +3812,13 @@
                 <strong class="text-[11px] font-black text-slate-900">${ag.onboardedCount || 0}/${ag.target || 25}</strong>
               </div>
               <div>
-                <span class="text-[9px] font-extrabold text-slate-400 uppercase block">COMM.</span>
-                <strong class="text-[11px] font-black text-brand-600">${ag.commPct || 2}%</strong>
+                <span class="text-[9px] font-extrabold text-slate-400 uppercase block">COMM. RATE</span>
+                <strong class="text-[11px] font-black text-brand-600">${agCommPct}%</strong>
               </div>
             </div>
           </div>
-        `).join('');
+        `;
+        }).join('');
       }
 
       const filterSel = document.getElementById('agent-order-filter');
@@ -3445,7 +3829,7 @@
       }
 
       const agFilter = appState.agentOrderFilter || 'ALL';
-      const shownOrders = agentOrders.filter(o => agFilter === 'ALL' || o.agentId === agFilter);
+      const shownOrders = monthlyAgentOrders.filter(o => agFilter === 'ALL' || o.agentId === agFilter);
       const tbody = document.getElementById('marketing-orders-tbody');
       if (tbody) {
         tbody.innerHTML = shownOrders.length
@@ -3455,7 +3839,7 @@
             const moreTxt = items.length > 1 ? ` (+${items.length - 1} items)` : '';
             return `
               <tr class="hover:bg-slate-50">
-                <td class="py-2.5 px-4 font-mono font-black text-brand-600">${o.id}</td>
+                <td class="py-2.5 px-4 font-mono font-black text-brand-600">${o.id}<div class="font-sans text-[10px] text-slate-400 font-normal">${o.date || ''}</div></td>
                 <td class="py-2.5 px-4 font-bold text-slate-800">${o.agentName || o.source}</td>
                 <td class="py-2.5 px-4 font-black text-slate-900">${o.shopName}</td>
                 <td class="py-2.5 px-4">
@@ -3465,15 +3849,15 @@
                   </div>
                 </td>
                 <td class="py-2.5 px-4">
-                  <div class="font-black text-slate-900">₹${Number(o.amount || 0).toLocaleString('en-IN')}</div>
-                  <div class="text-[10px] text-emerald-700 font-bold">+₹${o.agentComm || Math.round((o.amount || 0) * 0.02)} Comm</div>
+                  <div class="font-black text-slate-900">₹${formatPriceVal(o.amount || 0)}</div>
+                  <div class="text-[10px] text-emerald-700 font-bold">+₹${formatPriceVal(getOrderAgentCommission(o))} Comm</div>
                 </td>
                 <td class="py-2.5 px-4"><span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-black">${o.status}</span></td>
                 <td class="py-2.5 px-4 text-right"><button type="button" onclick="openWholesaleBillModal('${o.id}')" class="px-2.5 py-1 rounded-lg bg-slate-900 text-white font-black text-[10px]">Bill</button></td>
               </tr>
             `;
           }).join('')
-          : '<tr><td colspan="7" class="py-6 text-center text-slate-400">No orders booked by field agents yet.</td></tr>';
+          : `<tr><td colspan="7" class="py-6 text-center text-slate-400">No field agent orders recorded for ${formatMonthLabel(activeYm)}.</td></tr>`;
       }
     }
 
@@ -4235,12 +4619,15 @@
       // Orders & GMV for active agent
       const allOrders = (appState.wholesaleOrders || []).filter(o => o.agentId === ag.id || (o.source || '').includes(ag.name));
       const activeOrders = allOrders.filter(o => o.status !== 'CANCELLED');
-      const gmv = activeOrders.reduce((s, o) => s + (Number(o.amount) || 0), 0);
-      const comm = activeOrders.reduce((s, o) => s + (Number(o.agentComm) || Math.round((Number(o.amount) || 0) * ((ag.commPct || 2) / 100))), 0);
+      const agentCommRate = Number(ag.commPct) || 0;
+      const gmv = Math.round(activeOrders.reduce((s, o) => s + (Number(o.amount) || 0), 0) * 100) / 100;
+      const comm = Math.round(activeOrders.reduce((s, o) => s + ((Number(o.amount) || 0) * (agentCommRate / 100)), 0) * 100) / 100;
 
       document.getElementById('sub-ag-target-txt').textContent = `${ag.onboardedCount || 0} / ${ag.target || 25} Shops`;
-      document.getElementById('sub-ag-gmv-txt').textContent = '₹' + gmv.toLocaleString('en-IN');
-      document.getElementById('sub-ag-comm-txt').textContent = '₹' + comm.toLocaleString('en-IN');
+      document.getElementById('sub-ag-gmv-txt').textContent = '₹' + formatPriceVal(gmv);
+      const commRateLbl = document.getElementById('sub-ag-comm-rate-label');
+      if (commRateLbl) commRateLbl.textContent = `Commission (${agentCommRate}%)`;
+      document.getElementById('sub-ag-comm-txt').textContent = '₹' + formatPriceVal(comm);
 
       // Render Kirana Stores List
       const qShop = (document.getElementById('sub-ag-kirana-search')?.value || '').toLowerCase();
@@ -4327,8 +4714,8 @@
                   </div>
                 </div>
                 <div class="flex items-center justify-between text-[11px]">
-                  <span class="text-slate-600">Bill (${o.payMode}): <strong class="font-black text-slate-900">₹${Number(o.amount).toLocaleString('en-IN')}</strong></span>
-                  <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-black text-[10px]">+₹${o.agentComm || Math.round(o.amount * 0.02)} Comm.</span>
+                  <span class="text-slate-600">Bill (${o.payMode}): <strong class="font-black text-slate-900">₹${formatPriceVal(o.amount)}</strong></span>
+                  <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-black text-[10px]">+₹${formatPriceVal(Math.round((Number(o.amount) || 0) * (agentCommRate / 100) * 100) / 100)} Comm. (${agentCommRate}%)</span>
                 </div>
                 <div class="grid grid-cols-3 gap-1.5 pt-0.5">
                   <a href="tel:${o.phone || ''}" class="py-1.5 rounded-xl bg-slate-100 text-slate-800 font-bold text-[10.5px] flex items-center justify-center gap-1"><i class="ph-bold ph-phone"></i><span>Call Shop</span></a>
@@ -4545,9 +4932,10 @@
           total = Math.round((total + qty * getSkuSlabRate(sku, qty)) * 100) / 100;
         }
       });
-      const comm = Math.round(total * (((ag && ag.commPct) || 2) / 100) * 100) / 100;
+      const commRate = ag ? (Number(ag.commPct) || 0) : 2.0;
+      const comm = Math.round(total * (commRate / 100) * 100) / 100;
       document.getElementById('sub-agent-cart-units').textContent = `${units} Packs`;
-      document.getElementById('sub-agent-cart-incentive').textContent = `+₹${formatPriceVal(comm)}`;
+      document.getElementById('sub-agent-cart-incentive').textContent = `+₹${formatPriceVal(comm)} (${commRate}%)`;
       document.getElementById('sub-agent-cart-total').textContent = '₹' + formatPriceVal(total);
     }
 
@@ -4576,7 +4964,8 @@
         return;
       }
 
-      const comm = Math.round(amount * (((ag && ag.commPct) || 2) / 100));
+      const commRate = ag ? (Number(ag.commPct) || 0) : 2.0;
+      const comm = Math.round(amount * (commRate / 100) * 100) / 100;
       const newOrder = {
         id: 'WB-INV-' + Math.floor(5600 + Math.random() * 3900),
         shopId: shopObj ? shopObj.id : 'SHP-01',
@@ -4693,7 +5082,38 @@
     }
 
     // Boot Application
+    function runAppSplashPreloader() {
+      const loader = document.getElementById('app-splash-loader');
+      const fill = document.getElementById('splash-progress-fill');
+      const pct = document.getElementById('splash-progress-pct');
+      const statusTxt = document.getElementById('splash-status-text');
+      if (!loader) return;
+
+      const steps = [
+        { p: 65, t: 'Loading Tata, Fortune & Mandi Slabs...' },
+        { p: 92, t: 'Connecting Egra Hub & Kirana Khata...' },
+        { p: 100, t: 'Ready! Welcome to ApnaMart24 B2B' }
+      ];
+
+      let idx = 0;
+      const stepTimer = setInterval(() => {
+        if (idx < steps.length) {
+          if (fill) fill.style.width = steps[idx].p + '%';
+          if (pct) pct.textContent = steps[idx].p + '%';
+          if (statusTxt) statusTxt.textContent = steps[idx].t;
+          idx++;
+        } else {
+          clearInterval(stepTimer);
+          setTimeout(() => {
+            loader.classList.add('splash-hide');
+            setTimeout(() => loader.remove(), 650);
+          }, 220);
+        }
+      }, 320);
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
+      runAppSplashPreloader();
       loadAppState();
       checkAdminAuthGate();
       syncAdminSoundUI();
