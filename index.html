@@ -1412,6 +1412,38 @@
     </div>
   </div>
 
+  <!-- Edit Agent Commission Rate Modal -->
+  <div id="edit-agent-comm-modal" onclick="if(event.target === this) closeModal('edit-agent-comm-modal')" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white border border-slate-200 rounded-3xl max-w-sm w-full p-5 space-y-3.5 shadow-2xl text-xs">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+        <div>
+          <h3 class="text-sm font-black text-slate-900">Edit Commission Rate (%)</h3>
+          <p id="edit-comm-agent-subtitle" class="text-[11px] text-slate-500 mt-0.5">Field Executive</p>
+        </div>
+        <button type="button" onclick="closeModal('edit-agent-comm-modal')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center"><i class="ph-bold ph-x"></i></button>
+      </div>
+      <form onsubmit="handleSaveAgentCommRate(event)" class="space-y-3">
+        <input type="hidden" id="edit-comm-agent-id">
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Sales Commission / Incentive Rate (%) *</label>
+          <div class="relative">
+            <input type="number" id="edit-comm-rate-input" step="0.1" min="0" max="100" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 pr-9 font-black text-base text-brand-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/30">
+            <span class="absolute right-3.5 top-1/2 -translate-y-1/2 font-black text-slate-400 text-sm">%</span>
+          </div>
+          <div class="mt-2.5">
+            <label class="font-bold text-slate-700 block mb-1">Effective Date (Today / Tomorrow / Custom) *</label>
+            <input type="date" id="edit-comm-date-input" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-black text-slate-800">
+          </div>
+          <p class="text-[10.5px] text-slate-500 mt-1.5">Applies only to orders booked on the selected date. Yesterday's &amp; previous days' commission remains locked at their respective daily rates.</p>
+        </div>
+        <div class="flex justify-end gap-2 pt-1">
+          <button type="button" onclick="closeModal('edit-agent-comm-modal')" class="px-4 py-2 rounded-xl bg-slate-100 font-bold text-slate-700">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black shadow-xs">Save Rate</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Manual Create Order Modal -->
   <div id="create-order-modal" onclick="if(event.target === this) closeModal('create-order-modal')" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
     <div class="bg-white border border-slate-200 rounded-3xl max-w-md w-full p-5 space-y-3 shadow-2xl text-xs">
@@ -1680,7 +1712,6 @@
               <span class="font-black text-xs text-slate-900">ApnaMart24 B2B Field Sales</span>
               <div class="flex items-center gap-1.5">
                 <button type="button" onclick="closeConnectedAppOverlay()" class="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-600 text-[10px] font-black">ADMIN</button>
-                <button type="button" onclick="logoutFieldAgentApp()" title="Logout" class="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center"><i class="ph-bold ph-sign-out text-xs"></i></button>
               </div>
             </div>
 
@@ -1698,49 +1729,31 @@
                   <div class="text-[10px] text-slate-500 truncate">Beat: <strong id="active-sub-agent-beat" class="text-brand-600">Contai Central & Digha Bypass</strong></div>
                 </div>
               </div>
-              <button type="button" onclick="openSubAgentModal('sub-ag-onboard-modal')" class="px-3 py-1.5 rounded-full bg-rose-600 text-white font-black text-[10px] shrink-0 shadow-xs">+ New Shop</button>
-            </div>
-
-            <!-- Target & GMV Strip -->
-            <div class="p-2.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-[10px] space-y-1">
-              <div class="flex justify-between">
-                <span class="font-bold text-slate-400 uppercase">MONTHLY KIRANA TARGET</span>
-                <strong id="sub-ag-target-txt" class="font-black text-slate-900">19 / 25 Shops</strong>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-slate-500">Field GMV: <strong id="sub-ag-gmv-txt" class="text-emerald-700 font-black">₹20,800</strong></span>
-                <span class="text-slate-500"><span id="sub-ag-comm-rate-label">Commission (2%)</span>: <strong id="sub-ag-comm-txt" class="text-brand-600 font-black">₹416</strong></span>
-              </div>
-            </div>
-
-            <!-- Admin-Assigned Daily Order Task Status Banner -->
-            <div id="sub-ag-order-task-banner" onclick="switchSubAgentPage('tasks')" class="cursor-pointer p-2.5 rounded-2xl bg-slate-100 border border-slate-200 text-[10.5px] font-bold text-slate-600 flex items-center justify-between gap-2 hover:opacity-95 transition">
-              <span>Checking today's order task...</span>
             </div>
           </div>
 
           <!-- Scrollable Content Area -->
           <div class="flex-1 overflow-y-auto p-3.5 space-y-3.5 no-scrollbar">
-            <!-- Quick Action Cards -->
-            <div id="sub-ag-quick-actions" class="grid grid-cols-2 gap-2.5">
-              <div onclick="openSubAgentModal('sub-ag-onboard-modal')" class="bg-white border border-slate-200 rounded-2xl p-3 space-y-1.5 cursor-pointer hover:border-rose-300 transition shadow-2xs">
-                <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center shadow-sm shadow-rose-500/25">
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M4 9.5V19a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 20 19V9.5" stroke="currentColor" stroke-width="1.9"/><path d="M3 9.5 4.8 4h14.4L21 9.5a2.5 2.5 0 0 1-4.5 1.5 2.5 2.5 0 0 1-4.5 0 2.5 2.5 0 0 1-4.5 0A2.5 2.5 0 0 1 3 9.5Z" fill="currentColor" fill-opacity="0.25" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-                </div>
-                <div class="font-black text-xs text-slate-900">Onboard Kirana KYC</div>
-                <p class="text-[10px] text-slate-500 leading-tight">Submit GSTIN & owner KYC for Admin approval</p>
-              </div>
-              <div id="sub-ag-quick-order-card" onclick="openSubAssistedCatalogModal()" class="bg-amber-50/40 border border-amber-200/80 rounded-2xl p-3 space-y-1.5 cursor-pointer hover:border-brand-400 transition shadow-2xs">
-                <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-brand-500 to-amber-500 text-white flex items-center justify-center shadow-sm shadow-orange-500/25">
-                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4h2.5l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.8a1.5 1.5 0 0 0 1.4-1.1L20.5 7.5H6"/><circle cx="9.5" cy="19.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="17.5" cy="19.5" r="1.4" fill="currentColor" stroke="none"/></svg>
-                </div>
-                <div class="font-black text-xs text-slate-900">Take Kirana Order</div>
-                <p id="sub-ag-quick-order-desc" class="text-[10px] text-slate-500 leading-tight">Select items, slabs & push to Admin Hub</p>
-              </div>
-            </div>
-
             <!-- PAGE 1: MY ADDED KIRANA STORES -->
             <div id="sub-ag-kiranas-section" class="space-y-2.5">
+              <!-- Quick Action Cards (Shown exclusively on Shops page) -->
+              <div id="sub-ag-quick-actions" class="grid grid-cols-2 gap-2.5">
+                <div onclick="openSubAgentModal('sub-ag-onboard-modal')" class="bg-white border border-slate-200 rounded-2xl p-3 space-y-1.5 cursor-pointer hover:border-rose-300 transition shadow-2xs">
+                  <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center shadow-sm shadow-rose-500/25">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M4 9.5V19a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 20 19V9.5" stroke="currentColor" stroke-width="1.9"/><path d="M3 9.5 4.8 4h14.4L21 9.5a2.5 2.5 0 0 1-4.5 1.5 2.5 2.5 0 0 1-4.5 0 2.5 2.5 0 0 1-4.5 0A2.5 2.5 0 0 1 3 9.5Z" fill="currentColor" fill-opacity="0.25" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                  </div>
+                  <div class="font-black text-xs text-slate-900">Onboard Kirana KYC</div>
+                  <p class="text-[10px] text-slate-500 leading-tight">Submit GSTIN &amp; owner KYC for Admin approval</p>
+                </div>
+                <div id="sub-ag-quick-order-card" onclick="openSubAssistedCatalogModal()" class="bg-amber-50/40 border border-amber-200/80 rounded-2xl p-3 space-y-1.5 cursor-pointer hover:border-brand-400 transition shadow-2xs">
+                  <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-brand-500 to-amber-500 text-white flex items-center justify-center shadow-sm shadow-orange-500/25">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4h2.5l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.8a1.5 1.5 0 0 0 1.4-1.1L20.5 7.5H6"/><circle cx="9.5" cy="19.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="17.5" cy="19.5" r="1.4" fill="currentColor" stroke="none"/></svg>
+                  </div>
+                  <div class="font-black text-xs text-slate-900">Take Kirana Order</div>
+                  <p id="sub-ag-quick-order-desc" class="text-[10px] text-slate-500 leading-tight">Select items, slabs &amp; push to Admin Hub</p>
+                </div>
+              </div>
+
               <div class="flex items-center justify-between">
                 <span class="text-[10px] font-black uppercase tracking-wider text-rose-700">MY ADDED KIRANA STORES</span>
                 <span id="sub-ag-kiranas-count" class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 font-black text-[10px]">2 Stores</span>
@@ -1792,51 +1805,6 @@
               </div>
               <input type="text" id="sub-ag-order-search" oninput="renderSubAgentWorkspace()" placeholder="Search order history by shop, item or ID..." class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs">
               <div id="sub-ag-orders-list" class="space-y-2.5"></div>
-            </div>
-
-            <!-- PAGE 3: AGENT PROFILE -->
-            <div id="sub-ag-profile-section" class="hidden space-y-3">
-              <div class="bg-white border border-slate-200 rounded-3xl p-4 flex flex-col items-center text-center space-y-2">
-                <div onclick="document.getElementById('sub-prof-photo-input').click()" class="relative w-20 h-20 rounded-full bg-slate-900 text-white flex items-center justify-center font-black text-xl overflow-hidden cursor-pointer border-2 border-brand-500 shadow">
-                  <img id="sub-prof-avatar-img" src="" alt="Profile" class="w-full h-full object-cover hidden">
-                  <span id="sub-prof-initials">DS</span>
-                  <span class="absolute bottom-0 inset-x-0 bg-black/65 text-white text-[9px] font-bold py-0.5">Change</span>
-                </div>
-                <input type="file" id="sub-prof-photo-input" accept="image/*" onchange="handleSubAgentPhotoUpload(event)" class="hidden">
-                <h4 id="sub-prof-display-name" class="font-black text-sm text-slate-900">Debasish Samanta</h4>
-                <div class="flex items-center gap-1.5">
-                  <span id="sub-prof-id-pill" class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-mono font-black text-[10px]">AM24-DEBASISH02</span>
-                  <span id="sub-prof-role-pill" class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-bold text-[10px]">Field Executive</span>
-                </div>
-              </div>
-
-              <form onsubmit="saveSubAgentProfileDetails(event)" class="bg-white border border-slate-200 rounded-3xl p-4 space-y-2.5 text-xs">
-                <div>
-                  <label class="text-[10px] font-bold text-slate-500 block mb-1">Agent Login ID (Assigned)</label>
-                  <input type="text" id="sub-prof-login-id" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 font-mono font-black text-slate-600">
-                </div>
-                <div>
-                  <label class="text-[10px] font-bold text-slate-500 block mb-1">Full Name *</label>
-                  <input type="text" id="sub-prof-name" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
-                </div>
-                <div>
-                  <label class="text-[10px] font-bold text-slate-500 block mb-1">Phone Number *</label>
-                  <input type="tel" id="sub-prof-phone" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
-                </div>
-                <div>
-                  <label class="text-[10px] font-bold text-slate-500 block mb-1">Gmail Address</label>
-                  <input type="email" id="sub-prof-email" placeholder="agent@gmail.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
-                </div>
-                <div>
-                  <label class="text-[10px] font-bold text-slate-500 block mb-1">Assigned Market Beat</label>
-                  <input type="text" id="sub-prof-beat" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 font-semibold text-slate-600">
-                </div>
-                <div class="grid grid-cols-2 gap-2 pt-1 text-center">
-                  <div class="p-2 rounded-xl bg-slate-50 border border-slate-200"><span class="text-[9px] text-slate-400 block">TARGET</span><strong id="sub-prof-target" class="font-black text-slate-900">19 / 25 Shops</strong></div>
-                  <div class="p-2 rounded-xl bg-slate-50 border border-slate-200"><span class="text-[9px] text-slate-400 block">COMMISSION</span><strong id="sub-prof-comm" class="font-black text-brand-600">2.0%</strong></div>
-                </div>
-                <button type="submit" class="w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black text-xs shadow">Save Profile Details</button>
-              </form>
             </div>
 
             <!-- PAGE 4: PAYMENTS & KHATA COLLECTION -->
@@ -1932,18 +1900,158 @@
                 <div id="sub-pay-history-list" class="space-y-2"></div>
               </div>
             </div>
+
+            <!-- PAGE 3: AGENT PROFILE -->
+            <div id="sub-ag-profile-section" class="hidden space-y-3">
+              <div class="bg-white border border-slate-200 rounded-3xl p-4 flex flex-col items-center text-center space-y-2">
+                <div onclick="document.getElementById('sub-prof-photo-input').click()" class="relative w-20 h-20 rounded-full bg-slate-900 text-white flex items-center justify-center font-black text-xl overflow-hidden cursor-pointer border-2 border-brand-500 shadow">
+                  <img id="sub-prof-avatar-img" src="" alt="Profile" class="w-full h-full object-cover hidden">
+                  <span id="sub-prof-initials">DS</span>
+                  <span class="absolute bottom-0 inset-x-0 bg-black/65 text-white text-[9px] font-bold py-0.5">Change</span>
+                </div>
+                <input type="file" id="sub-prof-photo-input" accept="image/*" onchange="handleSubAgentPhotoUpload(event)" class="hidden">
+                <h4 id="sub-prof-display-name" class="font-black text-sm text-slate-900">Debasish Samanta</h4>
+                <div class="flex items-center gap-1.5">
+                  <span id="sub-prof-id-pill" class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-mono font-black text-[10px]">AM24-DEBASISH02</span>
+                  <span id="sub-prof-role-pill" class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-bold text-[10px]">Field Executive</span>
+                </div>
+              </div>
+
+              <form onsubmit="saveSubAgentProfileDetails(event)" class="bg-white border border-slate-200 rounded-3xl p-4 space-y-2.5 text-xs">
+                <div>
+                  <label class="text-[10px] font-bold text-slate-500 block mb-1">Agent Login ID (Assigned)</label>
+                  <input type="text" id="sub-prof-login-id" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 font-mono font-black text-slate-600">
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold text-slate-500 block mb-1">Full Name *</label>
+                  <input type="text" id="sub-prof-name" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold text-slate-500 block mb-1">Phone Number *</label>
+                  <input type="tel" id="sub-prof-phone" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold text-slate-500 block mb-1">Gmail Address</label>
+                  <input type="email" id="sub-prof-email" placeholder="agent@gmail.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold text-slate-500 block mb-1">Assigned Market Beat</label>
+                  <input type="text" id="sub-prof-beat" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 font-semibold text-slate-600">
+                </div>
+
+                <!-- Profile-Only Monthly Kirana Target, GMV, Commission & New Shop Card -->
+                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-2 text-[11px]">
+                  <div class="flex items-center justify-between gap-2">
+                    <span id="sub-ag-target-month-label" class="text-[9.5px] font-black text-slate-500 uppercase">MONTHLY KIRANA TARGET</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-slate-500 font-semibold">Stores Onboarded:</span>
+                    <strong id="sub-ag-target-txt" class="font-black text-slate-900">0 / 25 Shops</strong>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-slate-500"><span id="sub-ag-gmv-month-label">This Month GMV</span>: <strong id="sub-ag-gmv-txt" class="text-emerald-700 font-black">₹0</strong></span>
+                    <span class="text-slate-500"><span id="sub-ag-comm-rate-label">Commission (2%)</span>: <strong id="sub-ag-comm-txt" class="text-brand-600 font-black">₹0</strong></span>
+                  </div>
+                  <div id="sub-ag-order-task-banner" onclick="switchSubAgentPage('tasks')" class="cursor-pointer p-2 rounded-xl bg-emerald-50/80 border border-emerald-200 text-[10px] font-bold text-emerald-900 flex items-center justify-between gap-2 hover:opacity-95 transition">
+                    <span>Checking today's order task...</span>
+                  </div>
+                </div>
+
+                <!-- Bank Account & Commission Payout Details -->
+                <div class="p-3 rounded-2xl bg-emerald-50/60 border border-emerald-200/80 space-y-2.5">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+                      <i class="ph-bold ph-bank text-emerald-600 text-sm"></i>
+                      <span>Commission Payout Bank Details</span>
+                    </span>
+                    <span id="sub-prof-bank-status" class="px-2 py-0.5 rounded-full bg-slate-200 text-slate-600 text-[9px] font-black">NOT ADDED</span>
+                  </div>
+                  <div>
+                    <label class="text-[10px] font-bold text-slate-600 block mb-1">Account Holder Name</label>
+                    <input type="text" id="sub-prof-bank-holder" placeholder="As per Bank Passbook" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
+                  </div>
+                  <div>
+                    <label class="text-[10px] font-bold text-slate-600 block mb-1">Bank Name</label>
+                    <input type="text" id="sub-prof-bank-name" placeholder="e.g. State Bank of India, HDFC, PNB" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
+                  </div>
+                  <div class="grid grid-cols-2 gap-2">
+                    <div>
+                      <label class="text-[10px] font-bold text-slate-600 block mb-1">Account Number</label>
+                      <input type="text" id="sub-prof-bank-ac" placeholder="Enter A/C No." class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold text-slate-900">
+                    </div>
+                    <div>
+                      <label class="text-[10px] font-bold text-slate-600 block mb-1">IFSC Code</label>
+                      <input type="text" id="sub-prof-bank-ifsc" placeholder="e.g. SBIN0001234" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold uppercase text-slate-900">
+                    </div>
+                  </div>
+                  <div>
+                    <label class="text-[10px] font-bold text-slate-600 block mb-1">UPI ID (Optional)</label>
+                    <input type="text" id="sub-prof-bank-upi" placeholder="e.g. name@okaxis / mobile@ibl" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 font-mono font-semibold text-slate-900">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 pt-1 text-center">
+                  <div class="p-2 rounded-xl bg-slate-50 border border-slate-200"><span class="text-[9px] text-slate-400 block">TARGET</span><strong id="sub-prof-target" class="font-black text-slate-900">19 / 25 Shops</strong></div>
+                  <div class="p-2 rounded-xl bg-slate-50 border border-slate-200"><span class="text-[9px] text-slate-400 block">COMMISSION</span><strong id="sub-prof-comm" class="font-black text-brand-600">2.0%</strong></div>
+                </div>
+                <button type="submit" class="w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black text-xs shadow">Save Profile &amp; Bank Details</button>
+              </form>
+
+              <!-- Commission Payout & History Card -->
+              <div id="sub-prof-payout-card" class="bg-white border border-slate-200 rounded-3xl p-4 space-y-3 text-xs shadow-2xs">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                  <span class="font-black text-slate-900 flex items-center gap-1.5">
+                    <i class="ph-bold ph-wallet text-brand-600 text-base"></i>
+                    <span>Commission Payout &amp; History</span>
+                  </span>
+                  <span id="sub-prof-payout-month-badge" class="px-2 py-0.5 rounded-full bg-orange-50 text-brand-700 text-[9px] font-black uppercase">THIS MONTH</span>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2">
+                  <div class="p-2 rounded-2xl bg-orange-50/70 border border-orange-200/80">
+                    <span class="text-[8.5px] font-extrabold uppercase text-slate-500 block">THIS MONTH EARNED</span>
+                    <strong id="sub-prof-payout-earned" class="text-xs font-black text-slate-900 mt-0.5 block">₹0</strong>
+                  </div>
+                  <div class="p-2 rounded-2xl bg-amber-50/70 border border-amber-200/80">
+                    <span class="text-[8.5px] font-extrabold uppercase text-amber-800 block">UNPAID DUE</span>
+                    <strong id="sub-prof-payout-pending" class="text-xs font-black text-brand-600 mt-0.5 block">₹0</strong>
+                  </div>
+                  <div class="p-2 rounded-2xl bg-emerald-50/70 border border-emerald-200/80">
+                    <span class="text-[8.5px] font-extrabold uppercase text-emerald-800 block">TOTAL PAID OUT</span>
+                    <strong id="sub-prof-payout-paid" class="text-xs font-black text-emerald-700 mt-0.5 block">₹0</strong>
+                  </div>
+                </div>
+
+                <div class="text-[10px] text-slate-500 bg-slate-50 border border-slate-200/80 rounded-xl px-2.5 py-1.5 flex items-center gap-1.5">
+                  <i class="ph-bold ph-arrows-clockwise text-brand-600 shrink-0"></i>
+                  <span>Auto-Reset Rule: Previous month's commission resets to ₹0 automatically on the 1st of every new month.</span>
+                </div>
+
+                <div class="flex items-center justify-between pt-0.5">
+                  <span class="text-[9.5px] font-black uppercase tracking-wider text-slate-400">ALL PAYOUT HISTORY</span>
+                  <span id="sub-prof-payout-count" class="text-[10px] font-bold text-slate-500">0 Payouts</span>
+                </div>
+                <div id="sub-prof-payout-history-list" class="space-y-2 max-h-64 overflow-y-auto"></div>
+              </div>
+
+              <!-- Sign Out Button inside Profile Page -->
+              <button type="button" onclick="logoutFieldAgentApp()" class="w-full py-3 rounded-2xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-black text-xs flex items-center justify-center gap-2 transition">
+                <i class="ph-bold ph-sign-out text-sm"></i>
+                <span>Sign Out from Agent App</span>
+              </button>
+            </div>
           </div>
 
           <!-- Bottom App Tab Bar -->
           <div class="bg-white border-t border-slate-200 px-1.5 py-2 grid grid-cols-6 items-center text-[9px] shrink-0">
             <button type="button" id="sub-nav-btn-kiranas" onclick="switchSubAgentPage('kiranas')" class="flex flex-col items-center gap-1 text-rose-600 font-extrabold">
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M4 9.5V19a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 20 19V9.5" stroke="currentColor" stroke-width="1.9"/><path d="M3 9.5 4.8 4h14.4L21 9.5a2.5 2.5 0 0 1-4.5 1.5 2.5 2.5 0 0 1-4.5 0 2.5 2.5 0 0 1-4.5 0A2.5 2.5 0 0 1 3 9.5Z" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-              <span>Shops (<span id="sub-nav-kiranas-badge">2</span>)</span>
+              <span>Shops</span>
             </button>
             <button type="button" id="sub-nav-btn-tasks" onclick="switchSubAgentPage('tasks')" class="relative flex flex-col items-center gap-1 text-slate-600 font-bold">
               <span id="sub-nav-tasks-dot" class="hidden absolute top-0 right-2.5 w-2 h-2 rounded-full bg-emerald-500"></span>
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="16" height="17" rx="3" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-width="1.8"/><path d="m8.5 10 2 2 4.5-4.5M8.5 15.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span>Tasks (<span id="sub-nav-tasks-badge">0</span>)</span>
+              <span>Tasks<span id="sub-nav-tasks-badge" class="hidden"></span></span>
             </button>
             <button type="button" id="sub-nav-btn-take-order" onclick="openSubAssistedCatalogModal()" class="flex flex-col items-center gap-1 text-amber-600 font-extrabold">
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4h2.5l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.8a1.5 1.5 0 0 0 1.4-1.1L20.5 7.5H6"/><circle cx="9.5" cy="19.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="17.5" cy="19.5" r="1.4" fill="currentColor" stroke="none"/></svg>
@@ -2147,7 +2255,7 @@
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
     import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
     import { getDatabase, ref, set as rtdbSet, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
     // Your web app's Firebase configuration
@@ -2168,10 +2276,8 @@
     let analytics = null;
     isSupported().then((supported) => {
       if (supported) {
-        try {
-          analytics = getAnalytics(app);
-          window.__firebaseAnalytics = analytics;
-        } catch (e) {}
+        analytics = getAnalytics(app);
+        window.__firebaseAnalytics = analytics;
       }
     }).catch(() => {});
     window.__firebaseApp = app;
@@ -2420,11 +2526,17 @@
           beat: 'Contai Central & Digha Bypass',
           transport: 'Two-Wheeler (Bike / Scooter)',
           target: 25,
-          onboardedCount: 19,
+          onboardedCount: 2,
           commPct: 2.0,
+          dailyCommRates: {},
           loginId: 'AM24-DEBASISH02',
           password: '1234',
           photo: '',
+          bankHolder: '',
+          bankName: '',
+          bankAcNo: '',
+          bankIfsc: '',
+          bankUpi: '',
           orderTaskDate: '',
           orderTaskShopIds: ['ALL']
         }
@@ -2451,6 +2563,7 @@
           source: 'Agent: Debasish Samanta',
           agentId: 'AG-01',
           agentName: 'Debasish Samanta',
+          agentCommPct: 2.0,
           agentComm: 271,
           status: 'NEW',
           date: '2026-11-17'
@@ -2475,6 +2588,7 @@
           source: 'Agent: Debasish Samanta',
           agentId: 'AG-01',
           agentName: 'Debasish Samanta',
+          agentCommPct: 2.0,
           agentComm: 129,
           status: 'DISPATCHED',
           date: '2026-11-16'
@@ -2493,6 +2607,7 @@
           date: '2026-11-16'
         }
       ],
+      agentPayouts: [],
       notifications: []
     };
 
@@ -3652,7 +3767,7 @@
             <td class="py-3 px-4 text-right space-x-1 whitespace-nowrap">
               <button type="button" onclick="openWholesaleBillModal('${o.id}')" class="px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-brand-600 text-white font-black text-[11px] transition">Bill</button>
               ${o.status !== 'DISPATCHED' && o.status !== 'CANCELLED' ? `<button type="button" onclick="markOrderDispatched('${o.id}')" class="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px]">Dispatch</button>` : ''}
-              ${o.status !== 'CANCELLED' ? `<button type="button" onclick="openCancelOrderModal('${o.id}')" class="px-2.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-bold text-[11px]">Cancel</button>` : ''}
+              ${o.status !== 'DISPATCHED' && o.status !== 'CANCELLED' ? `<button type="button" onclick="openCancelOrderModal('${o.id}')" class="px-2.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-bold text-[11px]">Cancel</button>` : ''}
             </td>
           </tr>
         `;
@@ -3869,6 +3984,76 @@
       renderMarketingTab();
     }
 
+    function getAgentOnboardedShopsCount(ag, monthYm = '') {
+      if (!ag) return 0;
+      const owned = getAgentOwnedKiranaShops(ag);
+      if (monthYm) {
+        const monthlyOwned = owned.filter(s => (s.onboardedDate || '').trim().startsWith(monthYm));
+        if (monthlyOwned.length > 0) return monthlyOwned.length;
+      }
+      if (owned.length > 0) return owned.length;
+      return Math.max(0, Number(ag.onboardedCount) || 0);
+    }
+
+    function getAgentRateForDate(ag, dateStr) {
+      if (!ag) return 2.0;
+      const d = (dateStr || getLocalIsoDateOffset(0)).trim();
+      const map = ag.dailyCommRates || {};
+      if (Object.prototype.hasOwnProperty.call(map, d) && map[d] !== '' && !isNaN(Number(map[d]))) {
+        return Number(map[d]);
+      }
+      const pastDates = Object.keys(map).filter(k => k <= d && !isNaN(Number(map[k]))).sort();
+      if (pastDates.length > 0) {
+        return Number(map[pastDates[pastDates.length - 1]]);
+      }
+      return Number(ag.commPct) || 0;
+    }
+
+    function getOrderLockedCommission(order, ag = null) {
+      if (!order) return 0;
+      const amt = Number(order.amount) || 0;
+      if (order.agentComm !== undefined && order.agentComm !== null && !isNaN(Number(order.agentComm))) {
+        return Math.round(Number(order.agentComm) * 100) / 100;
+      }
+      if (order.agentCommPct !== undefined && order.agentCommPct !== null && !isNaN(Number(order.agentCommPct))) {
+        return Math.round(amt * (Number(order.agentCommPct) / 100) * 100) / 100;
+      }
+      const matchedAg = ag || (appState.marketingAgents || []).find(a => a.id === order.agentId || a.name === order.agentName);
+      const pct = getAgentRateForDate(matchedAg, order.date);
+      return Math.round(amt * (pct / 100) * 100) / 100;
+    }
+
+    function getAgentCommissionEarned(ag, ordersList) {
+      return Math.round(
+        (ordersList || []).reduce((sum, o) => sum + getOrderLockedCommission(o, ag), 0) * 100
+      ) / 100;
+    }
+
+    function getAgentCurrentMonthStats(ag) {
+      const currentYm = getLocalIsoDateOffset(0).slice(0, 7);
+      if (!ag) {
+        return { currentYm, monthGmv: 0, monthComm: 0, paidThisMonth: 0, unpaidThisMonth: 0, totalPaidAllTime: 0, myPayouts: [] };
+      }
+      const currentMonthActiveOrders = (appState.wholesaleOrders || []).filter(o =>
+        o.status !== 'CANCELLED' &&
+        (o.agentId === ag.id || (o.agentName && o.agentName === ag.name) || (o.source && o.source.includes(ag.name))) &&
+        (o.date || '').trim().startsWith(currentYm)
+      );
+      const monthGmv = Math.round(currentMonthActiveOrders.reduce((sum, o) => sum + (Number(o.amount) || 0), 0) * 100) / 100;
+      const monthComm = getAgentCommissionEarned(ag, currentMonthActiveOrders);
+
+      const myPayouts = (appState.agentPayouts || []).filter(p => p.agentId === ag.id || p.agentName === ag.name);
+      const paidThisMonth = Math.round(
+        myPayouts
+          .filter(p => (p.month || (p.date || '').slice(0, 7)) === currentYm)
+          .reduce((s, p) => s + (Number(p.amount) || 0), 0) * 100
+      ) / 100;
+      const unpaidThisMonth = Math.max(0, Math.round((monthComm - paidThisMonth) * 100) / 100);
+      const totalPaidAllTime = Math.round(myPayouts.reduce((s, p) => s + (Number(p.amount) || 0), 0) * 100) / 100;
+
+      return { currentYm, monthGmv, monthComm, paidThisMonth, unpaidThisMonth, totalPaidAllTime, myPayouts };
+    }
+
     function renderMarketingTab() {
       const currentYm = getLocalIsoDateOffset(0).slice(0, 7);
       const activeYm = getActiveMarketingMonth();
@@ -3890,21 +4075,17 @@
         o.agentId === ag.id || (o.agentName && o.agentName === ag.name) || (o.source && o.source.includes(ag.name))
       );
 
-      const getOrderAgentCommission = (order, forcedPct = null) => {
-        if (forcedPct !== null) {
-          return Math.round((Number(order.amount) || 0) * (forcedPct / 100) * 100) / 100;
-        }
-        const matchedAg = agents.find(a => a.id === order.agentId || a.name === order.agentName);
-        const pct = matchedAg ? (Number(matchedAg.commPct) || 0) : 2.0;
-        return Math.round((Number(order.amount) || 0) * (pct / 100) * 100) / 100;
+      const getOrderAgentCommission = (order, forcedAg = null) => {
+        return getOrderLockedCommission(order, forcedAg);
       };
 
-      const totalOnboarded = agents.reduce((s, a) => s + (Number(a.onboardedCount) || 0), 0);
+      const totalOnboarded = agents.reduce((s, a) => s + getAgentOnboardedShopsCount(a), 0);
       const totalGoal = agents.reduce((s, a) => s + (Number(a.target) || 25), 0);
       const fieldGmv = Math.round(activeMonthlyAgentOrders.reduce((s, o) => s + (Number(o.amount) || 0), 0) * 100) / 100;
       const commPool = Math.round(activeMonthlyAgentOrders.reduce((s, o) => s + getOrderAgentCommission(o), 0) * 100) / 100;
+      const todayStr = getLocalIsoDateOffset(0);
       const avgCommPct = agents.length
-        ? (agents.reduce((s, a) => s + (Number(a.commPct) || 0), 0) / agents.length).toFixed(1)
+        ? (agents.reduce((s, a) => s + getAgentRateForDate(a, todayStr), 0) / agents.length).toFixed(1)
         : '2.0';
 
       const elTot = document.getElementById('stat-total-marketing');
@@ -3925,14 +4106,16 @@
       const badge = document.getElementById('badge-agent-orders-count');
       if (badge) badge.textContent = `${agents.length} Active`;
 
-      const todayStr = getLocalIsoDateOffset(0);
       const listEl = document.getElementById('marketing-agents-list');
       if (listEl) {
         listEl.innerHTML = agents.map(ag => {
           const agOrders = getAgentOrdersForMonth(ag);
-          const agCommPct = Number(ag.commPct) || 0;
+          const agCommPct = getAgentRateForDate(ag, todayStr);
+          const tomorrowStr = getLocalIsoDateOffset(1);
+          const hasTomorrowRate = ag.dailyCommRates && Object.prototype.hasOwnProperty.call(ag.dailyCommRates, tomorrowStr);
+          const tomorrowRateLabel = hasTomorrowRate ? ` • Tmrw: ${ag.dailyCommRates[tomorrowStr]}%` : '';
           const agMonthlySales = Math.round(agOrders.reduce((s, o) => s + (Number(o.amount) || 0), 0) * 100) / 100;
-          const agMonthlyEarned = Math.round(agOrders.reduce((s, o) => s + getOrderAgentCommission(o, agCommPct), 0) * 100) / 100;
+          const agMonthlyEarned = Math.round(agOrders.reduce((s, o) => s + getOrderAgentCommission(o, ag), 0) * 100) / 100;
           const taskDate = (ag.orderTaskDate || '').trim();
           const taskShopIds = getAgentTaskShopIds(ag);
           const isAllStores = taskShopIds.includes('ALL');
@@ -4025,6 +4208,23 @@
               </div>
             </div>
 
+            <!-- Admin Commission Payout Bar -->
+            <div class="flex items-center justify-between gap-2 p-2.5 rounded-2xl bg-slate-50 border border-slate-200/90 text-[11px]">
+              <div>
+                <span class="text-[9.5px] font-extrabold uppercase text-slate-400 block">PAYOUT STATUS (${formatMonthLabel(activeYm)})</span>
+                ${(() => {
+                  const paidThisMo = (appState.agentPayouts || [])
+                    .filter(p => p.agentId === ag.id && (p.month || (p.date || '').slice(0, 7)) === activeYm)
+                    .reduce((s, p) => s + (Number(p.amount) || 0), 0);
+                  const unpaidThisMo = Math.max(0, Math.round((agMonthlyEarned - paidThisMo) * 100) / 100);
+                  return `<strong class="font-black ${unpaidThisMo > 0 ? 'text-brand-600' : 'text-emerald-700'}">Unpaid: ₹${formatPriceVal(unpaidThisMo)}</strong> <span class="text-slate-400">• Paid: ₹${formatPriceVal(paidThisMo)}</span>`;
+                })()}
+              </div>
+              <button type="button" onclick="recordAdminAgentPayout('${ag.id}', '${activeYm}')" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[10.5px] shadow-2xs transition shrink-0">
+                + Pay Out Commission
+              </button>
+            </div>
+
             <div class="grid grid-cols-4 gap-2 bg-slate-50 border border-slate-200/80 rounded-2xl p-3 text-center">
               <div>
                 <span class="text-[9px] font-extrabold text-slate-400 uppercase block">LOGIN ID</span>
@@ -4036,13 +4236,28 @@
               </div>
               <div>
                 <span class="text-[9px] font-extrabold text-slate-400 uppercase block">TARGET</span>
-                <strong class="text-[11px] font-black text-slate-900">${ag.onboardedCount || 0}/${ag.target || 25}</strong>
+                <strong class="text-[11px] font-black text-slate-900">${getAgentOnboardedShopsCount(ag)}/${ag.target || 25}</strong>
               </div>
-              <div>
-                <span class="text-[9px] font-extrabold text-slate-400 uppercase block">COMM. RATE</span>
-                <strong class="text-[11px] font-black text-brand-600">${agCommPct}%</strong>
+              <div onclick="openEditAgentCommModal('${ag.id}')" title="Click to set Today / Tomorrow / Date Commission Rate" class="cursor-pointer rounded-xl px-1 py-0.5 hover:bg-orange-100/70 transition">
+                <span class="text-[9px] font-extrabold text-slate-400 uppercase block">TODAY COMM.</span>
+                <strong class="text-[11px] font-black text-brand-600 inline-flex items-center gap-1">${agCommPct}% <i class="ph-bold ph-pencil-simple text-[10px]"></i></strong>
+                ${tomorrowRateLabel ? `<span class="text-[8.5px] font-extrabold text-emerald-700 block leading-tight">${tomorrowRateLabel.replace(' • ', '')}</span>` : ''}
               </div>
             </div>
+
+            ${ag.bankAcNo ? `
+            <div class="p-2.5 rounded-2xl bg-emerald-50/70 border border-emerald-200 flex items-center justify-between gap-2 text-[10.5px]">
+              <div class="min-w-0">
+                <span class="font-black text-emerald-800 uppercase text-[9px] block">✓ PAYOUT BANK VERIFIED</span>
+                <div class="font-bold text-slate-800 truncate">${ag.bankName || 'Bank'} • A/C: <span class="font-mono">${ag.bankAcNo}</span> (${ag.bankIfsc || ''})</div>
+                <div class="text-[10px] text-slate-500 truncate">Holder: ${ag.bankHolder || ag.name}${ag.bankUpi ? ` • UPI: ${ag.bankUpi}` : ''}</div>
+              </div>
+            </div>
+            ` : `
+            <div class="px-3 py-2 rounded-xl bg-slate-50 border border-dashed border-slate-200 text-[10px] text-slate-400 font-semibold">
+              Bank Account not added by agent yet (Commission payout pending bank setup)
+            </div>
+            `}
           </div>
         `;
         }).join('');
@@ -4077,7 +4292,7 @@
                 </td>
                 <td class="py-2.5 px-4">
                   <div class="font-black text-slate-900">₹${formatPriceVal(o.amount || 0)}</div>
-                  <div class="text-[10px] text-emerald-700 font-bold">+₹${formatPriceVal(getOrderAgentCommission(o))} Comm</div>
+                  <div class="text-[10px] text-emerald-700 font-bold">+₹${formatPriceVal(getOrderAgentCommission(o))} Comm${o.agentCommPct !== undefined ? ` (${o.agentCommPct}%)` : ''}</div>
                 </td>
                 <td class="py-2.5 px-4"><span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-black">${o.status}</span></td>
                 <td class="py-2.5 px-4 text-right"><button type="button" onclick="openWholesaleBillModal('${o.id}')" class="px-2.5 py-1 rounded-lg bg-slate-900 text-white font-black text-[10px]">Bill</button></td>
@@ -4095,6 +4310,103 @@
 
     function broadcastSalesCampaign() {
       showToast('Monthly Kirana Scheme & Slab Offer broadcasted to all Field Agents!');
+    }
+
+    function openEditAgentCommModal(agentId) {
+      const ag = (appState.marketingAgents || []).find(a => a.id === agentId);
+      if (!ag) return;
+      const todayStr = getLocalIsoDateOffset(0);
+      document.getElementById('edit-comm-agent-id').value = ag.id;
+      document.getElementById('edit-comm-agent-subtitle').textContent = `${ag.name} (${ag.loginId})`;
+      const dateInp = document.getElementById('edit-comm-date-input');
+      if (dateInp) {
+        dateInp.value = todayStr;
+        dateInp.onchange = () => {
+          document.getElementById('edit-comm-rate-input').value = getAgentRateForDate(ag, dateInp.value);
+        };
+      }
+      document.getElementById('edit-comm-rate-input').value = getAgentRateForDate(ag, todayStr);
+      document.getElementById('edit-agent-comm-modal').classList.remove('hidden');
+    }
+
+    function handleSaveAgentCommRate(e) {
+      e.preventDefault();
+      const agentId = document.getElementById('edit-comm-agent-id').value;
+      const newRate = parseFloat(document.getElementById('edit-comm-rate-input').value);
+      const effectiveDate = (document.getElementById('edit-comm-date-input')?.value || getLocalIsoDateOffset(0)).trim();
+      const ag = (appState.marketingAgents || []).find(a => a.id === agentId);
+      if (!ag || isNaN(newRate) || newRate < 0) return;
+
+      const roundedRate = Math.round(newRate * 100) / 100;
+      ag.dailyCommRates = ag.dailyCommRates || {};
+      ag.dailyCommRates[effectiveDate] = roundedRate;
+
+      const todayStr = getLocalIsoDateOffset(0);
+      if (effectiveDate === todayStr) {
+        ag.commPct = roundedRate;
+      }
+
+      // Only update orders booked on that specific effective date — yesterday & other days stay locked!
+      (appState.wholesaleOrders || []).forEach(o => {
+        const isThisAgent = o.agentId === ag.id || (o.agentName && o.agentName === ag.name) || (o.source && o.source.includes(ag.name));
+        if (isThisAgent && (o.date || '').trim() === effectiveDate) {
+          o.agentCommPct = roundedRate;
+          o.agentComm = Math.round((Number(o.amount) || 0) * (roundedRate / 100) * 100) / 100;
+        }
+      });
+
+      persistAndBroadcastState();
+      closeModal('edit-agent-comm-modal');
+      refreshAllViews();
+      if (document.body.classList.contains('agent-mobile-locked')) {
+        renderSubAgentWorkspace();
+      }
+      showToast(`Commission rate set to ${roundedRate}% for ${effectiveDate} (${ag.name})`);
+    }
+
+    function recordAdminAgentPayout(agentId, targetYm) {
+      const ag = (appState.marketingAgents || []).find(a => a.id === agentId);
+      if (!ag) return;
+      const ym = targetYm || getActiveMarketingMonth();
+      const monthOrders = (appState.wholesaleOrders || []).filter(o =>
+        o.status !== 'CANCELLED' &&
+        (o.agentId === ag.id || (o.agentName && o.agentName === ag.name) || (o.source && o.source.includes(ag.name))) &&
+        (o.date || '').trim().startsWith(ym)
+      );
+      const earned = getAgentCommissionEarned(ag, monthOrders);
+      appState.agentPayouts = appState.agentPayouts || [];
+      const alreadyPaid = appState.agentPayouts
+        .filter(p => p.agentId === ag.id && (p.month || (p.date || '').slice(0, 7)) === ym)
+        .reduce((s, p) => s + (Number(p.amount) || 0), 0);
+      const unpaid = Math.max(0, Math.round((earned - alreadyPaid) * 100) / 100);
+
+      if (unpaid <= 0) {
+        showToast(`No unpaid commission remaining for ${ag.name} in ${formatMonthLabel(ym)}`);
+        return;
+      }
+
+      const modeLabel = ag.bankAcNo
+        ? `Bank Transfer (${ag.bankName || 'A/C'} ••••${String(ag.bankAcNo).slice(-4)})`
+        : (ag.bankUpi ? `UPI (${ag.bankUpi})` : 'Cash / Direct Settlement');
+
+      const payoutEntry = {
+        id: 'POUT-' + Math.floor(1000 + Math.random() * 8999),
+        agentId: ag.id,
+        agentName: ag.name,
+        month: ym,
+        monthLabel: formatMonthLabel(ym),
+        amount: unpaid,
+        mode: modeLabel,
+        date: getLocalIsoDateOffset(0),
+        status: 'PAID'
+      };
+      appState.agentPayouts.unshift(payoutEntry);
+      persistAndBroadcastState();
+      refreshAllViews();
+      if (document.body.classList.contains('agent-mobile-locked')) {
+        renderSubAgentWorkspace();
+      }
+      showToast(`Paid ₹${formatPriceVal(unpaid)} (${formatMonthLabel(ym)}) to ${ag.name}!`);
     }
 
     function getAgentTaskShopIds(ag) {
@@ -4210,9 +4522,15 @@
         target: parseInt(document.getElementById('new-ag-target').value, 10) || 25,
         onboardedCount: 0,
         commPct: parseFloat(document.getElementById('new-ag-comm').value) || 2.0,
+        dailyCommRates: { [getLocalIsoDateOffset(0)]: parseFloat(document.getElementById('new-ag-comm').value) || 2.0 },
         loginId: document.getElementById('new-ag-login').value.trim(),
         password: document.getElementById('new-ag-pass').value.trim(),
         photo: '',
+        bankHolder: '',
+        bankName: '',
+        bankAcNo: '',
+        bankIfsc: '',
+        bankUpi: '',
         orderTaskDate: '',
         orderTaskShopIds: ['ALL'],
         orderTaskShopId: 'ALL'
@@ -4679,8 +4997,17 @@
 
       const navBadge = document.getElementById('sub-nav-tasks-badge');
       const navDot = document.getElementById('sub-nav-tasks-dot');
-      if (navBadge) navBadge.textContent = isTaskToday ? assignedShops.length : 0;
-      if (navDot) navDot.classList.toggle('hidden', !isTaskToday || assignedShops.length === 0);
+      const taskNavCount = isTaskToday ? assignedShops.length : 0;
+      if (navBadge) {
+        if (taskNavCount > 0) {
+          navBadge.textContent = ` (${taskNavCount})`;
+          navBadge.classList.remove('hidden');
+        } else {
+          navBadge.textContent = '';
+          navBadge.classList.add('hidden');
+        }
+      }
+      if (navDot) navDot.classList.toggle('hidden', taskNavCount === 0);
 
       const dateSub = document.getElementById('sub-tasks-date-sub');
       const statusPill = document.getElementById('sub-tasks-status-pill');
@@ -4783,14 +5110,12 @@
       const ordersSec = document.getElementById('sub-ag-orders-section');
       const paymentsSec = document.getElementById('sub-ag-payments-section');
       const profileSec = document.getElementById('sub-ag-profile-section');
-      const quickActions = document.getElementById('sub-ag-quick-actions');
 
       if (kiranasSec) kiranasSec.classList.toggle('hidden', page !== 'kiranas');
       if (tasksSec) tasksSec.classList.toggle('hidden', page !== 'tasks');
       if (ordersSec) ordersSec.classList.toggle('hidden', page !== 'orders');
       if (paymentsSec) paymentsSec.classList.toggle('hidden', page !== 'payments');
       if (profileSec) profileSec.classList.toggle('hidden', page !== 'profile');
-      if (quickActions) quickActions.classList.toggle('hidden', page === 'profile' || page === 'payments' || page === 'tasks');
 
       const btnK = document.getElementById('sub-nav-btn-kiranas');
       const btnT = document.getElementById('sub-nav-btn-tasks');
@@ -4813,6 +5138,14 @@
         sel.value = preselectShopId;
         syncSubPayShopDueHint();
       }
+    }
+
+    function openSubAgentPayoutHistory() {
+      switchSubAgentPage('profile');
+      setTimeout(() => {
+        const card = document.getElementById('sub-prof-payout-card');
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 60);
     }
 
     function syncSubPayShopDueHint() {
@@ -5031,6 +5364,7 @@
           pInit.textContent = initials;
         }
       }
+
       const pDisp = document.getElementById('sub-prof-display-name');
       if (pDisp) pDisp.textContent = ag.name;
       const pIdPill = document.getElementById('sub-prof-id-pill');
@@ -5047,14 +5381,83 @@
       if (pEmail && document.activeElement !== pEmail) pEmail.value = ag.email || '';
       const pBeat = document.getElementById('sub-prof-beat');
       if (pBeat) pBeat.value = ag.beat;
+      const pBankHolder = document.getElementById('sub-prof-bank-holder');
+      if (pBankHolder && document.activeElement !== pBankHolder) pBankHolder.value = ag.bankHolder || '';
+      const pBankName = document.getElementById('sub-prof-bank-name');
+      if (pBankName && document.activeElement !== pBankName) pBankName.value = ag.bankName || '';
+      const pBankAc = document.getElementById('sub-prof-bank-ac');
+      if (pBankAc && document.activeElement !== pBankAc) pBankAc.value = ag.bankAcNo || '';
+      const pBankIfsc = document.getElementById('sub-prof-bank-ifsc');
+      if (pBankIfsc && document.activeElement !== pBankIfsc) pBankIfsc.value = ag.bankIfsc || '';
+      const pBankUpi = document.getElementById('sub-prof-bank-upi');
+      if (pBankUpi && document.activeElement !== pBankUpi) pBankUpi.value = ag.bankUpi || '';
+      const pBankStatus = document.getElementById('sub-prof-bank-status');
+      if (pBankStatus) {
+        const hasBank = Boolean((ag.bankAcNo || '').trim() || (ag.bankUpi || '').trim());
+        pBankStatus.textContent = hasBank ? '✓ SAVED' : 'NOT ADDED';
+        pBankStatus.className = hasBank
+          ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-black'
+          : 'px-2 py-0.5 rounded-full bg-slate-200 text-slate-600 text-[9px] font-black';
+      }
+
+      const monthStats = getAgentCurrentMonthStats(ag);
+      const currentYm = monthStats.currentYm;
+      const todayIsoForRate = getLocalIsoDateOffset(0);
+      const onboardedShopsCount = getAgentOnboardedShopsCount(ag, currentYm);
+      const targetShopsCount = Number(ag.target) || 25;
+      const agentCommRate = getAgentRateForDate(ag, todayIsoForRate);
+
       const pTarget = document.getElementById('sub-prof-target');
-      if (pTarget) pTarget.textContent = `${ag.onboardedCount || 0} / ${ag.target || 25} Shops`;
+      if (pTarget) pTarget.textContent = `${onboardedShopsCount} / ${targetShopsCount} Shops`;
       const pComm = document.getElementById('sub-prof-comm');
-      if (pComm) pComm.textContent = `${ag.commPct || 2}%`;
+      if (pComm) pComm.textContent = `${agentCommRate}%`;
 
       const allOrders = (appState.wholesaleOrders || []).filter(o => o.agentId === ag.id || (o.source || '').includes(ag.name));
-      const activeOrders = allOrders.filter(o => o.status !== 'CANCELLED');
-      const agentCommRate = Number(ag.commPct) || 0;
+
+      const targetMoLblEl = document.getElementById('sub-ag-target-month-label');
+      if (targetMoLblEl) targetMoLblEl.textContent = `MONTHLY KIRANA TARGET (${formatMonthLabel(currentYm)})`;
+      const targetTxtEl = document.getElementById('sub-ag-target-txt');
+      if (targetTxtEl) targetTxtEl.textContent = `${onboardedShopsCount} / ${targetShopsCount} Shops`;
+      const gmvMoLblEl = document.getElementById('sub-ag-gmv-month-label');
+      if (gmvMoLblEl) gmvMoLblEl.textContent = `${formatMonthLabel(currentYm)} GMV`;
+      const gmvTxtEl = document.getElementById('sub-ag-gmv-txt');
+      if (gmvTxtEl) gmvTxtEl.textContent = '₹' + formatPriceVal(monthStats.monthGmv);
+      const commRateLblEl = document.getElementById('sub-ag-comm-rate-label');
+      if (commRateLblEl) commRateLblEl.textContent = `${formatMonthLabel(currentYm)} Comm. (${agentCommRate}%)`;
+      const commTxtEl = document.getElementById('sub-ag-comm-txt');
+      if (commTxtEl) commTxtEl.textContent = '₹' + formatPriceVal(monthStats.monthComm);
+
+      // Render Commission Payout & Full History inside Agent Profile Page
+      const pMonthBadge = document.getElementById('sub-prof-payout-month-badge');
+      if (pMonthBadge) pMonthBadge.textContent = formatMonthLabel(currentYm);
+      const pEarnedEl = document.getElementById('sub-prof-payout-earned');
+      if (pEarnedEl) pEarnedEl.textContent = '₹' + formatPriceVal(monthStats.monthComm);
+      const pPendingEl = document.getElementById('sub-prof-payout-pending');
+      if (pPendingEl) pPendingEl.textContent = '₹' + formatPriceVal(monthStats.unpaidThisMonth);
+      const pPaidEl = document.getElementById('sub-prof-payout-paid');
+      if (pPaidEl) pPaidEl.textContent = '₹' + formatPriceVal(monthStats.totalPaidAllTime);
+      const pCountEl = document.getElementById('sub-prof-payout-count');
+      if (pCountEl) pCountEl.textContent = `${monthStats.myPayouts.length} Payouts`;
+
+      const payoutHistList = document.getElementById('sub-prof-payout-history-list');
+      if (payoutHistList) {
+        payoutHistList.innerHTML = monthStats.myPayouts.length
+          ? monthStats.myPayouts.map(p => `
+            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-2">
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5">
+                  <span class="font-mono font-black text-brand-600 text-[10.5px]">${p.id}</span>
+                  <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-black">${p.status || 'PAID'}</span>
+                </div>
+                <div class="font-bold text-slate-900 mt-0.5">${p.monthLabel || formatMonthLabel(p.month || '')} Commission</div>
+                <div class="text-[10px] text-slate-500 truncate">${p.date || ''} • ${p.mode || 'Bank Transfer'}</div>
+              </div>
+              <strong class="text-sm font-black text-emerald-700 shrink-0">₹${formatPriceVal(p.amount)}</strong>
+            </div>
+          `).join('')
+          : `<div class="p-4 text-center text-[11px] text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">No payouts settled yet. Current month's earned commission (₹${formatPriceVal(monthStats.monthComm)}) resets automatically at the start of next month.</div>`;
+      }
+
       // Update Single-Day Order Task Banner & Store Access State
       const todayStr = getLocalIsoDateOffset(0);
       const taskDate = (ag.orderTaskDate || '').trim();
@@ -5204,7 +5607,7 @@
                 </div>
                 <div class="flex items-center justify-between text-[11px]">
                   <span class="text-slate-600">Bill (${o.payMode}): <strong class="font-black text-slate-900">₹${formatPriceVal(o.amount)}</strong></span>
-                  <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-black text-[10px]">+₹${formatPriceVal(Math.round((Number(o.amount) || 0) * (agentCommRate / 100) * 100) / 100)} Comm. (${agentCommRate}%)</span>
+                  <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-black text-[10px]">+₹${formatPriceVal(getOrderLockedCommission(o, ag))} Comm. (${o.agentCommPct !== undefined ? o.agentCommPct : getAgentRateForDate(ag, o.date)}%)</span>
                 </div>
                 <div class="grid grid-cols-3 gap-1.5 pt-0.5">
                   <a href="tel:${o.phone || ''}" class="py-1.5 rounded-xl bg-slate-100 text-slate-800 font-bold text-[10.5px] flex items-center justify-center gap-1"><i class="ph-bold ph-phone"></i><span>Call Shop</span></a>
@@ -5286,7 +5689,7 @@
       };
       knownShopIds.add(shop.id);
       appState.kiranaShops.unshift(shop);
-      if (ag) ag.onboardedCount = (Number(ag.onboardedCount) || 0) + 1;
+      if (ag) ag.onboardedCount = getAgentOwnedKiranaShops(ag).length;
       triggerNewKycNotification(shop);
       persistAndBroadcastState();
       e.target.reset();
@@ -5332,9 +5735,15 @@
       ag.name = document.getElementById('sub-prof-name').value.trim();
       ag.phone = document.getElementById('sub-prof-phone').value.trim();
       ag.email = document.getElementById('sub-prof-email').value.trim();
+      ag.bankHolder = (document.getElementById('sub-prof-bank-holder')?.value || '').trim();
+      ag.bankName = (document.getElementById('sub-prof-bank-name')?.value || '').trim();
+      ag.bankAcNo = (document.getElementById('sub-prof-bank-ac')?.value || '').trim();
+      ag.bankIfsc = (document.getElementById('sub-prof-bank-ifsc')?.value || '').trim().toUpperCase();
+      ag.bankUpi = (document.getElementById('sub-prof-bank-upi')?.value || '').trim();
       persistAndBroadcastState();
       renderSubAgentWorkspace();
-      showToast('Profile updated & synced with Admin!');
+      refreshAllViews();
+      showToast('Profile & Bank details saved & synced with Admin!');
     }
 
     function openSubAssistedCatalogModal(preselectShopId) {
@@ -5491,7 +5900,7 @@
           total = Math.round((total + qty * getSkuSlabRate(sku, qty)) * 100) / 100;
         }
       });
-      const commRate = ag ? (Number(ag.commPct) || 0) : 2.0;
+      const commRate = ag ? getAgentRateForDate(ag, getLocalIsoDateOffset(0)) : 2.0;
       const comm = Math.round(total * (commRate / 100) * 100) / 100;
       document.getElementById('sub-agent-cart-units').textContent = `${units} Packs`;
       document.getElementById('sub-agent-cart-incentive').textContent = `+₹${formatPriceVal(comm)} (${commRate}%)`;
@@ -5533,7 +5942,8 @@
         return;
       }
 
-      const commRate = ag ? (Number(ag.commPct) || 0) : 2.0;
+      const todayOrderDate = getLocalIsoDateOffset(0);
+      const commRate = ag ? getAgentRateForDate(ag, todayOrderDate) : 2.0;
       const comm = Math.round(amount * (commRate / 100) * 100) / 100;
       const newOrder = {
         id: 'WB-INV-' + Math.floor(5600 + Math.random() * 3900),
@@ -5553,9 +5963,10 @@
         source: ag ? `Agent: ${ag.name}` : 'Field Agent',
         agentId: ag ? ag.id : 'AG-01',
         agentName: ag ? ag.name : 'Debasish Samanta',
+        agentCommPct: commRate,
         agentComm: comm,
         status: 'NEW',
-        date: getLocalIsoDateOffset(0)
+        date: todayOrderDate
       };
 
       applyOrderInventoryAdjustment(newOrder, -1);
