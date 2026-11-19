@@ -1,28 +1,27 @@
 {
-  "background_color": "#ffffff",
-  "dir": "ltr",
-  "display": "standalone",
-  "name": "ApnaMart24 B2B",
-  "orientation": "portrait",
+  "id": "/index.html",
+  "name": "ApnaMart24 B2B - Central Admin & Field Agent Hub",
+  "short_name": "ApnaMart24 B2B",
+  "description": "Wholesale B2B Distribution, Central Admin Control & Field Marketing Agent Order Hub",
+  "start_url": "/index.html",
   "scope": "/",
-  "short_name": "ApnaMart24",
-  "start_url": "/",
-  "theme_color": "#ea580c",
-  "id": "apnamart24-b2b",
-  "description": "ApnaMart24 B2B Wholesale Operations, Fleet & Kirana Portal",
-  "lang": "en",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#0f172a",
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='36' fill='%230f172a'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='Arial,sans-serif' font-weight='900' font-size='56'%3EAM24%3C/text%3E%3C/svg%3E",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "icon-512.png",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%230f172a'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='Arial,sans-serif' font-weight='900' font-size='150'%3EAM24%3C/text%3E%3C/svg%3E",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ]
 }
