@@ -509,6 +509,15 @@
             </div>
             <span id="badge-agent-orders-count" class="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-black">1 Active</span>
           </button>
+          <button id="nav-delivery" onclick="switchTab('delivery')" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl transition text-slate-700 hover:bg-slate-100 hover:text-slate-900">
+            <div class="flex items-center gap-3">
+              <span class="w-7 h-7 rounded-xl bg-gradient-to-br from-amber-100 to-orange-50 border border-amber-200/70 text-amber-600 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M3 7h11v9H3V7Zm11 3h4l3 3v3h-7v-6Z" fill="#d97706" fill-opacity="0.2" stroke="#d97706" stroke-width="1.8" stroke-linejoin="round"/><circle cx="7.5" cy="17.5" r="1.8" fill="#d97706"/><circle cx="17.5" cy="17.5" r="1.8" fill="#d97706"/></svg>
+              </span>
+              <span class="font-bold text-xs">Delivery Partners &amp; Fleet</span>
+            </div>
+            <span id="badge-delivery-drivers-count" class="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-black">2 Fleet</span>
+          </button>
         </div>
 
         <!-- CATALOG & CREDIT RISK -->
@@ -849,6 +858,7 @@
                 <th class="py-3 px-4">Volume</th>
                 <th class="py-3 px-4">Invoice & Pay Mode</th>
                 <th class="py-3 px-4">Beat / Source</th>
+                <th class="py-3 px-4">Delivery Partner</th>
                 <th class="py-3 px-4">Status</th>
                 <th class="py-3 px-4 text-right">Actions</th>
               </tr>
@@ -1059,6 +1069,86 @@
             </thead>
             <tbody id="active-shops-tbody" class="divide-y divide-slate-100"></tbody>
           </table>
+        </div>
+      </section>
+
+      <!-- TAB 8: DELIVERY PARTNERS & FLEET -->
+      <section id="tab-delivery" class="hidden space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-2.5 flex-wrap">
+              <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+                <i class="ph-bold ph-truck text-brand-600"></i>
+                <span>Delivery Partners &amp; Fleet Management</span>
+              </h2>
+              <span class="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-black uppercase tracking-wider">5:00 AM DISPATCH FLEET</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5">Manage delivery drivers, issue Driver App login IDs &amp; PINs, track live POD drops, and verify bank payout details.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <a href="delivery_partner.html" target="_blank" class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 font-black text-xs flex items-center gap-1.5">
+              <i class="ph-bold ph-device-mobile text-brand-600"></i><span>Open Delivery App</span>
+            </a>
+            <button type="button" onclick="openAddDeliveryPartnerModal()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black text-xs flex items-center gap-1.5 shadow-sm">
+              <i class="ph-bold ph-plus-circle text-sm"></i><span>Add Delivery Partner</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Delivery Fleet KPI Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          <div class="bg-white border border-slate-200 rounded-3xl p-4">
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">ACTIVE DELIVERY PARTNERS</span>
+            <div id="stat-total-drivers" class="text-2xl font-black text-slate-900 mt-1.5">2 Drivers</div>
+            <div id="stat-drivers-duty-sub" class="text-[11px] text-emerald-600 font-bold mt-1.5">✓ 2 On Duty Now</div>
+          </div>
+          <div class="bg-white border border-slate-200 rounded-3xl p-4">
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">PENDING ROUTE DROPS</span>
+            <div id="stat-delivery-pending" class="text-2xl font-black text-brand-600 mt-1.5">0 Stops</div>
+            <div class="text-[11px] text-slate-500 font-semibold mt-1.5">Queued for 5:00 AM Wave</div>
+          </div>
+          <div class="bg-white border border-slate-200 rounded-3xl p-4">
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">COMPLETED POD DROPS</span>
+            <div id="stat-delivery-completed" class="text-2xl font-black text-emerald-700 mt-1.5">0 Delivered</div>
+            <div class="text-[11px] text-emerald-600 font-bold mt-1.5">✓ Digital POD Verified</div>
+          </div>
+          <div class="bg-white border border-slate-200 rounded-3xl p-4">
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">COD / UPI COLLECTED BY FLEET</span>
+            <div id="stat-delivery-collected" class="text-2xl font-black text-slate-900 mt-1.5">₹0</div>
+            <div class="text-[11px] text-slate-500 font-semibold mt-1.5">Doorstep Cash &amp; UPI QR</div>
+          </div>
+        </div>
+
+        <!-- Registered Fleet Drivers Grid -->
+        <div class="flex items-center justify-between pt-1">
+          <h3 class="text-sm font-black text-slate-900 flex items-center gap-2"><i class="ph-bold ph-steering-wheel text-brand-600"></i><span>Registered Delivery Partners &amp; App Credentials</span></h3>
+        </div>
+        <div id="delivery-partners-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
+        <!-- Recent Completed POD Deliveries Table -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-4 sm:p-5 space-y-3 shadow-2xs">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-sm font-black text-slate-900">Completed Doorstep Deliveries (POD Log)</h3>
+              <p class="text-[11px] text-slate-500">Real-time Proof of Delivery (POD) &amp; settlement updates synced from Delivery Partner App</p>
+            </div>
+            <span id="delivery-pod-log-badge" class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black">0 PODs</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="bg-slate-50 border-b border-slate-200 text-[10px] font-black uppercase tracking-wider text-slate-500">
+                <tr>
+                  <th class="py-2.5 px-4">Invoice &amp; Time</th>
+                  <th class="py-2.5 px-4">Kirana Store</th>
+                  <th class="py-2.5 px-4">Delivered By</th>
+                  <th class="py-2.5 px-4">POD Receiver</th>
+                  <th class="py-2.5 px-4">Settlement</th>
+                  <th class="py-2.5 px-4 text-right">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="delivery-pod-tbody" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
         </div>
       </section>
     </main>
@@ -1412,6 +1502,116 @@
     </div>
   </div>
 
+  <!-- Add Delivery Partner Modal -->
+  <div id="add-delivery-partner-modal" onclick="if(event.target === this) closeModal('add-delivery-partner-modal')" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white border border-slate-200 rounded-3xl max-w-lg w-full p-5 sm:p-6 space-y-4 shadow-2xl text-xs">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-orange-50 text-brand-600 flex items-center justify-center text-lg"><i class="ph-bold ph-truck"></i></div>
+          <div>
+            <h3 class="text-sm font-black text-slate-900">Onboard New Delivery Partner</h3>
+            <p class="text-[11px] text-slate-500">Register fleet driver, assign vehicle &amp; generate Delivery App ID</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModal('add-delivery-partner-modal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center"><i class="ph-bold ph-x"></i></button>
+      </div>
+      <form onsubmit="handleAddDeliveryPartner(event)" class="space-y-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-slate-800 block mb-1">Driver Full Name *</label>
+            <input type="text" id="new-drv-name" required placeholder="e.g. Subrata Giri" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 font-semibold">
+          </div>
+          <div>
+            <label class="font-bold text-slate-800 block mb-1">Mobile Number *</label>
+            <input type="tel" id="new-drv-phone" required placeholder="e.g. 9832145890" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 font-semibold">
+          </div>
+          <div>
+            <label class="font-bold text-slate-800 block mb-1">Vehicle Number &amp; Model *</label>
+            <input type="text" id="new-drv-vehicle" required placeholder="e.g. WB-31D-5120 • Tata Ace" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 font-bold">
+          </div>
+          <div>
+            <label class="font-bold text-slate-800 block mb-1">Assigned Base Hub *</label>
+            <select id="new-drv-hub" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 font-bold">
+              <option>Egra Central Hub (East Midnapore)</option>
+              <option>Contai Coastal Depot</option>
+              <option>Digha Highway Depot</option>
+            </select>
+          </div>
+          <div class="sm:col-span-2">
+            <label class="font-bold text-slate-800 block mb-1">Delivery Drop Commission (₹ per Completed Drop) *</label>
+            <div class="relative">
+              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-slate-400">₹</span>
+              <input type="number" id="new-drv-comm" value="60" min="0" step="1" required class="w-full bg-white border border-slate-200 rounded-xl pl-8 pr-3 py-2 font-black text-brand-600">
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-orange-50/70 border border-orange-200 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase tracking-wider text-brand-700 flex items-center gap-1.5"><i class="ph-bold ph-key"></i><span>DELIVERY APP LOGIN CREDENTIALS *</span></span>
+            <button type="button" onclick="autoGenerateDriverCredentials(true)" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[10px] font-extrabold text-slate-700 hover:bg-slate-50">↻ Auto-Generate</button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="font-bold text-slate-800 block mb-1">Driver Login ID *</label>
+              <input type="text" id="new-drv-login" required class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 font-mono font-black text-brand-600">
+            </div>
+            <div>
+              <label class="font-bold text-slate-800 block mb-1">Security PIN *</label>
+              <input type="text" id="new-drv-pin" required class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 font-mono font-black text-slate-900">
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-1">
+          <button type="button" onclick="closeModal('add-delivery-partner-modal')" class="px-4 py-2.5 rounded-xl bg-slate-100 font-bold text-slate-700">Cancel</button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black shadow">Save Delivery Partner</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Remove Delivery Partner Confirmation Modal -->
+  <div id="remove-delivery-partner-modal" onclick="if(event.target === this) closeModal('remove-delivery-partner-modal')" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white border border-slate-200 rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl text-xs">
+      <h3 class="text-sm font-black text-red-600">Remove Delivery Partner?</h3>
+      <p id="remove-driver-summary" class="font-black text-slate-900"></p>
+      <p id="remove-driver-meta" class="text-slate-500"></p>
+      <div class="flex justify-end gap-2 pt-2">
+        <button type="button" onclick="closeModal('remove-delivery-partner-modal')" class="px-4 py-2 rounded-xl bg-slate-100 font-bold">Keep</button>
+        <button type="button" onclick="confirmRemoveDeliveryPartner()" class="px-4 py-2 rounded-xl bg-red-600 text-white font-black">Remove Partner</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Delivery Partner Commission Modal -->
+  <div id="edit-driver-comm-modal" onclick="if(event.target === this) closeModal('edit-driver-comm-modal')" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white border border-slate-200 rounded-3xl max-w-sm w-full p-5 space-y-3.5 shadow-2xl text-xs">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+        <div>
+          <h3 class="text-sm font-black text-slate-900">Edit Delivery Drop Commission</h3>
+          <p id="edit-drv-comm-subtitle" class="text-[11px] text-slate-500 mt-0.5">Fleet Driver</p>
+        </div>
+        <button type="button" onclick="closeModal('edit-driver-comm-modal')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center"><i class="ph-bold ph-x"></i></button>
+      </div>
+      <form onsubmit="handleSaveDriverCommRate(event)" class="space-y-3">
+        <input type="hidden" id="edit-drv-comm-id">
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Commission Rate per POD Drop (₹) *</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-slate-400 text-sm">₹</span>
+            <input type="number" id="edit-drv-comm-input" step="1" min="0" required class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3.5 py-2.5 font-black text-base text-brand-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/30">
+          </div>
+          <p class="text-[10.5px] text-slate-500 mt-1.5">Sets the per-drop delivery commission earned for each completed Kirana POD drop and syncs live to the Delivery Partner App.</p>
+        </div>
+        <div class="flex justify-end gap-2 pt-1">
+          <button type="button" onclick="closeModal('edit-driver-comm-modal')" class="px-4 py-2 rounded-xl bg-slate-100 font-bold text-slate-700">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black shadow-xs">Save Commission</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Edit Agent Commission Rate Modal -->
   <div id="edit-agent-comm-modal" onclick="if(event.target === this) closeModal('edit-agent-comm-modal')" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
     <div class="bg-white border border-slate-200 rounded-3xl max-w-sm w-full p-5 space-y-3.5 shadow-2xl text-xs">
@@ -1463,39 +1663,11 @@
           <select id="new-ord-pay" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold"><option>Khata (14-Day)</option><option>UPI / Cash on Delivery</option></select>
           <select id="new-ord-route" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold"><option>Egra Town Route 1</option><option>Contai Central & Digha Bypass</option></select>
         </div>
-        <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeModal('create-order-modal')" class="px-4 py-2 rounded-xl bg-slate-100 font-bold">Cancel</button>
-          <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-black">Push Order</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Cancel Wholesale Order Modal -->
-  <div id="cancel-order-modal" onclick="if(event.target === this) closeModal('cancel-order-modal')" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-    <div class="bg-white border border-slate-200 rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl text-xs">
-      <h3 class="text-sm font-black text-red-600">Cancel Wholesale Order?</h3>
-      <p id="cancel-order-summary" class="font-mono font-bold text-slate-800"></p>
-      <form onsubmit="confirmCancelWholesaleOrder(event)" class="flex justify-end gap-2 pt-2">
-        <button type="button" onclick="closeModal('cancel-order-modal')" class="px-4 py-2 rounded-xl bg-slate-100 font-bold">Back</button>
-        <button type="submit" class="px-4 py-2 rounded-xl bg-red-600 text-white font-black">Confirm Cancel</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Khata Limit Modal -->
-  <div id="khata-limit-modal" onclick="if(event.target === this) closeModal('khata-limit-modal')" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-    <div class="bg-white border border-slate-200 rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl text-xs">
-      <h3 class="text-sm font-black text-slate-900">Adjust Kirana Khata Ledger</h3>
-      <form onsubmit="handleSaveKhataLimit(event)" class="space-y-3">
-        <select id="khata-shop-select" onchange="syncKhataModalValues()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold"></select>
         <div>
-          <label class="font-bold text-slate-700 block mb-1">Credit Limit (₹)</label>
-          <input type="number" id="khata-new-limit" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-black">
-        </div>
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">Outstanding Due (₹)</label>
-          <input type="number" id="khata-new-due" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-black">
+          <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Assign Delivery Partner</label>
+          <select id="new-ord-driver" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-800">
+            <option value="">Auto / Unassigned (All Fleet)</option>
+          </select>
         </div>
         <div class="flex justify-end gap-2 pt-2">
           <button type="button" onclick="closeModal('khata-limit-modal')" class="px-4 py-2 rounded-xl bg-slate-100 font-bold">Cancel</button>
@@ -2541,6 +2713,40 @@
           orderTaskShopIds: ['ALL']
         }
       ],
+      deliveryPartners: [
+        {
+          id: 'DRV-01',
+          name: 'Bikram Mondal',
+          phone: '9832411905',
+          vehicle: 'WB-31B-4820 • Tata Ace',
+          hub: 'Egra Central Hub (East Midnapore)',
+          loginId: 'AM24-DRV01',
+          pin: '1234',
+          dropCommRate: 60,
+          onDuty: true,
+          photo: '',
+          bankName: '',
+          bankAcNo: '',
+          bankIfsc: '',
+          bankUpi: ''
+        },
+        {
+          id: 'DRV-02',
+          name: 'Soumen Jana',
+          phone: '9733501288',
+          vehicle: 'WB-31C-7104 • Mahindra Bolero',
+          hub: 'Contai Coastal Depot',
+          loginId: 'AM24-DRV02',
+          pin: '1234',
+          dropCommRate: 60,
+          onDuty: true,
+          photo: '',
+          bankName: '',
+          bankAcNo: '',
+          bankIfsc: '',
+          bankUpi: ''
+        }
+      ],
       wholesaleOrders: [
         {
           id: 'WB-INV-5503',
@@ -2617,6 +2823,7 @@
     let pendingCancelOrderId = null;
     let pendingSubCancelOrderId = null;
     let pendingRemoveAgentId = null;
+    let pendingRemoveDriverId = null;
     let pendingRemoveShopId = null;
     let editingSkuGallery = [];
     let currentSubDetailSkuId = null;
@@ -3060,7 +3267,7 @@
 
     function switchTab(tabName) {
       appState.activeTab = tabName;
-      const tabs = ['dashboard', 'orders', 'marketing', 'inventory', 'khata', 'kyc', 'shops'];
+      const tabs = ['dashboard', 'orders', 'marketing', 'delivery', 'inventory', 'khata', 'kyc', 'shops'];
       tabs.forEach(t => {
         const sec = document.getElementById('tab-' + t);
         if (sec) sec.classList.toggle('hidden', t !== tabName);
@@ -3720,9 +3927,11 @@
         const emptyLabel = scope === 'today'
           ? `No wholesale orders received today (${todayStr}) yet. Switch to Yesterday, Month, or All to view previous orders.`
           : 'No wholesale orders match the selected date or filter.';
-        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">${emptyLabel}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-slate-400">${emptyLabel}</td></tr>`;
         return;
       }
+
+      const drivers = appState.deliveryPartners || [];
 
       tbody.innerHTML = filtered.map(o => {
         const items = o.lineItems || [];
@@ -3731,11 +3940,14 @@
         const shopRef = (appState.kiranaShops || []).find(s => s.id === o.shopId || (s.name || '').toLowerCase() === (o.shopName || '').toLowerCase());
         const orderLocation = o.location || (shopRef && shopRef.location) || '';
         const orderMapUrl = o.mapUrl || (shopRef && shopRef.mapUrl) || (orderLocation ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(orderLocation)}` : '');
+        const assignedDrvId = o.assignedDriverId || o.deliveredByDriverId || '';
         const statusCls = o.status === 'DISPATCHED'
           ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-          : o.status === 'CANCELLED'
-            ? 'bg-red-50 text-red-600 border-red-200'
-            : 'bg-amber-50 text-amber-800 border-amber-200';
+          : o.status === 'DELIVERED'
+            ? 'bg-sky-50 text-sky-700 border-sky-200'
+            : o.status === 'CANCELLED'
+              ? 'bg-red-50 text-red-600 border-red-200'
+              : 'bg-amber-50 text-amber-800 border-amber-200';
         return `
           <tr class="hover:bg-slate-50/80 transition">
             <td class="py-3 px-4">
@@ -3762,16 +3974,43 @@
               <div class="text-[10px] text-slate-400">${o.source || 'Hub Desk'}</div>
             </td>
             <td class="py-3 px-4">
+              <select onchange="assignOrderDeliveryPartner('${o.id}', this.value)" ${o.status === 'CANCELLED' ? 'disabled' : ''} class="bg-slate-50 hover:bg-orange-50/70 border ${assignedDrvId ? 'border-brand-300 text-slate-900' : 'border-slate-200 text-slate-500'} rounded-xl px-2.5 py-1.5 text-[11px] font-black focus:outline-none focus:border-brand-500 max-w-[175px]">
+                <option value="">-- Select Partner --</option>
+                ${drivers.map(d => `<option value="${d.id}" ${assignedDrvId === d.id ? 'selected' : ''}>${d.name} (${(d.vehicle || '').split('•')[0].trim()})</option>`).join('')}
+              </select>
+              ${o.assignedDriverName ? `<div class="text-[9.5px] font-bold text-emerald-700 mt-0.5 flex items-center gap-1"><i class="ph-fill ph-truck"></i><span>Assigned: ${o.assignedDriverName}</span></div>` : ''}
+            </td>
+            <td class="py-3 px-4">
               <span class="px-2.5 py-1 rounded-full border ${statusCls} text-[10px] font-black">${o.status}</span>
             </td>
             <td class="py-3 px-4 text-right space-x-1 whitespace-nowrap">
               <button type="button" onclick="openWholesaleBillModal('${o.id}')" class="px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-brand-600 text-white font-black text-[11px] transition">Bill</button>
-              ${o.status !== 'DISPATCHED' && o.status !== 'CANCELLED' ? `<button type="button" onclick="markOrderDispatched('${o.id}')" class="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px]">Dispatch</button>` : ''}
-              ${o.status !== 'DISPATCHED' && o.status !== 'CANCELLED' ? `<button type="button" onclick="openCancelOrderModal('${o.id}')" class="px-2.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-bold text-[11px]">Cancel</button>` : ''}
+              ${o.status !== 'DISPATCHED' && o.status !== 'DELIVERED' && o.status !== 'CANCELLED' ? `<button type="button" onclick="markOrderDispatched('${o.id}')" class="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px]">Dispatch</button>` : ''}
+              ${o.status !== 'DISPATCHED' && o.status !== 'DELIVERED' && o.status !== 'CANCELLED' ? `<button type="button" onclick="openCancelOrderModal('${o.id}')" class="px-2.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-bold text-[11px]">Cancel</button>` : ''}
             </td>
           </tr>
         `;
       }).join('');
+    }
+
+    function assignOrderDeliveryPartner(orderId, driverId) {
+      const ord = (appState.wholesaleOrders || []).find(o => o.id === orderId);
+      if (!ord) return;
+      if (!driverId) {
+        ord.assignedDriverId = '';
+        ord.assignedDriverName = '';
+        persistAndBroadcastState();
+        refreshAllViews();
+        showToast(`Cleared delivery partner assignment for ${orderId}`);
+        return;
+      }
+      const drv = (appState.deliveryPartners || []).find(d => d.id === driverId);
+      if (!drv) return;
+      ord.assignedDriverId = drv.id;
+      ord.assignedDriverName = drv.name;
+      persistAndBroadcastState();
+      refreshAllViews();
+      showToast(`Assigned ${orderId} to ${drv.name} (${drv.loginId})`);
     }
 
     function markOrderDispatched(orderId) {
@@ -3780,7 +4019,7 @@
       ord.status = 'DISPATCHED';
       persistAndBroadcastState();
       refreshAllViews();
-      showToast(`Order ${orderId} marked DISPATCHED`);
+      showToast(`Order ${orderId} marked DISPATCHED${ord.assignedDriverName ? ' → ' + ord.assignedDriverName : ''}`);
     }
 
     function openCancelOrderModal(orderId) {
@@ -3805,6 +4044,12 @@
     }
 
     function openCreateOrderModal() {
+      const drvSel = document.getElementById('new-ord-driver');
+      if (drvSel) {
+        const drivers = appState.deliveryPartners || [];
+        drvSel.innerHTML = `<option value="">-- Select Delivery Partner (Optional) --</option>` +
+          drivers.map(d => `<option value="${d.id}">${d.name} (${d.loginId})</option>`).join('');
+      }
       document.getElementById('create-order-modal').classList.remove('hidden');
     }
 
@@ -3817,13 +4062,15 @@
       const amount = parseFloat(document.getElementById('new-ord-val').value) || 0;
       const payMode = document.getElementById('new-ord-pay').value;
       const route = document.getElementById('new-ord-route').value;
+      const selectedDriverId = document.getElementById('new-ord-driver')?.value || '';
+      const assignedDrv = (appState.deliveryPartners || []).find(d => d.id === selectedDriverId);
 
       const parsedLineItems = [];
       itemsSummary.split(',').forEach(part => {
-        const match = part.trim().match(/^(\d+)\s*x\s*(.+)$/i);
-        if (match) {
-          const q = parseInt(match[1], 10) || 1;
-          const nm = match[2].trim();
+        const m = part.trim().match(/^(\d+)\s*x\s*(.+)$/i);
+        if (m) {
+          const q = parseInt(m[1], 10) || 1;
+          const nm = m[2].trim();
           const matchedSku = (appState.skus || []).find(s =>
             s.name.toLowerCase().includes(nm.toLowerCase()) || nm.toLowerCase().includes(s.name.toLowerCase().split('(')[0].trim())
           );
@@ -3859,6 +4106,8 @@
         amount,
         payMode,
         route,
+        assignedDriverId: assignedDrv ? assignedDrv.id : '',
+        assignedDriverName: assignedDrv ? assignedDrv.name : '',
         source: 'Manual Hub Desk',
         status: 'NEW',
         date: getLocalIsoDateOffset(0)
@@ -4559,9 +4808,195 @@
       showToast('Field executive removed from active roster');
     }
 
-    function setInventoryBrandFilter(brand) {
-      appState.inventoryBrandFilter = brand || 'ALL';
-      renderInventoryTable();
+    function renderDeliveryPartnersTab() {
+      const drivers = appState.deliveryPartners || [];
+      const orders = appState.wholesaleOrders || [];
+      const pendingDrops = orders.filter(o => o.status !== 'CANCELLED' && o.status !== 'DELIVERED');
+      const deliveredOrders = orders.filter(o => o.status === 'DELIVERED');
+      const onDutyCount = drivers.filter(d => d.onDuty !== false).length;
+
+      const fleetCollections = (appState.paymentCollections || []).filter(p =>
+        p.driverId || (p.agentName || '').startsWith('Driver:')
+      );
+      const totalCollected = fleetCollections.reduce((s, p) => s + (Number(p.amount) || 0), 0);
+
+      const navBadge = document.getElementById('badge-delivery-drivers-count');
+      if (navBadge) navBadge.textContent = `${drivers.length} Fleet`;
+
+      const elTot = document.getElementById('stat-total-drivers');
+      if (elTot) elTot.textContent = `${drivers.length} Drivers`;
+      const elDuty = document.getElementById('stat-drivers-duty-sub');
+      if (elDuty) elDuty.textContent = `✓ ${onDutyCount} On Duty Now`;
+      const elPend = document.getElementById('stat-delivery-pending');
+      if (elPend) elPend.textContent = `${pendingDrops.length} Stops`;
+      const elDone = document.getElementById('stat-delivery-completed');
+      if (elDone) elDone.textContent = `${deliveredOrders.length} Delivered`;
+      const elCol = document.getElementById('stat-delivery-collected');
+      if (elCol) elCol.textContent = '₹' + formatPriceVal(totalCollected);
+
+      const listEl = document.getElementById('delivery-partners-list');
+      if (listEl) {
+        listEl.innerHTML = drivers.length
+          ? drivers.map(drv => {
+            const drvDelivered = deliveredOrders.filter(o =>
+              o.deliveredByDriverId === drv.id || o.deliveredByDriverName === drv.name
+            );
+            const dropRate = drv.dropCommRate !== undefined && drv.dropCommRate !== null ? Number(drv.dropCommRate) : 60;
+            const drvIncentive = Math.round(drvDelivered.length * dropRate * 100) / 100;
+            const isOnDuty = drv.onDuty !== false;
+            return `
+              <div class="bg-white border border-slate-200 rounded-3xl p-4 sm:p-5 space-y-3.5 shadow-2xs">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="flex items-center gap-3">
+                    ${drv.photo ? `<img src="${drv.photo}" class="w-11 h-11 rounded-full object-cover border border-slate-200">` : `<div class="w-11 h-11 rounded-full bg-slate-900 text-white font-black text-xs flex items-center justify-center shrink-0">${(drv.name || 'DR').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}</div>`}
+                    <div>
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <h4 class="text-sm font-black text-slate-900">${drv.name}</h4>
+                        <span class="px-2 py-0.5 rounded-full ${isOnDuty ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500 border border-slate-200'} text-[9px] font-black">${isOnDuty ? '● ON DUTY' : 'OFF DUTY'}</span>
+                      </div>
+                      <div class="text-[11px] text-brand-600 font-bold mt-0.5">${drv.vehicle || 'Tata Ace Fleet'}</div>
+                      <div class="text-[11px] font-bold text-slate-600 mt-0.5 flex items-center gap-1.5">
+                        <i class="ph-bold ph-phone text-emerald-600"></i><span>${drv.phone}</span> • <span class="text-slate-400 font-normal">${drv.hub || 'Egra Central Hub'}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button type="button" onclick="openRemoveDeliveryPartnerModal('${drv.id}')" class="text-xs font-black text-rose-600 hover:text-rose-700">Remove</button>
+                </div>
+
+                <div class="grid grid-cols-4 gap-2 bg-slate-50 border border-slate-200/80 rounded-2xl p-3 text-center">
+                  <div>
+                    <span class="text-[9px] font-extrabold text-slate-400 uppercase block">DRIVER ID</span>
+                    <strong class="font-mono text-[11px] font-black text-brand-600">${drv.loginId}</strong>
+                  </div>
+                  <div>
+                    <span class="text-[9px] font-extrabold text-slate-400 uppercase block">PIN</span>
+                    <strong class="font-mono text-[11px] font-black text-slate-900">${drv.pin}</strong>
+                  </div>
+                  <div onclick="openEditDriverCommModal('${drv.id}')" title="Click to edit per-drop commission" class="cursor-pointer rounded-xl px-1 py-0.5 hover:bg-orange-100/70 transition">
+                    <span class="text-[9px] font-extrabold text-slate-400 uppercase block">DROP COMM.</span>
+                    <strong class="text-[11px] font-black text-brand-600 inline-flex items-center gap-1">₹${formatPriceVal(dropRate)}/drop <i class="ph-bold ph-pencil-simple text-[10px]"></i></strong>
+                  </div>
+                  <div>
+                    <span class="text-[9px] font-extrabold text-slate-400 uppercase block">EARNED (${drvDelivered.length} POD)</span>
+                    <strong class="text-[11px] font-black text-emerald-700">₹${formatPriceVal(drvIncentive)}</strong>
+                  </div>
+                </div>
+
+                ${(drv.bankAcNo || drv.bankUpi) ? `
+                <div class="p-2.5 rounded-2xl bg-emerald-50/70 border border-emerald-200 text-[10.5px]">
+                  <span class="font-black text-emerald-800 uppercase text-[9px] block">✓ PAYOUT BANK / UPI VERIFIED</span>
+                  <div class="font-bold text-slate-800">${drv.bankName || 'Bank'} ${drv.bankAcNo ? `• A/C: <span class="font-mono">${drv.bankAcNo}</span> (${drv.bankIfsc || ''})` : ''} ${drv.bankUpi ? `• UPI: <span class="font-mono">${drv.bankUpi}</span>` : ''}</div>
+                </div>
+                ` : `
+                <div class="px-3 py-2 rounded-xl bg-slate-50 border border-dashed border-slate-200 text-[10px] text-slate-400 font-semibold">
+                  Bank / UPI details not added by driver yet
+                </div>
+                `}
+              </div>
+            `;
+          }).join('')
+          : '<div class="col-span-2 p-8 text-center text-xs text-slate-400 bg-white rounded-3xl border border-slate-200">No delivery partners registered yet. Click <strong>Add Delivery Partner</strong> to onboard a driver.</div>';
+      }
+
+      const podBadge = document.getElementById('delivery-pod-log-badge');
+      if (podBadge) podBadge.textContent = `${deliveredOrders.length} PODs`;
+
+      const podTbody = document.getElementById('delivery-pod-tbody');
+      if (podTbody) {
+        podTbody.innerHTML = deliveredOrders.length
+          ? deliveredOrders.map(o => `
+            <tr class="hover:bg-slate-50">
+              <td class="py-2.5 px-4 font-mono font-black text-brand-600">${o.id}<div class="font-sans text-[10px] text-slate-400 font-normal">${o.deliveredDate || o.date || ''} ${o.deliveredAt ? '• ' + o.deliveredAt : ''}</div></td>
+              <td class="py-2.5 px-4 font-black text-slate-900">${o.shopName}<div class="text-[10px] text-slate-500 font-normal">${o.totalUnits || 1} Packs • ${o.route || 'Beat'}</div></td>
+              <td class="py-2.5 px-4 font-bold text-slate-800">${o.deliveredByDriverName || 'Bikram Mondal'}</td>
+              <td class="py-2.5 px-4 font-semibold text-slate-700">${o.podReceiver || o.owner || 'Received'}</td>
+              <td class="py-2.5 px-4"><span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black">${o.podSettlement || o.payMode}</span></td>
+              <td class="py-2.5 px-4 text-right font-black text-slate-900">₹${formatPriceVal(o.amount)}</td>
+            </tr>
+          `).join('')
+          : '<tr><td colspan="6" class="py-6 text-center text-slate-400">No completed POD deliveries recorded yet.</td></tr>';
+      }
+    }
+
+    function openAddDeliveryPartnerModal() {
+      autoGenerateDriverCredentials(false);
+      document.getElementById('add-delivery-partner-modal').classList.remove('hidden');
+    }
+
+    function openEditDriverCommModal(driverId) {
+      const drv = (appState.deliveryPartners || []).find(d => d.id === driverId);
+      if (!drv) return;
+      document.getElementById('edit-drv-comm-id').value = drv.id;
+      document.getElementById('edit-drv-comm-subtitle').textContent = `${drv.name} (${drv.loginId})`;
+      document.getElementById('edit-drv-comm-input').value = drv.dropCommRate !== undefined && drv.dropCommRate !== null ? Number(drv.dropCommRate) : 60;
+      document.getElementById('edit-driver-comm-modal').classList.remove('hidden');
+    }
+
+    function handleSaveDriverCommRate(e) {
+      e.preventDefault();
+      const driverId = document.getElementById('edit-drv-comm-id').value;
+      const newRate = parseFloat(document.getElementById('edit-drv-comm-input').value);
+      const drv = (appState.deliveryPartners || []).find(d => d.id === driverId);
+      if (!drv || isNaN(newRate) || newRate < 0) return;
+
+      drv.dropCommRate = Math.round(newRate * 100) / 100;
+      persistAndBroadcastState();
+      closeModal('edit-driver-comm-modal');
+      refreshAllViews();
+      showToast(`Updated ${drv.name}'s drop commission to ₹${formatPriceVal(drv.dropCommRate)}/drop`);
+    }
+
+    function autoGenerateDriverCredentials(notify) {
+      const code = 'AM24-DRV' + Math.floor(10 + Math.random() * 89);
+      const pin = String(Math.floor(1000 + Math.random() * 8999));
+      const idInp = document.getElementById('new-drv-login');
+      const pinInp = document.getElementById('new-drv-pin');
+      if (idInp) idInp.value = code;
+      if (pinInp) pinInp.value = pin;
+      if (notify) showToast('Generated new Driver Login ID & PIN');
+    }
+
+    function handleAddDeliveryPartner(e) {
+      e.preventDefault();
+      appState.deliveryPartners = appState.deliveryPartners || [];
+      const newDrv = {
+        id: 'DRV-' + Date.now(),
+        name: document.getElementById('new-drv-name').value.trim(),
+        phone: document.getElementById('new-drv-phone').value.trim(),
+        vehicle: document.getElementById('new-drv-vehicle').value.trim(),
+        hub: document.getElementById('new-drv-hub').value,
+        dropCommRate: parseFloat(document.getElementById('new-drv-comm')?.value) || 60,
+        loginId: document.getElementById('new-drv-login').value.trim(),
+        pin: document.getElementById('new-drv-pin').value.trim(),
+        onDuty: true,
+        photo: '',
+        bankName: '',
+        bankAcNo: '',
+        bankIfsc: '',
+        bankUpi: ''
+      };
+      appState.deliveryPartners.push(newDrv);
+      persistAndBroadcastState();
+      closeModal('add-delivery-partner-modal');
+      refreshAllViews();
+      showToast(`Delivery Partner ${newDrv.name} (${newDrv.loginId}) added!`);
+    }
+
+    function openRemoveDeliveryPartnerModal(driverId) {
+      const drv = (appState.deliveryPartners || []).find(d => d.id === driverId);
+      if (!drv) return;
+      pendingRemoveDriverId = driverId;
+      document.getElementById('remove-driver-summary').textContent = `${drv.name} (${drv.loginId})`;
+      document.getElementById('remove-driver-meta').textContent = `Vehicle: ${drv.vehicle} • Phone: ${drv.phone}`;
+      document.getElementById('remove-delivery-partner-modal').classList.remove('hidden');
+    }
+
+    function confirmRemoveDeliveryPartner() {
+      appState.deliveryPartners = (appState.deliveryPartners || []).filter(d => d.id !== pendingRemoveDriverId);
+      persistAndBroadcastState();
+      closeModal('remove-delivery-partner-modal');
+      refreshAllViews();
+      showToast('Delivery partner removed from fleet');
     }
 
     function renderInventoryTable() {
@@ -6056,6 +6491,7 @@
       renderDashboard();
       renderOrdersTable();
       renderMarketingTab();
+      renderDeliveryPartnersTab();
       renderInventoryTable();
       renderKhataTable();
       renderKycTable();
