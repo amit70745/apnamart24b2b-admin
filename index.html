@@ -1670,8 +1670,49 @@
           </select>
         </div>
         <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeModal('khata-limit-modal')" class="px-4 py-2 rounded-xl bg-slate-100 font-bold">Cancel</button>
-          <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-black">Save Ledger</button>
+          <button type="button" onclick="closeModal('create-order-modal')" class="px-4 py-2 rounded-xl bg-slate-100 font-bold">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-black">Create Order</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Cancel Wholesale Order Modal -->
+  <div id="cancel-order-modal" onclick="if(event.target === this) closeModal('cancel-order-modal')" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white border border-slate-200 rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl text-xs">
+      <h3 class="text-sm font-black text-red-600">Cancel Wholesale Order?</h3>
+      <p id="cancel-order-summary" class="font-black text-slate-900"></p>
+      <p class="text-slate-500">Warehouse inventory packs for this order will be restored automatically.</p>
+      <form onsubmit="confirmCancelWholesaleOrder(event)" class="flex justify-end gap-2 pt-2">
+        <button type="button" onclick="closeModal('cancel-order-modal')" class="px-4 py-2 rounded-xl bg-slate-100 font-bold">Keep Order</button>
+        <button type="submit" class="px-4 py-2 rounded-xl bg-red-600 text-white font-black">Confirm Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Adjust Khata Limit & Ledger Modal -->
+  <div id="khata-limit-modal" onclick="if(event.target === this) closeModal('khata-limit-modal')" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white border border-slate-200 rounded-3xl max-w-sm w-full p-5 space-y-3.5 shadow-2xl text-xs">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+        <h3 class="text-sm font-black text-slate-900">Adjust Kirana Khata Limit</h3>
+        <button type="button" onclick="closeModal('khata-limit-modal')" class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph-bold ph-x"></i></button>
+      </div>
+      <form onsubmit="handleSaveKhataLimit(event)" class="space-y-3">
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Select Kirana Partner *</label>
+          <select id="khata-shop-select" onchange="syncKhataModalValues()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-black text-slate-900"></select>
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Approved Credit Limit (₹) *</label>
+          <input type="number" id="khata-new-limit" required min="0" step="100" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-black text-slate-900">
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Outstanding Khata Due (₹) *</label>
+          <input type="number" id="khata-new-due" required min="0" step="1" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-black text-brand-600">
+        </div>
+        <div class="flex justify-end gap-2 pt-1">
+          <button type="button" onclick="closeModal('khata-limit-modal')" class="px-4 py-2 rounded-xl bg-slate-100 font-bold text-slate-700">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black">Save Ledger</button>
         </div>
       </form>
     </div>
@@ -4999,6 +5040,30 @@
       showToast('Delivery partner removed from fleet');
     }
 
+    function setInventoryBrandFilter(brand) {
+      appState.inventoryBrandFilter = brand || 'ALL';
+      persistAndBroadcastState();
+      renderInventoryTable();
+    }
+
+    function adjustWarehouseSkuStock(skuId, delta) {
+      const sku = (appState.skus || []).find(s => s.id === skuId);
+      if (!sku) return;
+      sku.stock = Math.max(0, (Number(sku.stock) || 0) + delta);
+      persistAndBroadcastState();
+      refreshAllViews();
+      showToast(`${sku.name}: Stock ${delta > 0 ? '+' + delta : delta} → ${sku.stock} Packs`);
+    }
+
+    function deleteWarehouseSku(skuId) {
+      const sku = (appState.skus || []).find(s => s.id === skuId);
+      if (!sku) return;
+      appState.skus = (appState.skus || []).filter(s => s.id !== skuId);
+      persistAndBroadcastState();
+      refreshAllViews();
+      showToast(`Removed SKU ${sku.name} (${sku.id})`);
+    }
+
     function renderInventoryTable() {
       const tbody = document.getElementById('inventory-tbody');
       const brandBar = document.getElementById('inventory-brand-filter-bar');
@@ -5052,12 +5117,19 @@
             <div class="text-[10px] font-mono text-slate-400">${s.id} • ${(s.images || [s.img]).length} Photos</div>
           </td>
           <td class="py-3 px-4 font-bold text-slate-700">${s.bay}</td>
-          <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full ${s.stock < 50 ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-700'} font-black">${s.stock} Packs</span></td>
+          <td class="py-3 px-4">
+            <div class="inline-flex items-center gap-1.5">
+              <button type="button" onclick="adjustWarehouseSkuStock('${s.id}', -5)" title="-5 Packs" class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-600 font-black text-xs flex items-center justify-center border border-slate-200">-5</button>
+              <span class="px-2.5 py-1 rounded-full ${s.stock < 50 ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-700'} font-black whitespace-nowrap">${s.stock} Packs</span>
+              <button type="button" onclick="adjustWarehouseSkuStock('${s.id}', 10)" title="+10 Packs" class="w-7 h-6 rounded-lg bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 font-black text-xs flex items-center justify-center border border-slate-200">+10</button>
+            </div>
+          </td>
           <td class="py-3 px-4 font-black text-slate-900">₹${formatPriceVal(s.t1)}</td>
           <td class="py-3 px-4 font-black text-brand-600">₹${formatPriceVal(s.t2)}</td>
           <td class="py-3 px-4 font-black text-emerald-700">₹${formatPriceVal(s.t3)}</td>
-          <td class="py-3 px-4 text-right space-x-1">
-            <button type="button" onclick="openEditSkuModal('${s.id}')" class="px-3 py-1.5 rounded-xl bg-slate-900 text-white font-black text-[11px]">Edit</button>
+          <td class="py-3 px-4 text-right space-x-1 whitespace-nowrap">
+            <button type="button" onclick="openEditSkuModal('${s.id}')" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-brand-600 text-white font-black text-[11px] transition">Edit</button>
+            <button type="button" onclick="deleteWarehouseSku('${s.id}')" title="Delete SKU" class="px-2.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-bold text-[11px] transition">Del</button>
           </td>
         </tr>
       `;
@@ -6225,6 +6297,12 @@
       return Number(sku.t1) || 0;
     }
 
+    function getSkuActiveSlabLabel(qty) {
+      if (qty >= 16) return { label: 'Tier 3 Slab (16+)', cls: 'bg-emerald-100 text-emerald-800' };
+      if (qty >= 6) return { label: 'Tier 2 Slab (6-15)', cls: 'bg-orange-100 text-brand-700' };
+      return { label: 'Tier 1 Slab (2-5)', cls: 'bg-slate-100 text-slate-600' };
+    }
+
     function renderSubAgentCatalogItems() {
       const box = document.getElementById('sub-agent-sku-list');
       const brandBar = document.getElementById('sub-agent-brand-filter-bar');
@@ -6244,18 +6322,22 @@
       box.innerHTML = shownSkus.map(s => {
         const qty = subAgentCart[s.id] || 0;
         const rate = getSkuSlabRate(s, qty);
+        const slabMeta = getSkuActiveSlabLabel(qty);
         const imgs = (s.images && s.images.length) ? s.images : [s.img];
         const b = getSkuBrandName(s);
         return `
-          <div class="p-2.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-2.5 text-xs">
+          <div class="p-2.5 rounded-2xl bg-slate-50 border ${qty > 0 ? 'border-brand-300 bg-orange-50/20' : 'border-slate-200'} flex items-center justify-between gap-2.5 text-xs">
             <div onclick="openSubSkuDetailModal('${s.id}')" class="flex items-center gap-2.5 min-w-0 cursor-pointer">
               <img src="${imgs[0]}" class="w-12 h-12 rounded-xl object-cover border border-slate-200 shrink-0">
               <div class="min-w-0">
-                <span class="px-1.5 py-0.5 rounded bg-orange-100/80 text-brand-700 font-black text-[9px] uppercase">${b}</span>
+                <div class="flex items-center gap-1 flex-wrap">
+                  <span class="px-1.5 py-0.5 rounded bg-orange-100/80 text-brand-700 font-black text-[9px] uppercase">${b}</span>
+                  <span class="px-1.5 py-0.5 rounded ${slabMeta.cls} font-black text-[8.5px]">${slabMeta.label}</span>
+                </div>
                 <div class="font-black text-slate-900 truncate mt-0.5">${s.name}</div>
                 <div class="text-[10px] text-brand-600 font-bold">₹${formatPriceVal(rate)}/pack • Stock: ${s.stock}</div>
                 <button type="button" onclick="event.stopPropagation(); openSubSkuDetailModal('${s.id}')" class="text-[10.5px] font-black text-brand-600 hover:text-brand-700 underline underline-offset-2 mt-0.5 inline-block">
-                  View more${imgs.length > 1 ? ` (${imgs.length} photos)` : ''}
+                  View slabs${imgs.length > 1 ? ` & ${imgs.length} photos` : ''}
                 </button>
               </div>
             </div>
