@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#ea580c">
+  <title>ApnaMart24 B2B - Delivery Partner App</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.0.3"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              200: '#fed7aa',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c',
+              800: '#9a3412',
+              900: '#7c2d12',
+              950: '#431407',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .fade-in { animation: fadeIn 0.2s ease-in-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Blinkit / Zepto-Inspired High-Energy B2B Delivery Splash Screen */
+    #app-splash-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: linear-gradient(155deg, #ea580c 0%, #f97316 48%, #f59e0b 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2.25rem 1.5rem;
+      overflow: hidden;
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.55s ease, visibility 0.6s;
+    }
+    #app-splash-loader.splash-hide {
+      transform: translateY(-100%);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .zepto-dots-bg {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.16) 1.5px, transparent 1.5px);
+      background-size: 24px 24px;
+    }
+    .zepto-bounce-logo {
+      animation: zeptoSpringPop 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, zeptoHoverBob 2.6s ease-in-out 0.75s infinite;
+    }
+    .zepto-float-1 { animation: zeptoFloatPill 3.2s ease-in-out infinite; }
+    .zepto-float-2 { animation: zeptoFloatPill 3.6s ease-in-out 0.4s infinite; }
+    .zepto-float-3 { animation: zeptoFloatPill 3s ease-in-out 0.8s infinite; }
+    .zepto-float-4 { animation: zeptoFloatPill 3.4s ease-in-out 0.2s infinite; }
+    .zepto-track-runner {
+      animation: zeptoScooterZip 1.6s ease-in-out infinite;
+    }
+    @keyframes zeptoSpringPop {
+      0% { transform: scale(0.55) translateY(18px); opacity: 0; }
+      70% { transform: scale(1.06) translateY(-4px); opacity: 1; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    @keyframes zeptoHoverBob {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    @keyframes zeptoFloatPill {
+      0%, 100% { transform: translateY(0px) rotate(var(--r, 0deg)); }
+      50% { transform: translateY(-9px) rotate(var(--r, 0deg)); }
+    }
+    @keyframes zeptoScooterZip {
+      0%, 100% { transform: translateX(0px); }
+      50% { transform: translateX(4px); }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-900 font-sans antialiased min-h-[100dvh] flex items-center justify-center p-0 sm:p-6 selection:bg-brand-500 selection:text-white">
+
+  <!-- =================================================== -->
+  <!-- BLINKIT / ZEPTO STYLE B2B DELIVERY SPLASH SCREEN    -->
+  <!-- =================================================== -->
+  <div id="app-splash-loader" aria-label="Loading ApnaMart24 B2B Delivery">
+    <div class="zepto-dots-bg absolute inset-0 pointer-events-none"></div>
+
+    <!-- Floating Quick-Commerce Logistics Badges -->
+    <div style="--r:-8deg" class="zepto-float-1 absolute top-14 left-5 sm:left-16 px-3.5 py-2 rounded-2xl bg-white/95 shadow-xl flex items-center gap-2 text-xs font-black text-slate-900 pointer-events-none">
+      <span class="text-lg">🚚</span><span>5:00 AM Fleet</span>
+    </div>
+    <div style="--r:7deg" class="zepto-float-2 absolute top-20 right-5 sm:right-16 px-3.5 py-2 rounded-2xl bg-amber-300 shadow-xl flex items-center gap-2 text-xs font-black text-slate-950 pointer-events-none">
+      <span class="text-lg">⚡</span><span>Express Drops</span>
+    </div>
+    <div style="--r:6deg" class="zepto-float-3 hidden sm:flex absolute bottom-28 left-14 px-3.5 py-2 rounded-2xl bg-white/95 shadow-xl items-center gap-2 text-xs font-black text-slate-900 pointer-events-none">
+      <span class="text-lg">📍</span><span>GPS Beat Route</span>
+    </div>
+    <div style="--r:-6deg" class="zepto-float-4 hidden sm:flex absolute bottom-32 right-14 px-3.5 py-2 rounded-2xl bg-emerald-400 shadow-xl flex items-center gap-2 text-xs font-black text-slate-950 pointer-events-none">
+      <span class="text-lg">📲</span><span>Digital POD</span>
+    </div>
+
+    <!-- Top Tag -->
+    <div class="relative z-10 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-950/20 backdrop-blur-md text-white text-[10.5px] font-black uppercase tracking-widest border border-white/25">
+      <span class="w-2 h-2 rounded-full bg-amber-300 animate-ping"></span>
+      <span>B2B Fleet &amp; Kirana Dispatch App</span>
+    </div>
+
+    <!-- Center Hero Brand Card -->
+    <div class="relative z-10 flex flex-col items-center text-center max-w-sm w-full space-y-5 my-auto">
+      <div class="zepto-bounce-logo w-28 h-28 sm:w-32 sm:h-32 rounded-[34px] bg-white shadow-[0_25px_60px_-12px_rgba(67,20,7,0.45)] border-4 border-amber-200 flex items-center justify-center p-4">
+        <img src="Black_and_White_Minimalist_Monogram_Personal_Logo-removebg-preview.png" alt="ApnaMart24 B2B" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='icon-512.png'; this.onerror=function(){this.style.display='none'; document.getElementById('splash-logo-svg-fallback').classList.remove('hidden');};">
+        <svg id="splash-logo-svg-fallback" class="hidden w-full h-auto" viewBox="0 0 260 115" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="56" cy="64" r="44" fill="#333333"/>
+          <text x="46" y="88" fill="#FFFFFF" font-family="Plus Jakarta Sans, Arial, sans-serif" font-weight="900" font-size="68">B</text>
+          <text x="98" y="88" fill="#333333" font-family="Plus Jakarta Sans, Arial, sans-serif" font-weight="900" font-size="68">2B</text>
+          <text x="103" y="34" fill="#333333" font-family="Plus Jakarta Sans, Arial, sans-serif" font-style="italic" font-weight="900" font-size="22">apna</text>
+          <rect x="115" y="34" width="4.5" height="9" fill="#EA580C"/>
+          <text x="157" y="34" fill="#EA580C" font-family="Plus Jakarta Sans, Arial, sans-serif" font-style="italic" font-weight="900" font-size="22">mart</text>
+          <rect x="206" y="19" width="26" height="15" rx="2" fill="#F97316"/>
+          <text x="209" y="31" fill="#1E293B" font-family="Plus Jakarta Sans, Arial, sans-serif" font-weight="900" font-size="13">24</text>
+        </svg>
+      </div>
+
+      <div class="space-y-1.5">
+        <div class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-300 text-slate-950 font-black text-[10px] uppercase tracking-wider shadow-sm">
+          <span>🚚 DELIVERY PARTNER PORTAL</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-black text-white tracking-tight drop-shadow-xs">
+          ApnaMart<span class="text-amber-300">24</span> <span class="font-extrabold text-white/95">Fleet</span>
+        </h1>
+        <p class="text-xs sm:text-sm font-bold text-orange-100">
+          Morning 5:00 AM Wave • Live Route Drops • Instant POD
+        </p>
+      </div>
+    </div>
+
+    <!-- Bottom Express Progress Bar Card -->
+    <div class="relative z-10 w-full max-w-xs bg-white/95 backdrop-blur-md rounded-2xl p-3.5 shadow-2xl border border-white space-y-2">
+      <div class="flex items-center justify-between text-[11px] font-black text-slate-900">
+        <div class="flex items-center gap-1.5 truncate">
+          <span class="zepto-track-runner inline-block text-sm">🚚</span>
+          <span id="splash-status-text" class="truncate">Loading Egra Hub Dispatch Manifest...</span>
+        </div>
+        <span id="splash-progress-pct" class="font-mono text-brand-600 shrink-0">35%</span>
+      </div>
+      <div class="w-full h-2.5 rounded-full bg-orange-100 overflow-hidden p-0.5">
+        <div id="splash-progress-fill" class="h-full rounded-full bg-gradient-to-r from-brand-600 via-orange-500 to-amber-500 transition-all duration-300 ease-out" style="width: 35%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================== -->
+  <!-- MOBILE APP SHELL (430px MAX-WIDTH MATCHING AGENT)   -->
+  <!-- =================================================== -->
+  <div id="delivery-app-shell" class="w-full max-w-[430px] h-[100dvh] sm:h-[90dvh] sm:max-h-[820px] bg-white sm:rounded-[28px] sm:border sm:border-slate-200 sm:shadow-[0_20px_45px_-15px_rgba(15,23,42,0.12)] flex flex-col overflow-hidden relative">
+
+    <!-- ===================================== -->
+    <!-- 1. DELIVERY PARTNER SIGN-IN SCREEN    -->
+    <!-- ===================================== -->
+    <div id="driver-login-box" class="flex-1 flex flex-col justify-between p-6 sm:p-7 bg-white">
+      <!-- Top Bar: Live Cloud Status -->
+      <div class="flex items-center justify-between">
+        <div id="cloud-sync-pill" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black">
+          <span id="cloud-sync-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+          <span id="cloud-sync-text">Hub Synced</span>
+        </div>
+      </div>
+
+      <!-- Center Logo, Badge, Title & Form -->
+      <div class="my-auto space-y-5">
+        <div class="flex flex-col items-center text-center space-y-2.5">
+          <!-- ApnaMart24 B2B Logo -->
+          <div class="flex items-center justify-center">
+            <img src="Black_and_White_Minimalist_Monogram_Personal_Logo-removebg-preview.png" alt="ApnaMart24 B2B Logo" class="h-14 w-auto object-contain" onerror="this.onerror=null; this.src='icon-512.png'; this.onerror=function(){this.style.display='none'; document.getElementById('driver-login-logo-svg-fallback').classList.remove('hidden');};">
+            <svg id="driver-login-logo-svg-fallback" class="hidden h-12 w-auto" viewBox="0 0 260 115" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="56" cy="64" r="44" fill="#333333"/>
+              <text x="46" y="88" fill="#FFFFFF" font-family="Plus Jakarta Sans, Arial, sans-serif" font-weight="900" font-size="68">B</text>
+              <text x="98" y="88" fill="#333333" font-family="Plus Jakarta Sans, Arial, sans-serif" font-weight="900" font-size="68">2B</text>
+              <text x="103" y="34" fill="#333333" font-family="Plus Jakarta Sans, Arial, sans-serif" font-style="italic" font-weight="900" font-size="22">apna</text>
+              <rect x="115" y="34" width="4.5" height="9" fill="#EA580C"/>
+              <text x="157" y="34" fill="#EA580C" font-family="Plus Jakarta Sans, Arial, sans-serif" font-style="italic" font-weight="900" font-size="22">mart</text>
+              <rect x="206" y="19" width="26" height="15" rx="2" fill="#F97316"/>
+              <text x="209" y="31" fill="#1E293B" font-family="Plus Jakarta Sans, Arial, sans-serif" font-weight="900" font-size="13">24</text>
+              <line x1="176" y1="38" x2="232" y2="38" stroke="#EA580C" stroke-width="1.5"/>
+            </svg>
+          </div>
+
+          <!-- Pill Badge -->
+          <span class="inline-flex items-center px-3.5 py-1 rounded-full bg-orange-50 text-brand-600 text-[9.5px] font-black uppercase tracking-wider border border-orange-200/70">
+            B2B FLEET &amp; DELIVERY PARTNER PORTAL
+          </span>
+
+          <!-- Heading & Subtitle -->
+          <div class="space-y-1 pt-0.5">
+            <h2 class="text-[20px] font-black text-slate-900 tracking-tight">Delivery Partner Sign In</h2>
+            <p class="text-[11.5px] text-slate-500 leading-relaxed max-w-[290px] mx-auto">
+              Enter your Hub-issued Driver ID and Security PIN to load your 5:00 AM Kirana delivery route.
+            </p>
+          </div>
+        </div>
+
+        <!-- Error Alert -->
+        <div id="driver-login-error" class="hidden p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs font-bold text-center">
+          Invalid Driver ID or Security PIN! Please check your Hub-issued credentials.
+        </div>
+
+        <!-- Sign In Form -->
+        <form onsubmit="handleDriverLogin(event)" autocomplete="off" class="space-y-3.5 text-xs">
+          <div>
+            <label class="font-bold text-slate-800 text-[11.5px] block mb-1.5">Hub-Issued Driver / Van ID *</label>
+            <div class="relative">
+              <i class="ph-bold ph-truck text-slate-400 text-base absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <input type="text" id="driver-login-id" value="" autocomplete="off" placeholder="Enter Hub-Issued Driver ID" required class="w-full bg-slate-50/70 focus:bg-white border border-slate-200 rounded-xl pl-10 pr-3.5 py-3 font-mono font-bold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition">
+            </div>
+          </div>
+
+          <div>
+            <label class="font-bold text-slate-800 text-[11.5px] block mb-1.5">Security PIN / Password *</label>
+            <div class="relative">
+              <i class="ph-bold ph-lock-simple text-slate-400 text-base absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <input type="password" id="driver-login-pass" value="" autocomplete="new-password" placeholder="Enter Security PIN" required class="w-full bg-slate-50/70 focus:bg-white border border-slate-200 rounded-xl pl-10 pr-10 py-3 font-mono font-bold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition">
+              <button type="button" onclick="toggleDriverPassVisibility()" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700">
+                <i id="driver-pass-eye" class="ph-bold ph-eye text-base"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full py-3.5 rounded-2xl bg-[#ea580c] hover:bg-[#c2410c] text-white font-black text-xs tracking-wide shadow-lg shadow-orange-600/25 flex items-center justify-center gap-2 transition active:scale-[0.99] mt-1">
+            <span>Start Shift &amp; Load Route</span>
+            <i class="ph-bold ph-arrow-right text-sm"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- Bottom Footer -->
+      <div class="text-center text-[10px] text-slate-400 font-medium pt-2">
+        ApnaMart24 B2B Fleet Logistics • East Midnapore, WB
+      </div>
+    </div>
+
+    <!-- ===================================== -->
+    <!-- 2. DELIVERY PARTNER ACTIVE WORKSPACE  -->
+    <!-- ===================================== -->
+    <div id="driver-workspace" class="hidden flex-1 flex flex-col h-full overflow-hidden bg-slate-50">
+      <!-- Top Bar (Exact Same Compact Clean Header Style as Agent App) -->
+      <div class="bg-white px-4 pt-4 pb-3 border-b border-slate-100 space-y-2.5 shrink-0">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-black text-xs text-slate-900">ApnaMart24 B2B Delivery</span>
+            <span class="px-2 py-0.5 rounded-full bg-orange-50 text-brand-600 border border-orange-200/70 text-[9px] font-black uppercase">5:00 AM WAVE</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button type="button" onclick="toggleDriverDutyStatus()" id="driver-duty-pill" class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9.5px] font-black flex items-center gap-1 transition">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>ON DUTY</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div onclick="switchDeliveryTab('profile')" title="Open Driver Profile" class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-black text-xs shrink-0 overflow-hidden cursor-pointer border border-slate-200">
+              <img id="drv-header-avatar-img" src="" alt="Driver" class="w-full h-full object-cover hidden">
+              <span id="drv-header-initials">BM</span>
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <h3 id="drv-header-name" class="font-black text-xs text-slate-900 truncate">Bikram Mondal</h3>
+                <span id="drv-header-code" class="px-1.5 py-0.5 rounded bg-slate-100 font-mono text-[9px] font-bold text-slate-600">AM24-DRV01</span>
+              </div>
+              <div class="text-[10px] text-slate-500 truncate">Van: <strong id="drv-header-vehicle" class="text-brand-600">WB-31B-4820 • Tata Ace</strong></div>
+            </div>
+          </div>
+          <button type="button" onclick="manualRefreshDeliveryHub()" title="Sync Hub Orders" class="w-8 h-8 rounded-xl bg-slate-50 hover:bg-orange-50 border border-slate-200 text-slate-700 hover:text-brand-600 flex items-center justify-center shrink-0 transition active:scale-95">
+            <i id="drv-sync-icon" class="ph-bold ph-arrows-clockwise text-sm"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scrollable Main Content -->
+      <div class="flex-1 overflow-y-auto p-3.5 space-y-3.5 no-scrollbar">
+
+        <!-- =================================== -->
+        <!-- PAGE 1: ROUTE DROPS (ACTIVE QUEUE)  -->
+        <!-- =================================== -->
+        <div id="drv-page-drops" class="space-y-3">
+          <!-- 2-Metric Shift Summary Strip -->
+          <div class="grid grid-cols-2 gap-2.5">
+            <div class="bg-white border border-slate-200 rounded-2xl p-2.5 text-center shadow-2xs">
+              <span class="text-[9px] font-extrabold uppercase text-slate-400 block">PENDING DROPS</span>
+              <strong id="drv-stat-pending" class="text-base font-black text-brand-600 mt-0.5 block">0 Stops</strong>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-2xl p-2.5 text-center shadow-2xs">
+              <span class="text-[9px] font-extrabold uppercase text-slate-400 block">DELIVERED</span>
+              <strong id="drv-stat-delivered" class="text-base font-black text-emerald-700 mt-0.5 block">0 Done</strong>
+            </div>
+          </div>
+
+          <!-- Route Filter Pills -->
+          <div id="drv-route-filter-bar" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5"></div>
+
+          <!-- Search Box -->
+          <div class="relative">
+            <i class="ph-bold ph-magnifying-glass text-slate-400 text-sm absolute left-3 top-1/2 -translate-y-1/2"></i>
+            <input type="text" id="drv-drops-search" oninput="renderDeliveryDropsPage()" placeholder="Search shop name, invoice ID or area..." class="w-full bg-white border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-xs font-semibold focus:outline-none focus:border-brand-500">
+          </div>
+
+          <!-- Drops Section Header -->
+          <div class="flex items-center justify-between gap-2 px-0.5">
+            <span class="text-[10px] font-black uppercase tracking-wider text-brand-700">ASSIGNED KIRANA DELIVERY DROPS</span>
+            <div class="flex items-center gap-1.5">
+              <button type="button" id="drv-route-reset-btn" onclick="resetCustomDeliveryRouteOrder()" class="hidden px-2 py-1 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 font-black text-[9.5px] transition">
+                Reset
+              </button>
+              <button type="button" onclick="openFullRouteGoogleMaps()" class="px-2.5 py-1 rounded-full bg-sky-600 hover:bg-sky-700 text-white font-black text-[9.5px] flex items-center gap-1 shadow-2xs transition">
+                <i class="ph-bold ph-map-trifold"></i><span>Full Route Map</span>
+              </button>
+              <span id="drv-drops-count-pill" class="px-2 py-0.5 rounded-full bg-orange-50 text-brand-600 font-black text-[10px]">0 Drops</span>
+            </div>
+          </div>
+
+          <!-- Active Delivery Cards List -->
+          <div id="drv-drops-list" class="space-y-3"></div>
+        </div>
+
+        <!-- =================================== -->
+        <!-- PAGE 3: COD / UPI COLLECTION        -->
+        <!-- =================================== -->
+        <div id="drv-page-collect" class="hidden space-y-3">
+          <div class="grid grid-cols-2 gap-2.5">
+            <div class="bg-white border border-slate-200 rounded-2xl p-3">
+              <span class="text-[9.5px] font-black uppercase tracking-wider text-slate-400 block">COD / UPI TO COLLECT</span>
+              <strong id="drv-col-pending-amt" class="text-base font-black text-brand-600 mt-0.5 block">₹0</strong>
+            </div>
+            <div class="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-3">
+              <span class="text-[9.5px] font-black uppercase tracking-wider text-emerald-700 block">COLLECTED ON ROUTE</span>
+              <strong id="drv-col-done-amt" class="text-base font-black text-emerald-800 mt-0.5 block">₹0</strong>
+            </div>
+          </div>
+
+          <!-- Instant UPI QR Scan Card for Kirana Shopkeepers -->
+          <div class="bg-white border border-slate-200 rounded-3xl p-4 space-y-3 text-xs shadow-2xs">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <span class="font-black text-slate-900 flex items-center gap-1.5">
+                <i class="ph-bold ph-qr-code text-brand-600 text-base"></i>
+                <span>Accept Kirana UPI / Cash</span>
+              </span>
+              <span class="px-2 py-0.5 rounded-full bg-orange-50 text-brand-700 text-[9px] font-black">INSTANT HUB SYNC</span>
+            </div>
+
+            <div>
+              <label class="text-[10.5px] font-bold text-slate-600 block mb-1">Select Kirana Order / Store *</label>
+              <select id="drv-col-order-select" onchange="syncDriverCollectionOrderHint()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-black text-slate-900"></select>
+              <div id="drv-col-order-hint" class="text-[10.5px] font-bold text-brand-600 mt-1">Invoice Due: ₹0</div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[10.5px] font-bold text-slate-600 block mb-1">Amount Received (₹) *</label>
+                <input type="number" id="drv-col-amount-input" oninput="updateDriverUpiQr()" step="0.01" min="1" placeholder="e.g. 7100" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-black text-slate-900">
+              </div>
+              <div>
+                <label class="text-[10.5px] font-bold text-slate-600 block mb-1">Collection Mode *</label>
+                <select id="drv-col-mode-select" onchange="updateDriverUpiQr()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
+                  <option value="UPI / QR Scan">UPI / QR Scan</option>
+                  <option value="Cash on Delivery">Cash on Delivery</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Dynamic UPI QR Box -->
+            <div id="drv-col-qr-box" class="p-3.5 rounded-2xl bg-gradient-to-br from-orange-50/90 via-white to-amber-50/80 border border-brand-200 flex flex-col items-center text-center space-y-2">
+              <div class="flex items-center justify-between w-full text-[10px]">
+                <span class="px-2 py-0.5 rounded-full bg-brand-600 text-white font-black uppercase">SCAN &amp; PAY UPI</span>
+                <span id="drv-col-qr-amt-badge" class="font-black text-brand-700 text-xs">Any Amount</span>
+              </div>
+              <div class="p-2 bg-white rounded-2xl border border-slate-200 shadow-xs">
+                <img id="drv-col-qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi%3A%2F%2Fpay%3Fpa%3Damit7074525%40ibl%26pn%3DApnaMart24%2520B2B%26cu%3DINR" alt="UPI QR" class="w-36 h-36 object-contain rounded-lg">
+              </div>
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 font-mono text-[11px] font-black text-slate-800">
+                <span>amit7074525@ibl</span>
+                <button type="button" onclick="copyDriverUpiId()" class="text-brand-600 hover:text-brand-700"><i class="ph-bold ph-copy text-xs"></i></button>
+              </div>
+            </div>
+
+            <button type="button" onclick="recordDriverCollection()" class="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow flex items-center justify-center gap-1.5 transition active:scale-[0.99]">
+              <i class="ph-bold ph-check-circle text-sm"></i>
+              <span>Confirm Payment Collected</span>
+            </button>
+          </div>
+
+          <!-- Driver Collection History -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between px-0.5">
+              <span class="text-[10px] font-black uppercase tracking-wider text-slate-500">ROUTE COLLECTION RECEIPTS</span>
+              <span id="drv-col-receipts-count" class="px-2 py-0.5 rounded-full bg-slate-200/70 text-slate-700 font-black text-[10px]">0 Receipts</span>
+            </div>
+            <div id="drv-col-receipts-list" class="space-y-2"></div>
+          </div>
+        </div>
+
+        <!-- =================================== -->
+        <!-- PAGE 4: COMPLETED DELIVERY HISTORY  -->
+        <!-- =================================== -->
+        <div id="drv-page-history" class="hidden space-y-2.5">
+          <div class="flex items-center justify-between px-0.5">
+            <span class="text-[10px] font-black uppercase tracking-wider text-emerald-700">COMPLETED DELIVERY HISTORY</span>
+            <span id="drv-history-count-pill" class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-black text-[10px]">0 Delivered</span>
+          </div>
+          <input type="text" id="drv-history-search" oninput="renderDeliveryHistoryPage()" placeholder="Search completed deliveries by shop or invoice..." class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs">
+          <div id="drv-history-list" class="space-y-2.5"></div>
+        </div>
+
+        <!-- =================================== -->
+        <!-- PAGE 5: DRIVER PROFILE & PAYOUTS    -->
+        <!-- =================================== -->
+        <div id="drv-page-profile" class="hidden space-y-3">
+          <!-- Driver Header Card -->
+          <div class="bg-white border border-slate-200 rounded-3xl p-4 flex flex-col items-center text-center space-y-2">
+            <div onclick="document.getElementById('drv-photo-upload').click()" class="relative w-20 h-20 rounded-full bg-slate-900 text-white flex items-center justify-center font-black text-xl overflow-hidden cursor-pointer border-2 border-brand-500 shadow">
+              <img id="drv-prof-avatar-img" src="" alt="Profile" class="w-full h-full object-cover hidden">
+              <span id="drv-prof-initials">BM</span>
+              <span class="absolute bottom-0 inset-x-0 bg-black/65 text-white text-[9px] font-bold py-0.5">Change</span>
+            </div>
+            <input type="file" id="drv-photo-upload" accept="image/*" onchange="handleDriverPhotoUpload(event)" class="hidden">
+            <h4 id="drv-prof-display-name" class="font-black text-sm text-slate-900">Bikram Mondal</h4>
+            <div class="flex items-center gap-1.5">
+              <span id="drv-prof-id-pill" class="px-2 py-0.5 rounded-md bg-orange-50 text-brand-700 font-mono font-black text-[10px]">AM24-DRV01</span>
+              <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-bold text-[10px]">Fleet Delivery Partner</span>
+            </div>
+          </div>
+
+          <!-- Driver Details & Bank Form -->
+          <form onsubmit="saveDriverProfileDetails(event)" class="bg-white border border-slate-200 rounded-3xl p-4 space-y-2.5 text-xs">
+            <div>
+              <label class="text-[10px] font-bold text-slate-500 block mb-1">Driver Login ID</label>
+              <input type="text" id="drv-prof-login" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 font-mono font-black text-slate-600">
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-500 block mb-1">Driver Full Name *</label>
+              <input type="text" id="drv-prof-name" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[10px] font-bold text-slate-500 block mb-1">Mobile Number *</label>
+                <input type="tel" id="drv-prof-phone" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
+              </div>
+              <div>
+                <label class="text-[10px] font-bold text-slate-500 block mb-1">Vehicle Number *</label>
+                <input type="text" id="drv-prof-vehicle" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold uppercase text-slate-900">
+              </div>
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-500 block mb-1">Assigned Base Hub</label>
+              <input type="text" id="drv-prof-hub" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 font-semibold text-slate-600">
+            </div>
+
+            <!-- Shift Trip & Drop Incentive Card -->
+            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-1.5 text-[11px]">
+              <div class="flex items-center justify-between">
+                <span class="text-[9.5px] font-black text-slate-500 uppercase">MONTHLY DELIVERY PERFORMANCE</span>
+                <span id="drv-prof-rate-pill" class="px-2 py-0.5 rounded-full bg-orange-50 text-brand-700 text-[9px] font-black">₹60 / DROP</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-slate-500">Completed Drops: <strong id="drv-prof-drops-count" class="text-slate-900 font-black">0 Drops</strong></span>
+                <span class="text-slate-500">Drop Commission: <strong id="drv-prof-incentive-amt" class="text-emerald-700 font-black">₹0</strong></span>
+              </div>
+            </div>
+
+            <!-- Payout Bank Details -->
+            <div class="p-3 rounded-2xl bg-emerald-50/60 border border-emerald-200/80 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+                  <i class="ph-bold ph-bank text-emerald-600 text-sm"></i>
+                  <span>Trip Payout Bank / UPI</span>
+                </span>
+                <span id="drv-prof-bank-badge" class="px-2 py-0.5 rounded-full bg-slate-200 text-slate-600 text-[9px] font-black">NOT ADDED</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="text-[10px] font-bold text-slate-600 block mb-1">Bank Name</label>
+                  <input type="text" id="drv-prof-bank-name" placeholder="e.g. SBI, HDFC" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold text-slate-600 block mb-1">Account No.</label>
+                  <input type="text" id="drv-prof-bank-ac" placeholder="A/C Number" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold text-slate-900">
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="text-[10px] font-bold text-slate-600 block mb-1">IFSC Code</label>
+                  <input type="text" id="drv-prof-bank-ifsc" placeholder="SBIN0001234" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold uppercase text-slate-900">
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold text-slate-600 block mb-1">UPI ID</label>
+                  <input type="text" id="drv-prof-bank-upi" placeholder="driver@ibl" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 font-mono font-semibold text-slate-900">
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black text-xs shadow">Save Driver Profile &amp; Bank</button>
+          </form>
+
+          <!-- Sign Out Button -->
+          <button type="button" onclick="logoutDriverApp()" class="w-full py-3 rounded-2xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-black text-xs flex items-center justify-center gap-2 transition">
+            <i class="ph-bold ph-sign-out text-sm"></i>
+            <span>End Shift &amp; Sign Out</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bottom App Tab Bar (4 Clean Tabs) -->
+      <div class="bg-white border-t border-slate-200 px-2 py-2 grid grid-cols-4 items-center text-[9.5px] shrink-0">
+        <button type="button" id="drv-nav-drops" onclick="switchDeliveryTab('drops')" class="relative flex flex-col items-center gap-1 text-brand-600 font-extrabold">
+          <span id="drv-nav-drops-dot" class="hidden absolute top-0 right-5 w-2 h-2 rounded-full bg-brand-600 animate-ping"></span>
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M3 7h11v9H3V7Zm11 3h4l3 3v3h-7v-6Z" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="7.5" cy="17.5" r="1.8" fill="currentColor"/><circle cx="17.5" cy="17.5" r="1.8" fill="currentColor"/></svg>
+          <span>Drops<span id="drv-nav-drops-badge" class="hidden"></span></span>
+        </button>
+        <button type="button" id="drv-nav-collect" onclick="switchDeliveryTab('collect')" class="flex flex-col items-center gap-1 text-slate-600 font-bold">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="5" width="19" height="14" rx="3.5" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-width="1.8"/><path d="M2.5 9.5h19" stroke="currentColor" stroke-width="1.8"/><circle cx="16.5" cy="14" r="1.4" fill="currentColor"/></svg>
+          <span>Collect ₹</span>
+        </button>
+        <button type="button" id="drv-nav-history" onclick="switchDeliveryTab('history')" class="flex flex-col items-center gap-1 text-slate-600 font-bold">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M5 4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v17l-3.5-2-3.5 2-3.5-2L5 21V4Z" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m9 11 2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Delivered</span>
+        </button>
+        <button type="button" id="drv-nav-profile" onclick="switchDeliveryTab('profile')" class="flex flex-col items-center gap-1 text-slate-600 font-bold">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8.5" r="3.8" fill="currentColor" fill-opacity="0.16" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 19.5c1.5-3.4 4.3-5 7.5-5s6 1.6 7.5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span>Profile</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ===================================== -->
+    <!-- MODALS INSIDE DELIVERY APP SHELL      -->
+    <!-- ===================================== -->
+    <!-- Order Items Manifest Modal -->
+    <div id="drv-order-items-modal" class="hidden absolute inset-0 z-30 bg-slate-950/70 flex items-center justify-center p-3">
+      <div class="bg-white rounded-3xl w-full p-4 space-y-3 text-xs shadow-2xl">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <div>
+            <h4 id="drv-items-modal-title" class="font-black text-slate-900">Invoice Manifest</h4>
+            <p id="drv-items-modal-sub" class="text-[10px] text-slate-500"></p>
+          </div>
+          <button type="button" onclick="closeDeliveryModal('drv-order-items-modal')" class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph-bold ph-x"></i></button>
+        </div>
+        <div id="drv-items-modal-list" class="space-y-2 max-h-64 overflow-y-auto"></div>
+        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+          <span class="font-bold text-slate-500">Invoice Total:</span>
+          <strong id="drv-items-modal-total" class="text-sm font-black text-brand-600">₹0</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Proof of Delivery (POD) Confirmation Modal -->
+    <div id="drv-pod-modal" class="hidden absolute inset-0 z-30 bg-slate-950/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-3">
+      <div class="bg-white rounded-3xl w-full p-4 space-y-3 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <div>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[9px] font-black uppercase">PROOF OF DELIVERY (POD)</span>
+            <h4 id="drv-pod-shop-title" class="font-black text-sm text-slate-900 mt-0.5">Kirana Store</h4>
+          </div>
+          <button type="button" onclick="closeDeliveryModal('drv-pod-modal')" class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph-bold ph-x"></i></button>
+        </div>
+
+        <form onsubmit="confirmPodDeliverySubmit(event)" class="space-y-3">
+          <input type="hidden" id="drv-pod-order-id">
+
+          <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+            <div>
+              <span class="text-[9.5px] font-bold text-slate-400 uppercase block">INVOICE &amp; LOAD</span>
+              <strong id="drv-pod-inv-meta" class="font-mono font-black text-slate-900">WB-INV-0000 • 0 Packs</strong>
+            </div>
+            <div class="text-right">
+              <span class="text-[9.5px] font-bold text-slate-400 uppercase block">BILL AMOUNT</span>
+              <strong id="drv-pod-amount-meta" class="font-black text-brand-600 text-sm">₹0</strong>
+            </div>
+          </div>
+
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Shop Receiver Name / Stamp Note *</label>
+            <input type="text" id="drv-pod-receiver" required placeholder="e.g. Subhasis Sahoo (Owner Received)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
+          </div>
+
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Payment Settlement at Doorstep *</label>
+            <select id="drv-pod-payment-status" onchange="updatePodModalUpiQr()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-black text-slate-900">
+              <option value="Khata (14-Day Credit)">Khata (14-Day Credit Approved)</option>
+              <option value="Cash Collected in Full">Cash Collected in Full</option>
+              <option value="UPI QR Paid (amit7074525@ibl)">UPI QR Paid (amit7074525@ibl)</option>
+            </select>
+          </div>
+
+          <!-- Dynamic UPI QR Code Box inside POD Modal -->
+          <div id="drv-pod-upi-qr-box" class="hidden p-3.5 rounded-2xl bg-gradient-to-br from-orange-50/90 via-white to-amber-50/80 border border-brand-200 flex flex-col items-center text-center space-y-2">
+            <div class="flex items-center justify-between w-full text-[10px]">
+              <span class="px-2 py-0.5 rounded-full bg-brand-600 text-white font-black uppercase">SCAN &amp; PAY UPI</span>
+              <span id="drv-pod-qr-amt-badge" class="font-black text-brand-700 text-xs">₹0</span>
+            </div>
+            <div class="p-2 bg-white rounded-2xl border border-slate-200 shadow-xs">
+              <img id="drv-pod-qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi%3A%2F%2Fpay%3Fpa%3Damit7074525%40ibl%26pn%3DApnaMart24%2520B2B%26cu%3DINR" alt="POD UPI QR" class="w-36 h-36 object-contain rounded-lg">
+            </div>
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 font-mono text-[11px] font-black text-slate-800">
+              <span>amit7074525@ibl</span>
+              <button type="button" onclick="copyDriverUpiId()" class="text-brand-600 hover:text-brand-700" title="Copy UPI ID"><i class="ph-bold ph-copy text-xs"></i></button>
+            </div>
+            <p class="text-[10px] text-slate-500">Ask Kirana owner to scan &amp; pay exact invoice amount before completing POD</p>
+          </div>
+
+          <!-- Optional POD Photo Capture -->
+          <div class="p-2.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-black uppercase text-slate-600">Unload / Storefront Photo (Optional)</span>
+              <label class="px-2.5 py-1 rounded-lg bg-slate-900 text-white font-black text-[10px] cursor-pointer">
+                + Camera / Photo
+                <input type="file" id="drv-pod-photo-input" accept="image/*" capture="environment" onchange="handlePodPhotoPreview(event)" class="hidden">
+              </label>
+            </div>
+            <img id="drv-pod-photo-preview" src="" alt="POD" class="hidden w-full h-28 object-cover rounded-xl border border-slate-200">
+          </div>
+
+          <button type="submit" class="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-1.5">
+            <i class="ph-bold ph-check-circle text-base"></i>
+            <span>Complete Delivery &amp; Sync Hub</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Floating Toast inside App -->
+    <div id="drv-toast" class="hidden absolute bottom-16 left-4 right-4 z-40 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-xl border border-slate-700 text-xs font-bold flex items-center gap-2">
+      <i class="ph-fill ph-check-circle text-emerald-400 text-base shrink-0"></i>
+      <span id="drv-toast-msg" class="truncate">Synced</span>
+    </div>
+  </div>
+
+  <!-- =================================================== -->
+  <!-- FIREBASE REAL-TIME SYNC MODULE (SHARED WITH ADMIN)  -->
+  <!-- =================================================== -->
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAnalytics, isSupported } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getDatabase, ref, set as rtdbSet, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyAjU83LJqN3S4xA-RCUK_8NDWgvxhf45io",
+      authDomain: "apnamart24-b2b.firebaseapp.com",
+      databaseURL: "https://apnamart24-b2b-default-rtdb.firebaseio.com",
+      projectId: "apnamart24-b2b",
+      storageBucket: "apnamart24-b2b.firebasestorage.app",
+      messagingSenderId: "373941207156",
+      appId: "1:373941207156:web:55b7261123eeaff9351121",
+      measurementId: "G-J78D8VK9YE"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    let analytics = null;
+    isSupported().then((supported) => {
+      if (supported) {
+        analytics = getAnalytics(app);
+        window.__firebaseAnalytics = analytics;
+      }
+    }).catch(() => {});
+    window.__firebaseApp = app;
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'apnamart24-b2b';
+
+    function updateSyncPill(connected) {
+      const pill = document.getElementById('cloud-sync-pill');
+      const dot = document.getElementById('cloud-sync-dot');
+      const txt = document.getElementById('cloud-sync-text');
+      if (!pill || !dot || !txt) return;
+      if (connected) {
+        pill.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black';
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping';
+        txt.textContent = 'Firebase Live';
+      } else {
+        pill.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-black';
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-amber-500';
+        txt.textContent = 'Local Sync';
+      }
+    }
+
+    window.__cloudSync = { enabled: false, lastCloudTimestamp: 0, pushState: async () => {}, pullNow: async () => false };
+
+    async function bootDeliveryCloudSync() {
+      try {
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const rtdb = getDatabase(app);
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+        const stateDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'apnamart24_state', 'live_hub');
+        const rtdbRef = ref(rtdb, `artifacts/${appId}/apnamart24_state/live_hub`);
+
+        window.__cloudSync.enabled = true;
+        updateSyncPill(true);
+
+        window.__cloudSync.pullNow = async () => {
+          try {
+            const snap = await getDoc(stateDocRef);
+            if (snap.exists() && snap.data()?.payload && typeof window.__applyIncomingLiveState === 'function') {
+              window.__applyIncomingLiveState(snap.data().payload);
+              return true;
+            }
+          } catch (e) {}
+          return false;
+        };
+
+        window.__cloudSync.pushState = async (serializedPayload) => {
+          if (!auth.currentUser) return;
+          const nowTs = Date.now();
+          window.__cloudSync.lastCloudTimestamp = nowTs;
+          const packet = { payload: serializedPayload, updatedAt: nowTs, senderId: window.__instanceTabId || 'driver' };
+          try { await rtdbSet(rtdbRef, packet); } catch (e) {}
+          try { await setDoc(stateDocRef, packet); } catch (e) {}
+        };
+
+        onValue(rtdbRef, (snapshot) => {
+          const data = snapshot.val();
+          if (!data || !data.payload || data.senderId === window.__instanceTabId) return;
+          if (data.updatedAt && data.updatedAt <= window.__cloudSync.lastCloudTimestamp) return;
+          window.__cloudSync.lastCloudTimestamp = data.updatedAt || Date.now();
+          if (typeof window.__applyIncomingLiveState === 'function') window.__applyIncomingLiveState(data.payload);
+        });
+      } catch (e) {
+        updateSyncPill(false);
+      }
+    }
+    bootDeliveryCloudSync();
+  </script>
+
+  <!-- =================================================== -->
+  <!-- DELIVERY PARTNER APPLICATION LOGIC                  -->
+  <!-- =================================================== -->
+  <script>
+    window.__memStore = {};
+    function safeGetStorage(key) {
+      try { return window.localStorage.getItem(key); } catch (e) { return window.__memStore[key] || null; }
+    }
+    function safeSetStorage(key, val) {
+      window.__memStore[key] = val;
+      try { window.localStorage.setItem(key, val); } catch (e) {}
+    }
+    function safeRemoveStorage(key) {
+      delete window.__memStore[key];
+      try { window.localStorage.removeItem(key); } catch (e) {}
+    }
+
+    window.__instanceTabId = 'drv_' + Math.random().toString(36).slice(2, 10);
+    const STORAGE_KEY_STATE = 'APNAMART24_B2B_LIVE_STATE_V4';
+    const STORAGE_KEY_DRIVER_SESSION = 'APNAMART24_DRIVER_SESSION_V1';
+    const STORAGE_KEY_CUSTOM_ROUTE = 'APNAMART24_DRIVER_ROUTE_ORDER_V1';
+
+    function getLocalIsoDateOffset(daysOffset = 0) {
+      const d = new Date();
+      d.setDate(d.getDate() + daysOffset);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function formatPriceVal(val) {
+      const num = Number(val) || 0;
+      return num % 1 === 0 ? num.toLocaleString('en-IN') : num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    const DEFAULT_DRIVERS = [
+      {
+        id: 'DRV-01',
+        name: 'Bikram Mondal',
+        phone: '9832411905',
+        vehicle: 'WB-31B-4820 • Tata Ace',
+        hub: 'Egra Central Hub (East Midnapore)',
+        loginId: 'AM24-DRV01',
+        pin: '1234',
+        dropCommRate: 60,
+        onDuty: true,
+        photo: '',
+        bankName: '',
+        bankAcNo: '',
+        bankIfsc: '',
+        bankUpi: ''
+      },
+      {
+        id: 'DRV-02',
+        name: 'Soumen Jana',
+        phone: '9733501288',
+        vehicle: 'WB-31C-7104 • Mahindra Bolero',
+        hub: 'Contai Coastal Depot',
+        loginId: 'AM24-DRV02',
+        pin: '1234',
+        dropCommRate: 60,
+        onDuty: true,
+        photo: '',
+        bankName: '',
+        bankAcNo: '',
+        bankIfsc: '',
+        bankUpi: ''
+      }
+    ];
+
+    const FALLBACK_HUB_STATE = {
+      deliveryPartners: JSON.parse(JSON.stringify(DEFAULT_DRIVERS)),
+      kiranaShops: [
+        {
+          id: 'SHP-01',
+          name: 'Maa Sarada Traders',
+          owner: 'Subhasis Sahoo',
+          phone: '9832049182',
+          gstin: '19AABCM4521K1Z8',
+          location: 'Contai Central Bus Stand, Purba Medinipur',
+          mapUrl: 'https://www.google.com/maps/search/?api=1&query=Contai+Central+Purba+Medinipur',
+          hub: 'Contai Central & Digha Bypass',
+          status: 'APPROVED',
+          khataLimit: 50000,
+          khataDue: 13700
+        },
+        {
+          id: 'SHP-02',
+          name: 'Joy Guru Enterprise',
+          owner: 'Tapas Maity',
+          phone: '9733128840',
+          gstin: '19AABCJ8821M1Z2',
+          location: 'Egra College More, Purba Medinipur',
+          mapUrl: 'https://www.google.com/maps/search/?api=1&query=Egra+College+More+Purba+Medinipur',
+          hub: 'Egra Town Route 1',
+          status: 'APPROVED',
+          khataLimit: 40000,
+          khataDue: 6450
+        }
+      ],
+      wholesaleOrders: [
+        {
+          id: 'WB-INV-5503',
+          shopId: 'SHP-01',
+          shopName: 'Maa Sarada Traders',
+          owner: 'Subhasis Sahoo',
+          phone: '9832049182',
+          gstin: '19AABCM4521K1Z8',
+          location: 'Contai Central Bus Stand, Purba Medinipur',
+          mapUrl: 'https://www.google.com/maps/search/?api=1&query=Contai+Central+Purba+Medinipur',
+          itemsSummary: '5x Miniket Super Fine Rice (25kg Sack), 3x Fortune Mustard Oil (15L Tin)',
+          lineItems: [
+            { skuId: 'SKU-101', name: 'Miniket Super Fine Rice (25kg Sack)', qty: 5, rate: 1420, total: 7100, img: 'https://placehold.co/160x160/fff7ed/ea580c?text=Rice+25kg' },
+            { skuId: 'SKU-102', name: 'Fortune Kachi Ghani Mustard Oil (15L Tin)', qty: 3, rate: 2150, total: 6450, img: 'https://placehold.co/160x160/fefce8/ca8a04?text=Oil+15L' }
+          ],
+          totalUnits: 8,
+          amount: 13550,
+          payMode: 'Khata (14-Day)',
+          route: 'Contai Central & Digha Bypass',
+          source: 'Agent: Debasish Samanta',
+          status: 'DISPATCHED',
+          date: getLocalIsoDateOffset(0)
+        },
+        {
+          id: 'WB-INV-5504',
+          shopId: 'SHP-02',
+          shopName: 'Joy Guru Enterprise',
+          owner: 'Tapas Maity',
+          phone: '9733128840',
+          gstin: '19AABCJ8821M1Z2',
+          location: 'Egra College More, Purba Medinipur',
+          mapUrl: 'https://www.google.com/maps/search/?api=1&query=Egra+College+More+Purba+Medinipur',
+          itemsSummary: '4x Aashirvaad Shudh Chakki Atta (25kg Bag)',
+          lineItems: [
+            { skuId: 'SKU-103', name: 'Aashirvaad Shudh Chakki Atta (25kg Bag)', qty: 4, rate: 1080, total: 4320, img: 'https://placehold.co/160x160/f0fdf4/16a34a?text=Atta+25kg' }
+          ],
+          totalUnits: 4,
+          amount: 4320,
+          payMode: 'UPI / Cash on Delivery',
+          route: 'Egra Town Route 1',
+          source: 'Hub Dispatch Desk',
+          status: 'NEW',
+          date: getLocalIsoDateOffset(0)
+        }
+      ],
+      paymentCollections: [],
+      notifications: []
+    };
+
+    let hubState = JSON.parse(JSON.stringify(FALLBACK_HUB_STATE));
+    let selectedRouteFilter = 'ALL';
+    let currentPodPhotoData = '';
+
+    function getOrderLocationQuery(o) {
+      const shopRef = (hubState.kiranaShops || []).find(s => s.id === o.shopId || (s.name || '').toLowerCase() === (o.shopName || '').toLowerCase());
+      if (shopRef && shopRef.lat && shopRef.lng) return `${shopRef.lat},${shopRef.lng}`;
+      return o.location || (shopRef && shopRef.location) || o.route || o.shopName || 'Egra Purba Medinipur';
+    }
+
+    function openFullRouteGoogleMaps() {
+      const stops = getFilteredShownStops();
+      if (!stops.length) {
+        showDriverToast('No active drops to map');
+        return;
+      }
+      if (stops.length === 1) {
+        const q = encodeURIComponent(getOrderLocationQuery(stops[0]));
+        window.open(`https://www.google.com/maps/dir/?api=1&destination=${q}&travelmode=driving`, '_blank');
+        return;
+      }
+      const dest = encodeURIComponent(getOrderLocationQuery(stops[stops.length - 1]));
+      const waypoints = stops.slice(0, -1).map(s => encodeURIComponent(getOrderLocationQuery(s))).join('|');
+      const routeUrl = `https://www.google.com/maps/dir/?api=1&destination=${dest}&waypoints=${waypoints}&travelmode=driving`;
+      window.open(routeUrl, '_blank');
+    }
+
+    function getFilteredShownStops() {
+      const pendingOrders = getActiveRouteOrders();
+      const q = (document.getElementById('drv-drops-search')?.value || '').toLowerCase().trim();
+      const filtered = pendingOrders.filter(o => {
+        const matchRoute = selectedRouteFilter === 'ALL' || (o.route || 'Egra Town Route 1') === selectedRouteFilter;
+        const matchQ = !q || (o.shopName || '').toLowerCase().includes(q) || (o.id || '').toLowerCase().includes(q) || (o.location || '').toLowerCase().includes(q);
+        return matchRoute && matchQ;
+      });
+      return sortStopsByCustomRoute(filtered);
+    }
+
+    function getCustomRouteOrderList() {
+      try {
+        const raw = safeGetStorage(STORAGE_KEY_CUSTOM_ROUTE);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveCustomRouteOrderList(ids) {
+      try {
+        safeSetStorage(STORAGE_KEY_CUSTOM_ROUTE, JSON.stringify(ids || []));
+      } catch (e) {}
+    }
+
+    function sortStopsByCustomRoute(orders) {
+      const customIds = getCustomRouteOrderList();
+      if (!customIds.length) return orders;
+      const indexMap = new Map(customIds.map((id, i) => [id, i]));
+      return [...orders].sort((a, b) => {
+        const ia = indexMap.has(a.id) ? indexMap.get(a.id) : 9999;
+        const ib = indexMap.has(b.id) ? indexMap.get(b.id) : 9999;
+        return ia - ib;
+      });
+    }
+
+    function moveDeliveryStopOrder(orderId, direction) {
+      const currentStops = getFilteredShownStops();
+      const orderedIds = currentStops.map(o => o.id);
+      const idx = orderedIds.indexOf(orderId);
+      const targetIdx = idx + direction;
+      if (idx < 0 || targetIdx < 0 || targetIdx >= orderedIds.length) return;
+
+      const temp = orderedIds[idx];
+      orderedIds[idx] = orderedIds[targetIdx];
+      orderedIds[targetIdx] = temp;
+
+      const existingAll = getCustomRouteOrderList().filter(id => !orderedIds.includes(id));
+      saveCustomRouteOrderList([...orderedIds, ...existingAll]);
+      renderDeliveryDropsPage();
+      showDriverToast(`Stop moved to #${targetIdx + 1} in route map`);
+    }
+
+    function resetCustomDeliveryRouteOrder() {
+      safeRemoveStorage(STORAGE_KEY_CUSTOM_ROUTE);
+      renderDeliveryDropsPage();
+      showDriverToast('Route sequence reset to default');
+    }
+
+    function loadHubState() {
+      try {
+        const raw = safeGetStorage(STORAGE_KEY_STATE);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          hubState = Object.assign(JSON.parse(JSON.stringify(FALLBACK_HUB_STATE)), parsed);
+        }
+      } catch (e) {}
+      if (!Array.isArray(hubState.deliveryPartners) || !hubState.deliveryPartners.length) {
+        hubState.deliveryPartners = JSON.parse(JSON.stringify(DEFAULT_DRIVERS));
+      }
+    }
+
+    function persistHubState() {
+      try {
+        const serialized = JSON.stringify(hubState);
+        safeSetStorage(STORAGE_KEY_STATE, serialized);
+        if (window.__cloudSync && window.__cloudSync.enabled) {
+          window.__cloudSync.pushState(serialized);
+        }
+      } catch (e) {}
+    }
+
+    window.__applyIncomingLiveState = function(payload) {
+      try {
+        const parsed = typeof payload === 'string' ? JSON.parse(payload) : payload;
+        if (!parsed || typeof parsed !== 'object') return;
+        hubState = Object.assign(JSON.parse(JSON.stringify(FALLBACK_HUB_STATE)), parsed);
+        if (!Array.isArray(hubState.deliveryPartners) || !hubState.deliveryPartners.length) {
+          hubState.deliveryPartners = JSON.parse(JSON.stringify(DEFAULT_DRIVERS));
+        }
+        renderAllDeliveryViews();
+      } catch (e) {}
+    };
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === STORAGE_KEY_STATE && e.newValue) {
+        window.__applyIncomingLiveState(e.newValue);
+      }
+    });
+
+    function showDriverToast(msg) {
+      const box = document.getElementById('drv-toast');
+      const txt = document.getElementById('drv-toast-msg');
+      if (!box || !txt) return;
+      txt.textContent = msg;
+      box.classList.remove('hidden');
+      clearTimeout(window.__drvToastTimer);
+      window.__drvToastTimer = setTimeout(() => box.classList.add('hidden'), 2800);
+    }
+
+    function closeDeliveryModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+    }
+
+    function getActiveDriver() {
+      const savedId = safeGetStorage(STORAGE_KEY_DRIVER_SESSION);
+      return (hubState.deliveryPartners || []).find(d => d.id === savedId || d.loginId === savedId) || (hubState.deliveryPartners || [])[0];
+    }
+
+    function toggleDriverPassVisibility() {
+      const inp = document.getElementById('driver-login-pass');
+      const eye = document.getElementById('driver-pass-eye');
+      if (!inp) return;
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+      if (eye) eye.className = inp.type === 'password' ? 'ph-bold ph-eye text-base' : 'ph-bold ph-eye-slash text-base';
+    }
+
+    function handleDriverLogin(e) {
+      e.preventDefault();
+      const idVal = (document.getElementById('driver-login-id')?.value || '').trim();
+      const pinVal = (document.getElementById('driver-login-pass')?.value || '').trim();
+      const drv = (hubState.deliveryPartners || []).find(d =>
+        (d.loginId || '').toLowerCase() === idVal.toLowerCase() && (d.pin || '') === pinVal
+      );
+      if (!drv) {
+        document.getElementById('driver-login-error')?.classList.remove('hidden');
+        return;
+      }
+      document.getElementById('driver-login-error')?.classList.add('hidden');
+      safeSetStorage(STORAGE_KEY_DRIVER_SESSION, drv.id);
+      document.getElementById('driver-login-box')?.classList.add('hidden');
+      document.getElementById('driver-workspace')?.classList.remove('hidden');
+      renderAllDeliveryViews();
+      showDriverToast(`Shift started! Welcome, ${drv.name}`);
+    }
+
+    function logoutDriverApp() {
+      safeRemoveStorage(STORAGE_KEY_DRIVER_SESSION);
+      const idInp = document.getElementById('driver-login-id');
+      const passInp = document.getElementById('driver-login-pass');
+      if (idInp) idInp.value = '';
+      if (passInp) passInp.value = '';
+      document.getElementById('driver-workspace')?.classList.add('hidden');
+      document.getElementById('driver-login-box')?.classList.remove('hidden');
+    }
+
+    function toggleDriverDutyStatus() {
+      const drv = getActiveDriver();
+      if (!drv) return;
+      drv.onDuty = !drv.onDuty;
+      persistHubState();
+      renderDriverHeader();
+      showDriverToast(drv.onDuty ? 'Status set to ON DUTY' : 'Status set to OFF DUTY');
+    }
+
+    async function manualRefreshDeliveryHub() {
+      const icon = document.getElementById('drv-sync-icon');
+      if (icon) icon.classList.add('animate-spin');
+      if (window.__cloudSync && window.__cloudSync.pullNow) {
+        await window.__cloudSync.pullNow();
+      }
+      loadHubState();
+      renderAllDeliveryViews();
+      setTimeout(() => { if (icon) icon.classList.remove('animate-spin'); }, 450);
+      showDriverToast('Synced with Egra Central Hub');
+    }
+
+    function switchDeliveryTab(tab) {
+      const pages = ['drops', 'collect', 'history', 'profile'];
+      pages.forEach(p => {
+        const el = document.getElementById('drv-page-' + p);
+        if (el) el.classList.toggle('hidden', p !== tab);
+        const btn = document.getElementById('drv-nav-' + p);
+        if (btn) {
+          btn.className = `relative flex flex-col items-center gap-1 ${p === tab ? 'text-brand-600 font-extrabold' : 'text-slate-600 font-bold'}`;
+        }
+      });
+      renderAllDeliveryViews();
+    }
+
+    function renderDriverHeader() {
+      const drv = getActiveDriver();
+      if (!drv) return;
+      const initials = (drv.name || 'BM').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+      document.getElementById('drv-header-name').textContent = drv.name;
+      document.getElementById('drv-header-code').textContent = drv.loginId;
+      document.getElementById('drv-header-vehicle').textContent = drv.vehicle || 'WB-31B-4820 • Tata Ace';
+
+      const avImg = document.getElementById('drv-header-avatar-img');
+      const avInit = document.getElementById('drv-header-initials');
+      if (avImg && avInit) {
+        if (drv.photo) {
+          avImg.src = drv.photo;
+          avImg.classList.remove('hidden');
+          avInit.classList.add('hidden');
+        } else {
+          avImg.classList.add('hidden');
+          avInit.classList.remove('hidden');
+          avInit.textContent = initials;
+        }
+      }
+
+      const dutyPill = document.getElementById('driver-duty-pill');
+      if (dutyPill) {
+        dutyPill.className = drv.onDuty
+          ? 'px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9.5px] font-black flex items-center gap-1 transition'
+          : 'px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[9.5px] font-black flex items-center gap-1 transition';
+        dutyPill.innerHTML = drv.onDuty
+          ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span><span>ON DUTY</span>'
+          : '<span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span><span>OFF DUTY</span>';
+      }
+    }
+
+    function getActiveRouteOrders() {
+      const drv = getActiveDriver();
+      return (hubState.wholesaleOrders || []).filter(o => {
+        if (o.status === 'CANCELLED' || o.status === 'DELIVERED') return false;
+        // If order is assigned to a specific delivery partner, show it only to that driver
+        if (o.assignedDriverId && drv) {
+          return o.assignedDriverId === drv.id;
+        }
+        return true;
+      });
+    }
+
+    function getDeliveredOrders() {
+      const drv = getActiveDriver();
+      return (hubState.wholesaleOrders || []).filter(o => {
+        if (o.status !== 'DELIVERED') return false;
+        if (o.deliveredByDriverId && drv) {
+          return o.deliveredByDriverId === drv.id;
+        }
+        return true;
+      });
+    }
+
+    function renderDeliveryDropsPage() {
+      const pendingOrders = getActiveRouteOrders();
+      const deliveredOrders = getDeliveredOrders();
+
+      document.getElementById('drv-stat-pending').textContent = `${pendingOrders.length} Stops`;
+      document.getElementById('drv-stat-delivered').textContent = `${deliveredOrders.length} Done`;
+
+      // Nav badge
+      const navBadge = document.getElementById('drv-nav-drops-badge');
+      const navDot = document.getElementById('drv-nav-drops-dot');
+      if (navBadge) {
+        if (pendingOrders.length > 0) {
+          navBadge.textContent = ` (${pendingOrders.length})`;
+          navBadge.classList.remove('hidden');
+        } else {
+          navBadge.classList.add('hidden');
+        }
+      }
+      if (navDot) navDot.classList.toggle('hidden', pendingOrders.length === 0);
+
+      // Route filter pills
+      const routes = Array.from(new Set(pendingOrders.map(o => o.route || 'Egra Town Route 1')));
+      if (selectedRouteFilter !== 'ALL' && !routes.includes(selectedRouteFilter)) selectedRouteFilter = 'ALL';
+      const bar = document.getElementById('drv-route-filter-bar');
+      if (bar) {
+        bar.innerHTML = [
+          `<button type="button" onclick="selectedRouteFilter='ALL'; renderDeliveryDropsPage();" class="px-3 py-1 rounded-full text-[10.5px] font-black whitespace-nowrap ${selectedRouteFilter === 'ALL' ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200 text-slate-600'}">All Beats (${pendingOrders.length})</button>`,
+          ...routes.map(r => `<button type="button" onclick="selectedRouteFilter='${r.replace(/'/g, "\\'")}'; renderDeliveryDropsPage();" class="px-3 py-1 rounded-full text-[10.5px] font-black whitespace-nowrap ${selectedRouteFilter === r ? 'bg-brand-600 text-white' : 'bg-white border border-slate-200 text-slate-600'}">${r}</button>`)
+        ].join('');
+      }
+
+      const shown = getFilteredShownStops();
+      const hasCustomOrder = getCustomRouteOrderList().length > 0;
+      const resetBtn = document.getElementById('drv-route-reset-btn');
+      if (resetBtn) resetBtn.classList.toggle('hidden', !hasCustomOrder);
+
+      document.getElementById('drv-drops-count-pill').textContent = `${shown.length} Drops`;
+      const listEl = document.getElementById('drv-drops-list');
+      if (!listEl) return;
+
+      if (!shown.length) {
+        listEl.innerHTML = `<div class="p-7 text-center text-xs text-slate-400 bg-white rounded-2xl border border-slate-200 space-y-1">
+          <div class="font-black text-slate-700">All Route Drops Completed!</div>
+          <p>No pending Kirana store deliveries in this beat right now.</p>
+        </div>`;
+        return;
+      }
+
+      listEl.innerHTML = shown.map((o, idx) => {
+        const shopRef = (hubState.kiranaShops || []).find(s => s.id === o.shopId || (s.name || '').toLowerCase() === (o.shopName || '').toLowerCase());
+        const loc = o.location || (shopRef && shopRef.location) || o.route || 'East Midnapore Beat';
+        const mapUrl = o.mapUrl || (shopRef && shopRef.mapUrl) || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc)}`;
+        const isDispatched = o.status === 'DISPATCHED';
+        const isCod = !(o.payMode || '').toLowerCase().includes('khata');
+        const isFirst = idx === 0;
+        const isLast = idx === shown.length - 1;
+
+        return `
+          <div class="bg-white border ${isFirst ? 'border-brand-300 ring-2 ring-brand-500/10' : 'border-slate-200'} rounded-2xl p-3.5 space-y-2.5 text-xs shadow-2xs">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex items-start gap-2 min-w-0">
+                <!-- Route Sequence Up/Down Controls -->
+                <div class="flex flex-col items-center gap-0.5 shrink-0 pt-0.5">
+                  <button type="button" onclick="moveDeliveryStopOrder('${o.id}', -1)" ${isFirst ? 'disabled' : ''} title="Move Stop Earlier" class="w-6 h-6 rounded-lg border ${isFirst ? 'border-slate-100 text-slate-300 cursor-not-allowed' : 'border-slate-200 bg-slate-50 hover:bg-brand-50 hover:text-brand-600 text-slate-700'} flex items-center justify-center text-[10px] font-black transition">▲</button>
+                  <button type="button" onclick="moveDeliveryStopOrder('${o.id}', 1)" ${isLast ? 'disabled' : ''} title="Move Stop Later" class="w-6 h-6 rounded-lg border ${isLast ? 'border-slate-100 text-slate-300 cursor-not-allowed' : 'border-slate-200 bg-slate-50 hover:bg-brand-50 hover:text-brand-600 text-slate-700'} flex items-center justify-center text-[10px] font-black transition">▼</button>
+                </div>
+
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="px-2 py-0.5 rounded-md ${isFirst ? 'bg-brand-600 text-white' : 'bg-slate-900 text-white'} font-mono text-[9.5px] font-black">${isFirst ? 'NEXT STOP #1' : 'STOP #' + (idx + 1)}</span>
+                    <span class="font-mono font-black text-brand-600 text-[11px]">${o.id}</span>
+                    <span class="px-2 py-0.5 rounded-full ${isDispatched ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-800 border border-amber-200'} text-[9px] font-black">${isDispatched ? 'OUT FOR DELIVERY' : 'LOADING AT HUB'}</span>
+                  </div>
+                  <h4 class="font-black text-sm text-slate-900 mt-1">${o.shopName}</h4>
+                  <div class="text-[11px] text-slate-500">Owner: <strong class="text-slate-800">${o.owner || 'Kirana Partner'}</strong> • ${o.phone || ''}</div>
+                  <div class="text-[10.5px] text-slate-600 font-semibold mt-0.5 flex items-center gap-1">
+                    <i class="ph-fill ph-map-pin text-rose-500 shrink-0"></i>
+                    <span class="truncate">${loc}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <strong class="text-sm font-black text-slate-900 block">₹${formatPriceVal(o.amount)}</strong>
+                <span class="px-2 py-0.5 rounded-full ${isCod ? 'bg-orange-100 text-brand-700' : 'bg-sky-50 text-sky-700'} text-[9px] font-black mt-0.5 inline-block">${isCod ? 'COLLECT COD/UPI' : 'KHATA 14D'}</span>
+              </div>
+            </div>
+
+            <!-- Items Summary Strip -->
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-2">
+              <div class="min-w-0">
+                <span class="text-[9.5px] font-black text-slate-400 uppercase block">LOAD (${o.totalUnits || 1} PACKS)</span>
+                <div class="font-bold text-slate-800 truncate">${o.itemsSummary || 'Wholesale Kirana Goods'}</div>
+              </div>
+              <button type="button" onclick="openDriverOrderItemsModal('${o.id}')" class="text-brand-600 font-black text-[11px] underline shrink-0">Items</button>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="grid grid-cols-3 gap-1.5 pt-0.5">
+              <a href="tel:${o.phone || ''}" class="py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-[11px] flex items-center justify-center gap-1">
+                <i class="ph-bold ph-phone"></i><span>Call</span>
+              </a>
+              <a href="${mapUrl}" target="_blank" class="py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 font-black text-[11px] flex items-center justify-center gap-1">
+                <i class="ph-bold ph-navigation-arrow"></i><span>Navigate</span>
+              </a>
+              <button type="button" onclick="openPodDeliveryModal('${o.id}')" class="py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px] flex items-center justify-center gap-1 shadow-2xs">
+                <i class="ph-bold ph-check-circle"></i><span>Deliver</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openDriverOrderItemsModal(orderId) {
+      const ord = (hubState.wholesaleOrders || []).find(o => o.id === orderId);
+      if (!ord) return;
+      document.getElementById('drv-items-modal-title').textContent = `${ord.id} • ${ord.shopName}`;
+      document.getElementById('drv-items-modal-sub').textContent = `${ord.route || 'Beat'} • ${ord.payMode}`;
+      const items = (ord.lineItems && ord.lineItems.length)
+        ? ord.lineItems
+        : [{ name: ord.itemsSummary || 'Wholesale Goods', qty: ord.totalUnits || 1, rate: ord.amount, total: ord.amount, img: 'https://placehold.co/80x80/fff7ed/ea580c?text=SKU' }];
+      document.getElementById('drv-items-modal-list').innerHTML = items.map(it => `
+        <div class="p-2.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-2.5">
+          <div class="flex items-center gap-2 min-w-0">
+            <img src="${it.img || 'https://placehold.co/80x80/fff7ed/ea580c?text=SKU'}" class="w-10 h-10 rounded-xl object-cover border border-slate-200 shrink-0">
+            <div class="min-w-0">
+              <div class="font-black text-slate-900 truncate">${it.name}</div>
+              <div class="text-[10px] text-slate-500">${it.qty} Packs × ₹${formatPriceVal(it.rate)}</div>
+            </div>
+          </div>
+          <strong class="font-black text-slate-900 shrink-0">₹${formatPriceVal(it.total)}</strong>
+        </div>
+      `).join('');
+      document.getElementById('drv-items-modal-total').textContent = '₹' + formatPriceVal(ord.amount);
+      document.getElementById('drv-order-items-modal').classList.remove('hidden');
+    }
+
+    function openPodDeliveryModal(orderId) {
+      const ord = (hubState.wholesaleOrders || []).find(o => o.id === orderId);
+      if (!ord) return;
+      currentPodPhotoData = '';
+      document.getElementById('drv-pod-order-id').value = ord.id;
+      document.getElementById('drv-pod-shop-title').textContent = ord.shopName;
+      document.getElementById('drv-pod-inv-meta').textContent = `${ord.id} • ${ord.totalUnits || 1} Packs`;
+      document.getElementById('drv-pod-amount-meta').textContent = '₹' + formatPriceVal(ord.amount);
+      document.getElementById('drv-pod-receiver').value = `${ord.owner || 'Proprietor'} (Received)`;
+      const paySel = document.getElementById('drv-pod-payment-status');
+      if (paySel) {
+        paySel.value = (ord.payMode || '').toLowerCase().includes('khata')
+          ? 'Khata (14-Day Credit)'
+          : 'Cash Collected in Full';
+      }
+      updatePodModalUpiQr();
+      const prevImg = document.getElementById('drv-pod-photo-preview');
+      if (prevImg) prevImg.classList.add('hidden');
+      document.getElementById('drv-pod-modal').classList.remove('hidden');
+    }
+
+    function updatePodModalUpiQr() {
+      const payVal = document.getElementById('drv-pod-payment-status')?.value || '';
+      const qrBox = document.getElementById('drv-pod-upi-qr-box');
+      if (!qrBox) return;
+
+      const isUpi = payVal.includes('UPI QR');
+      qrBox.classList.toggle('hidden', !isUpi);
+      if (!isUpi) return;
+
+      const orderId = document.getElementById('drv-pod-order-id')?.value;
+      const ord = (hubState.wholesaleOrders || []).find(o => o.id === orderId);
+      const amtVal = ord ? (Number(ord.amount) || 0) : 0;
+      const note = ord ? `POD ${ord.id} - ${ord.shopName}` : 'ApnaMart24 B2B POD';
+
+      let upiUri = `upi://pay?pa=amit7074525@ibl&pn=${encodeURIComponent('ApnaMart24 B2B')}&tn=${encodeURIComponent(note)}&cu=INR`;
+      if (amtVal > 0) upiUri += `&am=${amtVal.toFixed(2)}`;
+
+      const qrImg = document.getElementById('drv-pod-qr-img');
+      if (qrImg) {
+        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=6&data=${encodeURIComponent(upiUri)}`;
+      }
+      const badge = document.getElementById('drv-pod-qr-amt-badge');
+      if (badge) {
+        badge.textContent = amtVal > 0 ? `Pay ₹${formatPriceVal(amtVal)}` : 'Any Amount';
+      }
+    }
+
+    function handlePodPhotoPreview(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        currentPodPhotoData = ev.target.result;
+        const img = document.getElementById('drv-pod-photo-preview');
+        if (img) {
+          img.src = currentPodPhotoData;
+          img.classList.remove('hidden');
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function confirmPodDeliverySubmit(e) {
+      e.preventDefault();
+      const drv = getActiveDriver();
+      const orderId = document.getElementById('drv-pod-order-id').value;
+      const ord = (hubState.wholesaleOrders || []).find(o => o.id === orderId);
+      if (!ord) return;
+
+      const receiver = document.getElementById('drv-pod-receiver').value.trim();
+      const settlement = document.getElementById('drv-pod-payment-status').value;
+
+      ord.status = 'DELIVERED';
+      ord.deliveredAt = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+      ord.deliveredDate = getLocalIsoDateOffset(0);
+      ord.podReceiver = receiver;
+      ord.podSettlement = settlement;
+      ord.podPhoto = currentPodPhotoData || '';
+      ord.deliveredByDriverId = drv ? drv.id : 'DRV-01';
+      ord.deliveredByDriverName = drv ? drv.name : 'Bikram Mondal';
+
+      // If COD or UPI collected at doorstep, log receipt & reduce shop due if applicable
+      if (!settlement.includes('Khata')) {
+        const shopObj = (hubState.kiranaShops || []).find(s => s.id === ord.shopId || s.name === ord.shopName);
+        if (shopObj && (ord.payMode || '').toLowerCase().includes('khata')) {
+          shopObj.khataDue = Math.max(0, (Number(shopObj.khataDue) || 0) - (Number(ord.amount) || 0));
+        }
+        hubState.paymentCollections = hubState.paymentCollections || [];
+        hubState.paymentCollections.unshift({
+          id: 'POD-PAY-' + Math.floor(1000 + Math.random() * 8999),
+          orderId: ord.id,
+          shopId: ord.shopId,
+          shopName: ord.shopName,
+          amount: Number(ord.amount) || 0,
+          mode: settlement.includes('UPI') ? 'UPI / QR Scan' : 'Cash on Delivery',
+          ref: `Doorstep POD (${ord.id})`,
+          driverId: drv ? drv.id : 'DRV-01',
+          agentName: `Driver: ${drv ? drv.name : 'Bikram Mondal'}`,
+          date: getLocalIsoDateOffset(0)
+        });
+      }
+
+      hubState.notifications = hubState.notifications || [];
+      hubState.notifications.unshift({
+        id: 'DEL-NTF-' + Date.now(),
+        type: 'DELIVERY',
+        orderId: ord.id,
+        title: `Delivered ${ord.id} • ${ord.shopName}`,
+        desc: `POD: ${receiver} • ${settlement} • By ${drv ? drv.name : 'Driver'}`,
+        unread: true
+      });
+
+      persistHubState();
+      closeDeliveryModal('drv-pod-modal');
+      renderAllDeliveryViews();
+      showDriverToast(`Delivered ${ord.id} & POD synced to Admin Hub!`);
+    }
+
+    function renderDriverCollectPage() {
+      const drv = getActiveDriver();
+      const activeOrders = getActiveRouteOrders();
+      const codOrders = activeOrders.filter(o => !(o.payMode || '').toLowerCase().includes('khata'));
+      const pendingCodAmt = codOrders.reduce((s, o) => s + (Number(o.amount) || 0), 0);
+
+      const myReceipts = (hubState.paymentCollections || []).filter(p =>
+        (drv && p.driverId === drv.id) || (p.agentName || '').startsWith('Driver:')
+      );
+      const collectedAmt = myReceipts.reduce((s, p) => s + (Number(p.amount) || 0), 0);
+
+      document.getElementById('drv-col-pending-amt').textContent = '₹' + formatPriceVal(pendingCodAmt);
+      document.getElementById('drv-col-done-amt').textContent = '₹' + formatPriceVal(collectedAmt);
+
+      const sel = document.getElementById('drv-col-order-select');
+      if (sel) {
+        const prev = sel.value;
+        const pool = activeOrders.length ? activeOrders : (hubState.wholesaleOrders || []).filter(o => o.status !== 'CANCELLED');
+        sel.innerHTML = pool.length
+          ? pool.map(o => `<option value="${o.id}">${o.shopName} (${o.id} • ₹${formatPriceVal(o.amount)})</option>`).join('')
+          : '<option value="">No active invoices</option>';
+        if (prev && pool.some(o => o.id === prev)) sel.value = prev;
+        syncDriverCollectionOrderHint();
+      }
+
+      document.getElementById('drv-col-receipts-count').textContent = `${myReceipts.length} Receipts`;
+      const listEl = document.getElementById('drv-col-receipts-list');
+      if (listEl) {
+        listEl.innerHTML = myReceipts.length
+          ? myReceipts.map(r => `
+            <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between gap-2 text-xs">
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5">
+                  <span class="font-mono font-black text-emerald-700 text-[10.5px]">${r.id}</span>
+                  <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-black text-[9px]">${r.mode}</span>
+                </div>
+                <div class="font-black text-slate-900 truncate mt-0.5">${r.shopName}</div>
+                <div class="text-[10px] text-slate-500">${r.date || ''} • ${r.ref || ''}</div>
+              </div>
+              <strong class="text-sm font-black text-emerald-700 shrink-0">+₹${formatPriceVal(r.amount)}</strong>
+            </div>
+          `).join('')
+          : '<div class="p-5 text-center text-xs text-slate-400 bg-white rounded-2xl border border-slate-200">No doorstep collections recorded yet.</div>';
+      }
+    }
+
+    function syncDriverCollectionOrderHint() {
+      const sel = document.getElementById('drv-col-order-select');
+      const hint = document.getElementById('drv-col-order-hint');
+      if (!sel || !hint) return;
+      const ord = (hubState.wholesaleOrders || []).find(o => o.id === sel.value);
+      const amt = ord ? (Number(ord.amount) || 0) : 0;
+      hint.textContent = ord ? `Invoice Amount: ₹${formatPriceVal(amt)} (${ord.payMode})` : 'Invoice Due: ₹0';
+      updateDriverUpiQr();
+    }
+
+    function updateDriverUpiQr() {
+      const mode = document.getElementById('drv-col-mode-select')?.value || 'UPI / QR Scan';
+      const qrBox = document.getElementById('drv-col-qr-box');
+      if (!qrBox) return;
+      qrBox.classList.toggle('hidden', mode !== 'UPI / QR Scan');
+      const amtVal = parseFloat(document.getElementById('drv-col-amount-input')?.value) || 0;
+      const sel = document.getElementById('drv-col-order-select');
+      const ord = (hubState.wholesaleOrders || []).find(o => o.id === sel?.value);
+      const note = ord ? `Delivery ${ord.id} - ${ord.shopName}` : 'ApnaMart24 B2B Delivery';
+      let upiUri = `upi://pay?pa=amit7074525@ibl&pn=${encodeURIComponent('ApnaMart24 B2B')}&tn=${encodeURIComponent(note)}&cu=INR`;
+      if (amtVal > 0) upiUri += `&am=${amtVal.toFixed(2)}`;
+      const img = document.getElementById('drv-col-qr-img');
+      if (img) img.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=6&data=${encodeURIComponent(upiUri)}`;
+      const badge = document.getElementById('drv-col-qr-amt-badge');
+      if (badge) badge.textContent = amtVal > 0 ? `Pay ₹${formatPriceVal(amtVal)}` : 'Any Amount';
+    }
+
+    function copyDriverUpiId() {
+      const temp = document.createElement('input');
+      temp.value = 'amit7074525@ibl';
+      document.body.appendChild(temp);
+      temp.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(temp);
+      showDriverToast('Copied UPI ID: amit7074525@ibl');
+    }
+
+    function recordDriverCollection() {
+      const drv = getActiveDriver();
+      const sel = document.getElementById('drv-col-order-select');
+      const ord = (hubState.wholesaleOrders || []).find(o => o.id === sel?.value);
+      const amt = parseFloat(document.getElementById('drv-col-amount-input')?.value) || 0;
+      const mode = document.getElementById('drv-col-mode-select')?.value || 'UPI / QR Scan';
+
+      if (!ord || amt <= 0) {
+        showDriverToast('Enter a valid received amount');
+        return;
+      }
+
+      const shopObj = (hubState.kiranaShops || []).find(s => s.id === ord.shopId || s.name === ord.shopName);
+      if (shopObj) {
+        shopObj.khataDue = Math.max(0, (Number(shopObj.khataDue) || 0) - amt);
+      }
+
+      hubState.paymentCollections = hubState.paymentCollections || [];
+      hubState.paymentCollections.unshift({
+        id: 'DRV-PAY-' + Math.floor(1000 + Math.random() * 8999),
+        orderId: ord.id,
+        shopId: ord.shopId,
+        shopName: ord.shopName,
+        amount: amt,
+        mode,
+        ref: `Route Collection (${ord.id})`,
+        driverId: drv ? drv.id : 'DRV-01',
+        agentName: `Driver: ${drv ? drv.name : 'Bikram Mondal'}`,
+        date: getLocalIsoDateOffset(0)
+      });
+
+      persistHubState();
+      document.getElementById('drv-col-amount-input').value = '';
+      renderAllDeliveryViews();
+      showDriverToast(`Collected ₹${formatPriceVal(amt)} from ${ord.shopName}!`);
+    }
+
+    function renderDeliveryHistoryPage() {
+      const q = (document.getElementById('drv-history-search')?.value || '').toLowerCase().trim();
+      const delivered = getDeliveredOrders().filter(o =>
+        !q || (o.shopName || '').toLowerCase().includes(q) || (o.id || '').toLowerCase().includes(q)
+      );
+      document.getElementById('drv-history-count-pill').textContent = `${delivered.length} Delivered`;
+      const listEl = document.getElementById('drv-history-list');
+      if (!listEl) return;
+
+      listEl.innerHTML = delivered.length
+        ? delivered.map(o => `
+          <div class="bg-white border border-emerald-200/80 rounded-2xl p-3.5 space-y-2 text-xs shadow-2xs">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="font-mono font-black text-emerald-700 text-[11px]">${o.id}</span>
+                  <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-black">✓ DELIVERED</span>
+                </div>
+                <h4 class="font-black text-sm text-slate-900 mt-0.5">${o.shopName}</h4>
+                <div class="text-[10.5px] text-slate-500">POD: <strong class="text-slate-800">${o.podReceiver || o.owner || 'Received'}</strong> • ${o.deliveredAt || o.date || ''}</div>
+              </div>
+              <strong class="font-black text-slate-900 text-sm">₹${formatPriceVal(o.amount)}</strong>
+            </div>
+            <div class="flex items-center justify-between pt-1.5 border-t border-slate-100 text-[10.5px]">
+              <span class="text-slate-500">${o.totalUnits || 1} Packs • ${o.podSettlement || o.payMode}</span>
+              <button type="button" onclick="openDriverOrderItemsModal('${o.id}')" class="text-brand-600 font-black underline">View Manifest</button>
+            </div>
+          </div>
+        `).join('')
+        : '<div class="p-6 text-center text-xs text-slate-400 bg-white rounded-2xl border border-slate-200">No completed deliveries logged yet.</div>';
+    }
+
+    function renderDriverProfilePage() {
+      const drv = getActiveDriver();
+      if (!drv) return;
+      const initials = (drv.name || 'BM').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+
+      const pImg = document.getElementById('drv-prof-avatar-img');
+      const pInit = document.getElementById('drv-prof-initials');
+      if (pImg && pInit) {
+        if (drv.photo) {
+          pImg.src = drv.photo;
+          pImg.classList.remove('hidden');
+          pInit.classList.add('hidden');
+        } else {
+          pImg.classList.add('hidden');
+          pInit.classList.remove('hidden');
+          pInit.textContent = initials;
+        }
+      }
+
+      document.getElementById('drv-prof-display-name').textContent = drv.name;
+      document.getElementById('drv-prof-id-pill').textContent = drv.loginId;
+      document.getElementById('drv-prof-login').value = drv.loginId;
+
+      const nInp = document.getElementById('drv-prof-name');
+      if (nInp && document.activeElement !== nInp) nInp.value = drv.name;
+      const phInp = document.getElementById('drv-prof-phone');
+      if (phInp && document.activeElement !== phInp) phInp.value = drv.phone || '';
+      const vInp = document.getElementById('drv-prof-vehicle');
+      if (vInp && document.activeElement !== vInp) vInp.value = drv.vehicle || '';
+      document.getElementById('drv-prof-hub').value = drv.hub || 'Egra Central Hub';
+
+      const bName = document.getElementById('drv-prof-bank-name');
+      if (bName && document.activeElement !== bName) bName.value = drv.bankName || '';
+      const bAc = document.getElementById('drv-prof-bank-ac');
+      if (bAc && document.activeElement !== bAc) bAc.value = drv.bankAcNo || '';
+      const bIfsc = document.getElementById('drv-prof-bank-ifsc');
+      if (bIfsc && document.activeElement !== bIfsc) bIfsc.value = drv.bankIfsc || '';
+      const bUpi = document.getElementById('drv-prof-bank-upi');
+      if (bUpi && document.activeElement !== bUpi) bUpi.value = drv.bankUpi || '';
+
+      const bankBadge = document.getElementById('drv-prof-bank-badge');
+      if (bankBadge) {
+        const hasBank = Boolean((drv.bankAcNo || '').trim() || (drv.bankUpi || '').trim());
+        bankBadge.textContent = hasBank ? '✓ SAVED' : 'NOT ADDED';
+        bankBadge.className = hasBank
+          ? 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-black'
+          : 'px-2 py-0.5 rounded-full bg-slate-200 text-slate-600 text-[9px] font-black';
+      }
+
+      const deliveredCount = getDeliveredOrders().filter(o =>
+        !o.deliveredByDriverId || o.deliveredByDriverId === drv.id || o.deliveredByDriverName === drv.name
+      ).length;
+      const dropRate = drv.dropCommRate !== undefined && drv.dropCommRate !== null ? Number(drv.dropCommRate) : 60;
+      const tripIncentive = Math.round(deliveredCount * dropRate * 100) / 100;
+      const ratePill = document.getElementById('drv-prof-rate-pill');
+      if (ratePill) ratePill.textContent = `₹${formatPriceVal(dropRate)} / DROP`;
+      document.getElementById('drv-prof-drops-count').textContent = `${deliveredCount} Drops`;
+      document.getElementById('drv-prof-incentive-amt').textContent = `₹${formatPriceVal(tripIncentive)}`;
+    }
+
+    function handleDriverPhotoUpload(e) {
+      const file = e.target.files && e.target.files[0];
+      const drv = getActiveDriver();
+      if (!file || !drv) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = 200;
+          canvas.height = 200;
+          const ctx = canvas.getContext('2d');
+          const min = Math.min(img.width, img.height);
+          ctx.drawImage(img, (img.width - min) / 2, (img.height - min) / 2, min, min, 0, 0, 200, 200);
+          drv.photo = canvas.toDataURL('image/jpeg', 0.85);
+          persistHubState();
+          renderAllDeliveryViews();
+          showDriverToast('Driver photo updated!');
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveDriverProfileDetails(e) {
+      e.preventDefault();
+      const drv = getActiveDriver();
+      if (!drv) return;
+      drv.name = document.getElementById('drv-prof-name').value.trim();
+      drv.phone = document.getElementById('drv-prof-phone').value.trim();
+      drv.vehicle = document.getElementById('drv-prof-vehicle').value.trim();
+      drv.bankName = (document.getElementById('drv-prof-bank-name')?.value || '').trim();
+      drv.bankAcNo = (document.getElementById('drv-prof-bank-ac')?.value || '').trim();
+      drv.bankIfsc = (document.getElementById('drv-prof-bank-ifsc')?.value || '').trim().toUpperCase();
+      drv.bankUpi = (document.getElementById('drv-prof-bank-upi')?.value || '').trim();
+      persistHubState();
+      renderAllDeliveryViews();
+      showDriverToast('Driver profile & payout details saved!');
+    }
+
+    function renderAllDeliveryViews() {
+      renderDriverHeader();
+      renderDeliveryDropsPage();
+      renderDriverCollectPage();
+      renderDeliveryHistoryPage();
+      renderDriverProfilePage();
+    }
+
+    function runDeliverySplash() {
+      const loader = document.getElementById('app-splash-loader');
+      const fill = document.getElementById('splash-progress-fill');
+      const pct = document.getElementById('splash-progress-pct');
+      const txt = document.getElementById('splash-status-text');
+      if (!loader) return;
+
+      const steps = [
+        { p: 68, t: 'Syncing 5:00 AM Kirana beat drops...' },
+        { p: 100, t: 'Ready! Opening Fleet Partner App' }
+      ];
+      let idx = 0;
+      const timer = setInterval(() => {
+        if (idx < steps.length) {
+          if (fill) fill.style.width = steps[idx].p + '%';
+          if (pct) pct.textContent = steps[idx].p + '%';
+          if (txt) txt.textContent = steps[idx].t;
+          idx++;
+        } else {
+          clearInterval(timer);
+          setTimeout(() => {
+            loader.classList.add('splash-hide');
+            setTimeout(() => loader.remove(), 600);
+          }, 200);
+        }
+      }, 280);
+    }
+
+    function bootDeliveryApp() {
+      runDeliverySplash();
+      loadHubState();
+      const savedSession = safeGetStorage(STORAGE_KEY_DRIVER_SESSION);
+      if (savedSession) {
+        document.getElementById('driver-login-box')?.classList.add('hidden');
+        document.getElementById('driver-workspace')?.classList.remove('hidden');
+        renderAllDeliveryViews();
+      }
+      setInterval(() => {
+        try {
+          const raw = safeGetStorage(STORAGE_KEY_STATE);
+          if (raw) window.__applyIncomingLiveState(raw);
+        } catch (e) {}
+      }, 2500);
+    }
+
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', bootDeliveryApp);
+    } else {
+      bootDeliveryApp();
+    }
+  </script>
+</body>
+</html>
