@@ -654,6 +654,114 @@
       </div>
     </div>
 
+    <!-- Reschedule Delivery Modal -->
+    <div id="drv-reschedule-modal" class="hidden absolute inset-0 z-30 bg-slate-950/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-3">
+      <div class="bg-white rounded-3xl w-full p-4 space-y-3 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <div>
+            <span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[9px] font-black uppercase">RESCHEDULE DROP</span>
+            <h4 id="drv-resch-shop-title" class="font-black text-sm text-slate-900 mt-0.5">Kirana Store</h4>
+          </div>
+          <button type="button" onclick="closeDeliveryModal('drv-reschedule-modal')" class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph-bold ph-x"></i></button>
+        </div>
+
+        <form onsubmit="confirmDriverRescheduleSubmit(event)" class="space-y-3">
+          <input type="hidden" id="drv-resch-order-id">
+
+          <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+            <div>
+              <span class="text-[9.5px] font-bold text-slate-400 uppercase block">INVOICE &amp; CURRENT DATE</span>
+              <strong id="drv-resch-inv-meta" class="font-mono font-black text-slate-900">WB-INV-0000</strong>
+            </div>
+            <div class="text-right">
+              <span class="text-[9.5px] font-bold text-slate-400 uppercase block">BILL AMOUNT</span>
+              <strong id="drv-resch-amt-meta" class="font-black text-brand-600 text-sm">₹0</strong>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="font-bold text-slate-700 block mb-1">New Delivery Date *</label>
+              <input type="date" id="drv-resch-date" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-black text-slate-900">
+            </div>
+            <div>
+              <label class="font-bold text-slate-700 block mb-1">Next Dispatch Slot *</label>
+              <select id="drv-resch-wave" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
+                <option value="05:00 AM Morning Wave">05:00 AM Morning Wave</option>
+                <option value="04:00 PM Evening Slot">04:00 PM Evening Slot</option>
+                <option value="Next Beat Visit">Next Beat Visit</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Reschedule Reason *</label>
+            <select id="drv-resch-reason" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
+              <option value="Shop Closed / Owner Unavailable">Shop Closed / Owner Unavailable</option>
+              <option value="Requested by Kirana Owner">Requested by Kirana Owner</option>
+              <option value="Cash / UPI Payment Not Ready">Cash / UPI Payment Not Ready</option>
+              <option value="Road / Traffic / Weather Delay">Road / Traffic / Weather Delay</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Driver Note (Optional)</label>
+            <input type="text" id="drv-resch-note" placeholder="e.g. Owner asked to deliver tomorrow morning" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-semibold text-slate-800">
+          </div>
+
+          <button type="submit" class="w-full py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 flex items-center justify-center gap-1.5">
+            <i class="ph-bold ph-calendar-plus text-base"></i>
+            <span>Confirm Reschedule &amp; Sync Hub</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Cancel Delivery Order Modal -->
+    <div id="drv-cancel-modal" class="hidden absolute inset-0 z-30 bg-slate-950/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-3">
+      <div class="bg-white rounded-3xl w-full p-4 space-y-3 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <div>
+            <span class="px-2 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-200 text-[9px] font-black uppercase">CANCEL DELIVERY ORDER</span>
+            <h4 id="drv-cancel-shop-title" class="font-black text-sm text-slate-900 mt-0.5">Kirana Store</h4>
+          </div>
+          <button type="button" onclick="closeDeliveryModal('drv-cancel-modal')" class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph-bold ph-x"></i></button>
+        </div>
+
+        <form onsubmit="confirmDriverCancelSubmit(event)" class="space-y-3">
+          <input type="hidden" id="drv-cancel-order-id">
+
+          <div class="p-3 rounded-2xl bg-red-50/70 border border-red-200 space-y-1">
+            <div class="flex items-center justify-between">
+              <strong id="drv-cancel-inv-meta" class="font-mono font-black text-red-700">WB-INV-0000</strong>
+              <strong id="drv-cancel-amt-meta" class="font-black text-slate-900 text-sm">₹0</strong>
+            </div>
+            <p class="text-[10.5px] text-red-700 font-semibold">Cancelling will return items back to Egra Hub inventory and notify Central Admin immediately.</p>
+          </div>
+
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Cancellation Reason *</label>
+            <select id="drv-cancel-reason" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-900">
+              <option value="Kirana Owner Refused Delivery">Kirana Owner Refused Delivery</option>
+              <option value="Duplicate / Wrong Order Booked">Duplicate / Wrong Order Booked</option>
+              <option value="Shop Permanently Closed">Shop Permanently Closed</option>
+              <option value="Price / Slab Mismatch at Doorstep">Price / Slab Mismatch at Doorstep</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Remarks / Details (Optional)</label>
+            <input type="text" id="drv-cancel-note" placeholder="e.g. Spoken with proprietor at shop" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-semibold text-slate-800">
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button type="button" onclick="closeDeliveryModal('drv-cancel-modal')" class="py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-xs">Keep Order</button>
+            <button type="submit" class="py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-xs shadow-lg shadow-red-600/20">Confirm Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <!-- Floating Toast inside App -->
     <div id="drv-toast" class="hidden absolute bottom-16 left-4 right-4 z-40 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-xl border border-slate-700 text-xs font-bold flex items-center gap-2">
       <i class="ph-fill ph-check-circle text-emerald-400 text-base shrink-0"></i>
@@ -761,6 +869,8 @@
           window.__cloudSync.lastCloudTimestamp = data.updatedAt || Date.now();
           if (typeof window.__applyIncomingLiveState === 'function') window.__applyIncomingLiveState(data.payload);
         });
+
+        await window.__cloudSync.pullNow();
       } catch (e) {
         updateSyncPill(false);
       }
@@ -1060,8 +1170,25 @@
     }
 
     function getActiveDriver() {
-      const savedId = safeGetStorage(STORAGE_KEY_DRIVER_SESSION);
-      return (hubState.deliveryPartners || []).find(d => d.id === savedId || d.loginId === savedId) || (hubState.deliveryPartners || [])[0];
+      const savedId = (safeGetStorage(STORAGE_KEY_DRIVER_SESSION) || '').trim().toLowerCase();
+      const drivers = hubState.deliveryPartners || [];
+      if (!savedId) return drivers[0] || null;
+      return drivers.find(d =>
+        (d.id || '').trim().toLowerCase() === savedId ||
+        (d.loginId || '').trim().toLowerCase() === savedId
+      ) || drivers[0] || null;
+    }
+
+    function renderQuickDriverLoginButtons() {
+      // Quick Fleet Login removed
+    }
+
+    function quickDriverLogin(loginId, pin) {
+      const idInp = document.getElementById('driver-login-id');
+      const passInp = document.getElementById('driver-login-pass');
+      if (idInp) idInp.value = loginId;
+      if (passInp) passInp.value = pin;
+      handleDriverLogin(new Event('submit'));
     }
 
     function toggleDriverPassVisibility() {
@@ -1072,21 +1199,30 @@
       if (eye) eye.className = inp.type === 'password' ? 'ph-bold ph-eye text-base' : 'ph-bold ph-eye-slash text-base';
     }
 
-    function handleDriverLogin(e) {
-      e.preventDefault();
+    async function handleDriverLogin(e) {
+      if (e && e.preventDefault) e.preventDefault();
       const idVal = (document.getElementById('driver-login-id')?.value || '').trim();
       const pinVal = (document.getElementById('driver-login-pass')?.value || '').trim();
-      const drv = (hubState.deliveryPartners || []).find(d =>
-        (d.loginId || '').toLowerCase() === idVal.toLowerCase() && (d.pin || '') === pinVal
+      let drv = (hubState.deliveryPartners || []).find(d =>
+        (d.loginId || '').trim().toLowerCase() === idVal.toLowerCase() && String(d.pin || '').trim() === pinVal
       );
+      if (!drv && window.__cloudSync && window.__cloudSync.pullNow) {
+        await window.__cloudSync.pullNow();
+        drv = (hubState.deliveryPartners || []).find(d =>
+          (d.loginId || '').trim().toLowerCase() === idVal.toLowerCase() && String(d.pin || '').trim() === pinVal
+        );
+      }
       if (!drv) {
         document.getElementById('driver-login-error')?.classList.remove('hidden');
         return;
       }
       document.getElementById('driver-login-error')?.classList.add('hidden');
-      safeSetStorage(STORAGE_KEY_DRIVER_SESSION, drv.id);
+      safeSetStorage(STORAGE_KEY_DRIVER_SESSION, drv.loginId || drv.id);
       document.getElementById('driver-login-box')?.classList.add('hidden');
       document.getElementById('driver-workspace')?.classList.remove('hidden');
+      if (window.__cloudSync && window.__cloudSync.pullNow) {
+        await window.__cloudSync.pullNow();
+      }
       renderAllDeliveryViews();
       showDriverToast(`Shift started! Welcome, ${drv.name}`);
     }
@@ -1159,24 +1295,34 @@
 
       const dutyPill = document.getElementById('driver-duty-pill');
       if (dutyPill) {
-        dutyPill.className = drv.onDuty
+        const isOn = drv.onDuty !== false;
+        dutyPill.className = isOn
           ? 'px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9.5px] font-black flex items-center gap-1 transition'
           : 'px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[9.5px] font-black flex items-center gap-1 transition';
-        dutyPill.innerHTML = drv.onDuty
+        dutyPill.innerHTML = isOn
           ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span><span>ON DUTY</span>'
           : '<span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span><span>OFF DUTY</span>';
       }
+    }
+
+    function doesOrderMatchDriver(o, drv) {
+      if (!drv) return true;
+      const assignedId = (o.assignedDriverId || '').trim().toLowerCase();
+      const assignedName = (o.assignedDriverName || '').trim().toLowerCase();
+      if (!assignedId && !assignedName) return true;
+      const drvId = (drv.id || '').trim().toLowerCase();
+      const drvLogin = (drv.loginId || '').trim().toLowerCase();
+      const drvName = (drv.name || '').trim().toLowerCase();
+      if (assignedId && (assignedId === drvId || assignedId === drvLogin)) return true;
+      if (assignedName && drvName && assignedName === drvName) return true;
+      return false;
     }
 
     function getActiveRouteOrders() {
       const drv = getActiveDriver();
       return (hubState.wholesaleOrders || []).filter(o => {
         if (o.status === 'CANCELLED' || o.status === 'DELIVERED') return false;
-        // If order is assigned to a specific delivery partner, show it only to that driver
-        if (o.assignedDriverId && drv) {
-          return o.assignedDriverId === drv.id;
-        }
-        return true;
+        return doesOrderMatchDriver(o, drv);
       });
     }
 
@@ -1184,10 +1330,15 @@
       const drv = getActiveDriver();
       return (hubState.wholesaleOrders || []).filter(o => {
         if (o.status !== 'DELIVERED') return false;
-        if (o.deliveredByDriverId && drv) {
-          return o.deliveredByDriverId === drv.id;
+        const delId = (o.deliveredByDriverId || '').trim().toLowerCase();
+        const delName = (o.deliveredByDriverName || '').trim().toLowerCase();
+        if (drv && (delId || delName)) {
+          const drvId = (drv.id || '').trim().toLowerCase();
+          const drvLogin = (drv.loginId || '').trim().toLowerCase();
+          const drvName = (drv.name || '').trim().toLowerCase();
+          return (delId && (delId === drvId || delId === drvLogin)) || (delName && delName === drvName);
         }
-        return true;
+        return doesOrderMatchDriver(o, drv);
       });
     }
 
@@ -1263,6 +1414,7 @@
                     <span class="px-2 py-0.5 rounded-md ${isFirst ? 'bg-brand-600 text-white' : 'bg-slate-900 text-white'} font-mono text-[9.5px] font-black">${isFirst ? 'NEXT STOP #1' : 'STOP #' + (idx + 1)}</span>
                     <span class="font-mono font-black text-brand-600 text-[11px]">${o.id}</span>
                     <span class="px-2 py-0.5 rounded-full ${isDispatched ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-800 border border-amber-200'} text-[9px] font-black">${isDispatched ? 'OUT FOR DELIVERY' : 'LOADING AT HUB'}</span>
+                    ${o.rescheduledDate ? `<span class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200 text-[9px] font-black">RESCHEDULED • ${o.date}</span>` : ''}
                   </div>
                   <h4 class="font-black text-sm text-slate-900 mt-1">${o.shopName}</h4>
                   <div class="text-[11px] text-slate-500">Owner: <strong class="text-slate-800">${o.owner || 'Kirana Partner'}</strong> • ${o.phone || ''}</div>
@@ -1270,6 +1422,7 @@
                     <i class="ph-fill ph-map-pin text-rose-500 shrink-0"></i>
                     <span class="truncate">${loc}</span>
                   </div>
+                  ${o.rescheduleReason ? `<div class="text-[10px] text-purple-700 font-bold mt-0.5">↻ ${o.rescheduleWave || 'Next Wave'}: ${o.rescheduleReason}</div>` : ''}
                 </div>
               </div>
               <div class="text-right shrink-0">
@@ -1299,9 +1452,133 @@
                 <i class="ph-bold ph-check-circle"></i><span>Deliver</span>
               </button>
             </div>
+
+            <!-- Secondary Reschedule & Cancel Actions -->
+            <div class="grid grid-cols-2 gap-1.5">
+              <button type="button" onclick="openDriverRescheduleModal('${o.id}')" class="py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200/80 font-black text-[10.5px] flex items-center justify-center gap-1 transition">
+                <i class="ph-bold ph-calendar-plus"></i><span>Reschedule</span>
+              </button>
+              <button type="button" onclick="openDriverCancelModal('${o.id}')" class="py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200/80 font-black text-[10.5px] flex items-center justify-center gap-1 transition">
+                <i class="ph-bold ph-x-circle"></i><span>Cancel Order</span>
+              </button>
+            </div>
           </div>
         `;
       }).join('');
+    }
+
+    function openDriverRescheduleModal(orderId) {
+      const ord = (hubState.wholesaleOrders || []).find(o => o.id === orderId);
+      if (!ord) return;
+      document.getElementById('drv-resch-order-id').value = ord.id;
+      document.getElementById('drv-resch-shop-title').textContent = ord.shopName;
+      document.getElementById('drv-resch-inv-meta').textContent = `${ord.id} • ${ord.date || getLocalIsoDateOffset(0)}`;
+      document.getElementById('drv-resch-amt-meta').textContent = '₹' + formatPriceVal(ord.amount);
+      document.getElementById('drv-resch-date').value = getLocalIsoDateOffset(1);
+      document.getElementById('drv-resch-note').value = '';
+      document.getElementById('drv-reschedule-modal').classList.remove('hidden');
+    }
+
+    function confirmDriverRescheduleSubmit(e) {
+      e.preventDefault();
+      const drv = getActiveDriver();
+      const orderId = document.getElementById('drv-resch-order-id').value;
+      const ord = (hubState.wholesaleOrders || []).find(o => o.id === orderId);
+      if (!ord) return;
+
+      const newDate = document.getElementById('drv-resch-date').value || getLocalIsoDateOffset(1);
+      const newWave = document.getElementById('drv-resch-wave').value;
+      const reason = document.getElementById('drv-resch-reason').value;
+      const note = (document.getElementById('drv-resch-note').value || '').trim();
+
+      ord.rescheduledFrom = ord.date || getLocalIsoDateOffset(0);
+      ord.date = newDate;
+      ord.rescheduledDate = newDate;
+      ord.rescheduleWave = newWave;
+      ord.rescheduleReason = note ? `${reason} (${note})` : reason;
+      ord.rescheduledByDriverName = drv ? drv.name : 'Delivery Partner';
+      ord.status = 'NEW';
+
+      hubState.notifications = hubState.notifications || [];
+      hubState.notifications.unshift({
+        id: 'RESCH-NTF-' + Date.now(),
+        type: 'RESCHEDULE',
+        orderId: ord.id,
+        title: `Rescheduled ${ord.id} • ${ord.shopName}`,
+        desc: `Moved to ${newDate} (${newWave}) • Reason: ${ord.rescheduleReason} • By ${ord.rescheduledByDriverName}`,
+        unread: true
+      });
+
+      persistHubState();
+      closeDeliveryModal('drv-reschedule-modal');
+      renderAllDeliveryViews();
+      showDriverToast(`Rescheduled ${ord.id} to ${newDate} (${newWave})`);
+    }
+
+    function openDriverCancelModal(orderId) {
+      const ord = (hubState.wholesaleOrders || []).find(o => o.id === orderId);
+      if (!ord) return;
+      document.getElementById('drv-cancel-order-id').value = ord.id;
+      document.getElementById('drv-cancel-shop-title').textContent = ord.shopName;
+      document.getElementById('drv-cancel-inv-meta').textContent = `${ord.id} • ${ord.totalUnits || 1} Packs`;
+      document.getElementById('drv-cancel-amt-meta').textContent = '₹' + formatPriceVal(ord.amount);
+      document.getElementById('drv-cancel-note').value = '';
+      document.getElementById('drv-cancel-modal').classList.remove('hidden');
+    }
+
+    function confirmDriverCancelSubmit(e) {
+      e.preventDefault();
+      const drv = getActiveDriver();
+      const orderId = document.getElementById('drv-cancel-order-id').value;
+      const ord = (hubState.wholesaleOrders || []).find(o => o.id === orderId);
+      if (!ord) return;
+
+      const reason = document.getElementById('drv-cancel-reason').value;
+      const note = (document.getElementById('drv-cancel-note').value || '').trim();
+      const fullReason = note ? `${reason} (${note})` : reason;
+
+      // Restore warehouse SKU stock if previously deducted
+      if (ord.stockDeducted && Array.isArray(ord.lineItems)) {
+        ord.lineItems.forEach(item => {
+          const qty = Number(item.qty) || 0;
+          const sku = (hubState.skus || []).find(s =>
+            (item.skuId && s.id === item.skuId) ||
+            (item.name && s.name.toLowerCase().trim() === item.name.toLowerCase().trim())
+          );
+          if (sku && qty > 0) {
+            sku.stock = Math.max(0, (Number(sku.stock) || 0) + qty);
+          }
+        });
+        ord.stockDeducted = false;
+      }
+
+      // Reverse Khata due if billed on Khata
+      if ((ord.payMode || '').toLowerCase().includes('khata')) {
+        const shopObj = (hubState.kiranaShops || []).find(s => s.id === ord.shopId || s.name === ord.shopName);
+        if (shopObj) {
+          shopObj.khataDue = Math.max(0, (Number(shopObj.khataDue) || 0) - (Number(ord.amount) || 0));
+        }
+      }
+
+      ord.status = 'CANCELLED';
+      ord.cancelledReason = fullReason;
+      ord.cancelledByDriverName = drv ? drv.name : 'Delivery Partner';
+      ord.cancelledAt = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
+      hubState.notifications = hubState.notifications || [];
+      hubState.notifications.unshift({
+        id: 'CANC-NTF-' + Date.now(),
+        type: 'CANCELLED',
+        orderId: ord.id,
+        title: `Order Cancelled ${ord.id} • ${ord.shopName}`,
+        desc: `Reason: ${fullReason} • Cancelled by ${ord.cancelledByDriverName} (Stock restored)`,
+        unread: true
+      });
+
+      persistHubState();
+      closeDeliveryModal('drv-cancel-modal');
+      renderAllDeliveryViews();
+      showDriverToast(`Order ${ord.id} cancelled & warehouse stock restored`);
     }
 
     function openDriverOrderItemsModal(orderId) {
@@ -1700,6 +1977,7 @@
     }
 
     function renderAllDeliveryViews() {
+      renderQuickDriverLoginButtons();
       renderDriverHeader();
       renderDeliveryDropsPage();
       renderDriverCollectPage();
@@ -1738,6 +2016,7 @@
     function bootDeliveryApp() {
       runDeliverySplash();
       loadHubState();
+      renderQuickDriverLoginButtons();
       const savedSession = safeGetStorage(STORAGE_KEY_DRIVER_SESSION);
       if (savedSession) {
         document.getElementById('driver-login-box')?.classList.add('hidden');
@@ -1748,8 +2027,11 @@
         try {
           const raw = safeGetStorage(STORAGE_KEY_STATE);
           if (raw) window.__applyIncomingLiveState(raw);
+          if (window.__cloudSync && window.__cloudSync.enabled && window.__cloudSync.pullNow) {
+            window.__cloudSync.pullNow();
+          }
         } catch (e) {}
-      }, 2500);
+      }, 3000);
     }
 
     if (document.readyState === 'loading') {
